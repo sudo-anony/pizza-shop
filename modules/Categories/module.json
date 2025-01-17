@@ -1,0 +1,22 @@
+{
+    "alias": "categories",
+    "description": "",
+    "isVendorModule": true,
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\Categories\\Providers\\Main"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "adminmenus":[
+        {
+            "name":"Categories",
+            "params":{"type":"category"},
+            "route":"admin.landing.posts",
+            "icon":"ni ni-single-copy-04 text-red"
+        }
+    ]
+}

@@ -1,0 +1,5 @@
+AuthUserFile /www/htdocs/w01fd314/hop.upbyte.de/usage/.htpasswd
+AuthGroupFile /dev/null
+AuthName 'ByPassword'
+AuthType Basic
+require valid-user
