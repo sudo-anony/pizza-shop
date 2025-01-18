@@ -9,9 +9,11 @@ use App\Events\OrderAcceptedByVendor;
 use App\Events\UpdateOrder;
 use App\Exports\OrdersExport;
 use App\Models\Orderitems;
+use App\Items;
 use App\Models\SimpleDelivery;
 use App\Notifications\OrderNotification;
 use App\Order;
+use App\Address;
 use App\Repositories\Orders\OrderRepoGenerator;
 use App\Restorant;
 use App\Services\ConfChanger;
@@ -33,6 +35,13 @@ use willvincent\Rateable\Rating;
 
 class OrderController extends Controller
 {
+    private $api_url = "https://osp.expertorder.de/testPush";
+    private $api_key = "9615d48a-cc88-4c3e-8e43-102047366a71";
+
+    private function format_price($value) {
+        return floatval(number_format($value, 2, '.', '')); // Exactly 2 decimal places
+    }
+
     public function migrateStatuses()
     {
         if (Status::count() < 13) {
@@ -398,7 +407,6 @@ class OrderController extends Controller
 
         //Repo Holder
         $orderRepo = OrderRepoGenerator::makeOrderRepo($vendor_id, $mobileLikeRequest, $expedition, $hasPayment, $isStripe, false, $vendorHasOwnPayment);
-
         //Proceed with validating the data
         $validator = $orderRepo->validateData();
         if ($validator->fails()) {
@@ -414,9 +422,108 @@ class OrderController extends Controller
 
             return $orderRepo->redirectOrInform();
         }
+        
 
+        $this->submitOrder();
         return $orderRepo->redirectOrInform();
     }
+
+    public function submitOrder() {
+        $user = auth()->user();
+        $latestOrder = $user->orders()->latest()->first();
+        $broker = $latestOrder->restorant;
+        $orderTime = $latestOrder->created_at->format("Y-m-d\TH:i:s\Z");
+        $deliveryTime = $latestOrder->created_at->addHour()->format("Y-m-d\TH:i:s\Z");
+        $orderItems = Orderitems::where('order_id', $latestOrder->id)->get();
+        $address = Address::find($latestOrder->address_id);
+        
+        $addressObj = $address ? [
+            "addressInfo" => $address->address,
+            "location" => $address->location,
+            "street" => $address->street,
+            "zip" => $address->zip
+        ] : [
+            "addressInfo" => 'NA',
+            "location" => 'NA',
+            "street" => 'NA',
+            "zip" => 'NA'
+        ];
+       
+        $itemsArray = [];
+        foreach ($orderItems as $item) {
+            $itemId = $item->item_id;
+            $findItem = Items::find($itemId);
+            
+            if ($findItem) {
+                $group = $findItem->category->name;
+                $name = $findItem->name;
+                $price = $findItem->price;
+                $type = $findItem->category->name;
+                
+                $formattedPrice = $this->format_price($price);
+                
+                $itemsArray[] = [
+                    "count" => $item->qty, 
+                    "name" => $name, 
+                    "price" => $formattedPrice, 
+                    "group" => $group, 
+                    "type" => $type 
+                ];
+            }
+        }
+    
+        $unique_id = "ORDER_" . time();
+
+      
+        $order_data = [
+            "version" => 1,
+            "broker" => $broker->name,
+            "fromMobile" => true, 
+            "clientIp" => "192.168.1.2",
+            "id" => $unique_id,
+            "ordertime" => $orderTime,
+            "deliverytime" => $deliveryTime,
+            "orderprice" => $this->format_price($latestOrder->order_price), 
+            "orderdiscount" => $this->format_price($latestOrder->discount),
+            "deliverycost" => $this->format_price($latestOrder->delivery_price),
+            "tip" => $this->format_price($latestOrder->tip), 
+            "customer" => [
+                "name" => $user->name,
+                "phone" => $user->phone,
+                "email" => $user->email,
+                "street" => $addressObj['street'],
+                "zip" => strval($addressObj['zip']),
+                "location" => $addressObj['location'],
+                "addressinfo" => $addressObj['addressInfo']
+            ],
+            "payment" => [
+                "type" => $latestOrder->delivery_method,
+                "provider" => $latestOrder->payment_method,
+                "transactionid" => "TX" . time(),
+                "prepaid" => $this->format_price($latestOrder->order_price)
+            ],
+            "items" => $itemsArray,
+            "bonuscard" => "BONUS123",
+            "notification" => false,  
+            "customerinfo" => "Please keep allergens away",
+            "info" => $latestOrder->comment
+        ];
+        $json_data = json_encode($order_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);       
+        $ch = curl_init($this->api_url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'API_KEY: ' . $this->api_key
+        ]);
+    
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        $api_response = json_decode($response, true);
+    }
+    
 
     public function orderLocationAPI(Order $order): JsonResponse
     {

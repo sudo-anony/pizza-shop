@@ -65,7 +65,7 @@ class AddressController extends Controller
     }
 
     public function makeAddress(Request $request): JsonResponse
-    {
+    {   
         $client = User::where(['api_token' => $request->api_token])->first();
 
         $address = new Address;

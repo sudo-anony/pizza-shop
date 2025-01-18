@@ -159,10 +159,10 @@ function appendOption(name,id){
 }
 
 function optionChanged(option_id,name){
-
+    
     var newElement={"option_id":option_id,"name":name};
     debugMe("selected option",JSON.stringify(newElement));
-
+    console.log(newElement);
     
     //Append / insert the new selectioin
     var newSelectionState=[];
@@ -206,7 +206,7 @@ function setVariants(){
     //1. Determine previously selected variants
 
    //HIDE QTY
-   $('.quantity-area').hide();
+   $('.quantity-area').show();
    $('#exrtas-area-inside').empty();
    $('#exrtas-area').hide();
 

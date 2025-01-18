@@ -106,14 +106,20 @@ function initMapA() {
 }
 
 $("#submitNewAddress").on("click",function() {
+    debugger;
     saveLocation(lat, lng);
 });
-
+var isSubmitting = false;
 function saveLocation(lat, lng){
+    if (isSubmitting) {
+        return; // If the flag is true, do nothing (prevents double submission)
+    }
     var new_address = $('#new_address').val();
-
+    var zip = $('#zip').val();
+    var street = $('#street').val();
+    var location = $('#location').val();
     if(new_address.length > 0){
-
+        isSubmitting = true;
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -127,13 +133,18 @@ function saveLocation(lat, lng){
             data: {
                 new_address: new_address,
                 lat: lat,
-                lng: lng
+                lng: lng,
+                zip: zip, 
+                street: street,
+                location: location
             },
             success:function(response){
                 if(response.status){
+                    debugger
                     window.location.href = "/addresses";
                 }
             }, error: function (response) {
+                debugger
             }
         })
     }

@@ -35,9 +35,9 @@ class AddressControler extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request): JsonResponse
     {
-        //
+        
     }
 
     /**
@@ -50,11 +50,15 @@ class AddressControler extends Controller
         $address->user_id = auth()->user()->id;
         $address->lat = $request->lat;
         $address->lng = $request->lng;
+        $address->zip = $request->zip;
+        $address->location = $request->location;
+        $address->street = $request->street;
         $address->apartment = $request->apartment ?? $request->apartment;
         $address->intercom = $request->intercom ?? $request->intercom;
         $address->floor = $request->floor ?? $request->floor;
         $address->entry = $request->entry ?? $request->entry;
         $address->save();
+
 
         return response()->json([
             'status' => true,

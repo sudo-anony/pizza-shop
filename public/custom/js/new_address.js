@@ -92,6 +92,7 @@
     })
 
     $("#submitNewAddress").on("click",function() {
+        debugger;
         var address_name = $("#new_address_checkout option:selected").text();
         var address_number = $("#address_number").val();
         var number_apartment = $("#number_apartment").val();

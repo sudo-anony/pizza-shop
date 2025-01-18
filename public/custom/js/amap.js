@@ -29,6 +29,7 @@ function initMap() {
 }
 
 $("#submitNewAddress").on("click",function() {
+    debugger;
     saveLocation(lat, lng);
 });
 

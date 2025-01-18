@@ -11,8 +11,11 @@
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
-                            <div class="col-8">
+                            <div class="col-10">
                                 <h3 class="mb-0">{{ __('My Addresses') }}</h3>
+                            </div>
+                            <div class="col-2 text-end">
+                                <button data-toggle="modal" data-target="#modal-new-address"  class=" btn btn-success mt-4 btn-sm w-100" >New Address</button>
                             </div>
                         </div>
                     </div>
@@ -26,6 +29,11 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">{{ __('Address') }}</th>
+                                    <th scope="col">Location</th>
+                                    <th scope="col">Street</th>
+                                    <th scope="col">Zip Code</th>
+                                    <th scope="col">Longitude</th>
+                                    <th scope="col">Latitude</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
@@ -33,6 +41,11 @@
                                 @foreach ($addresses as $address)
                                     <tr>
                                         <td>{{$address->address}}</td>
+                                        <td>{{$address->location}}</td>
+                                        <td>{{$address->street}}</td>
+                                        <td>{{$address->zip}}</td>
+                                        <td>{{$address->lng}}</td>
+                                        <td>{{$address->lat}}</td>
                                         <td class="text-right">
                                             <div class="dropdown">
                                                 <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -55,12 +68,15 @@
                         </table>
                     </div>
                     @endif
+             
                     <div class="card-footer py-4">
                         @if(count($addresses))
                             <nav class="d-flex justify-content-end" aria-label="...">
                             </nav>
                         @else
-                            <h4>{{ __('You don`t have any addresses') }} ...</h4>
+                        <div class="text-center">
+                                {{ __('You don`t have any addresses') }}
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -108,12 +124,16 @@
         }
 
         $("#submitNewAddress").on("click",function() {
+            debugger;
             saveLocation(lat, lng);
         });
 
         function saveLocation(lat, lng){
             var new_address = $('#new_address').val();
-
+            var zip = $('#zip').val();
+            var street = $('#street').val();
+            var location = $('#location').val();
+            debugger
             if(new_address.length > 0){
 
                 $.ajaxSetup({
@@ -133,6 +153,7 @@
                     },
                     success:function(response){
                         if(response.status){
+                            
                             window.location.href = "/addresses";
                         }
                     }
