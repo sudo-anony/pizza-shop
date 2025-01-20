@@ -19,7 +19,7 @@ class Restorant extends MyModel
 
     protected $modelName = \App\Restorant::class;
 
-    protected $fillable = ['name', 'subdomain', 'user_id', 'lat', 'lng', 'address', 'phone', 'logo', 'description', 'city_id'];
+    protected $fillable = ['name', 'subdomain', 'user_id', 'lat', 'lng', 'address', 'phone', 'logo', 'description', 'city_id','borker','api_key'];
 
     protected $appends = ['alias', 'logom', 'icon', 'coverm'];
 

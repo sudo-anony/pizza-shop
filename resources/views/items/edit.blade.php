@@ -1,3 +1,14 @@
+<style>
+    .select2-container {
+        box-sizing: border-box;
+        display: inline-block;
+        margin: 0;
+        position: relative;
+        vertical-align: middle;
+        width: 100% !important;
+    }
+</style>
+
 @extends('layouts.app', ['title' => __('Orders')])
 
 @section('content')
@@ -84,15 +95,33 @@
                                 @csrf
                                 @method('put')
                                 <div class="row">
+                                    
                                     <div class="col-md-12">
+                                        <div class="form-group{{ $errors->has('item_uid') ? ' has-danger' : '' }}">
+                                            <label class="form-control-label" for="item_uid">UID</label>
+                                            <input type="text" name="item_uid" id="item_uid" class="form-control form-control-alternative{{ $errors->has('item_uid') ? ' is-invalid' : '' }}" placeholder="UID" value="{{ old('item_uid', $item->uid) }}" required autofocus>
+                                            @if ($errors->has('item_uid'))
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('item_uid') }}</strong>
+                                                </span>
+                                            @endif
+                                        </div>
                                         <div class="form-group{{ $errors->has('item_name') ? ' has-danger' : '' }}">
                                             <label class="form-control-label" for="item_name">{{ __('Item Name') }}</label>
-                                            <input type="text" name="item_name" id="item_name" class="form-control form-control-alternative{{ $errors->has('item_name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('item_name', $item->name) }}" required autofocus>
+                                            <input type="text" name="item_name" id="item_name" class="form-control form-control-alternative{{ $errors->has('item_name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('item_name', $item->name) }}" required >
                                             @if ($errors->has('item_name'))
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $errors->first('item_name') }}</strong>
                                                 </span>
                                             @endif
+                                        </div>
+                                        <div class="form-group">
+                                        <label class="form-control-label">Type</label>
+                                        <select name="type" id="type" required class="form-control">
+                                            <option value="" disabled selected>Select type</option>
+                                            <option value="FOOD" selected>Food</option>
+                                            <option value="NONFOOD">Non-Food</option>
+                                        </select>
                                         </div>
                                         @include('partials.select', ['name'=>"Category",'id'=>"category_id",'placeholder'=>"Select category",'data'=>$categories,'required'=>true, 'value'=>$item->category_id])
                                         <div class="form-group{{ $errors->has('item_description') ? ' has-danger' : '' }}">

@@ -377,6 +377,8 @@ class RestorantController extends Controller
     {
         $restaurant = Restorant::findOrFail($restaurantid);
         $restaurant->name = strip_tags($request->name);
+        $restaurant->api_key = strip_tags($request->api_key);
+        $restaurant->broker = strip_tags($request->broker);
         $thereIsRestaurantAddressChange = $restaurant->address.'' != $request->address.'';
 
         $restaurant->address = strip_tags($request->address);

@@ -211,6 +211,8 @@ class ItemsController extends Controller
         $item->name = strip_tags($request->item_name);
         $item->description = strip_tags($request->item_description);
         $item->category_id = $request->category_id;
+        $item->uid = $request->item_uid;
+        $item->type = $request->type;
         if ($item->price != strip_tags($request->item_price)) {
             $makeVariantsRecreate = true;
         }

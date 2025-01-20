@@ -422,16 +422,16 @@ class OrderController extends Controller
 
             return $orderRepo->redirectOrInform();
         }
-        
-
-        $this->submitOrder();
-        return $orderRepo->redirectOrInform();
-    }
-
-    public function submitOrder() {
         $user = auth()->user();
         $latestOrder = $user->orders()->latest()->first();
         $broker = $latestOrder->restorant;
+        if (!empty($broker->api_key)) {
+            $this->submitOrder($user , $latestOrder , $broker);
+        }        
+        return $orderRepo->redirectOrInform();
+    }
+
+    public function submitOrder($user , $latestOrder , $broker) {
         $orderTime = $latestOrder->created_at->format("Y-m-d\TH:i:s\Z");
         $deliveryTime = $latestOrder->created_at->addHour()->format("Y-m-d\TH:i:s\Z");
         $orderItems = Orderitems::where('order_id', $latestOrder->id)->get();
@@ -443,10 +443,10 @@ class OrderController extends Controller
             "street" => $address->street,
             "zip" => $address->zip
         ] : [
-            "addressInfo" => 'NA',
-            "location" => 'NA',
-            "street" => 'NA',
-            "zip" => 'NA'
+            "addressInfo" => 'NA 1',
+            "location" => 'NA 1',
+            "street" => 'NA 1',
+            "zip" => '00000'
         ];
        
         $itemsArray = [];
@@ -458,11 +458,13 @@ class OrderController extends Controller
                 $group = $findItem->category->name;
                 $name = $findItem->name;
                 $price = $findItem->price;
-                $type = $findItem->category->name;
+                $type = $findItem->type;
+                $uid = $findItem->uid;
                 
                 $formattedPrice = $this->format_price($price);
                 
                 $itemsArray[] = [
+                    "uid" => $uid,
                     "count" => $item->qty, 
                     "name" => $name, 
                     "price" => $formattedPrice, 
@@ -477,8 +479,8 @@ class OrderController extends Controller
       
         $order_data = [
             "version" => 1,
-            "broker" => $broker->name,
-            "fromMobile" => true, 
+            "broker" => $broker->broker ? $broker->broker : $broker->name,
+            "fromMobile" => false, 
             "clientIp" => "192.168.1.2",
             "id" => $unique_id,
             "ordertime" => $orderTime,
@@ -497,18 +499,19 @@ class OrderController extends Controller
                 "addressinfo" => $addressObj['addressInfo']
             ],
             "payment" => [
-                "type" => $latestOrder->delivery_method,
+                "type" => $latestOrder->delivery_method == 2 ? 3 : $latestOrder->delivery_method,
                 "provider" => $latestOrder->payment_method,
                 "transactionid" => "TX" . time(),
                 "prepaid" => $this->format_price($latestOrder->order_price)
             ],
             "items" => $itemsArray,
             "bonuscard" => "BONUS123",
-            "notification" => false,  
-            "customerinfo" => "Please keep allergens away",
+            "notification" => true,  
+            "customerinfo" =>$latestOrder->comment,
             "info" => $latestOrder->comment
         ];
-        $json_data = json_encode($order_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);       
+        $json_data = json_encode($order_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);  
+        
         $ch = curl_init($this->api_url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
@@ -517,7 +520,6 @@ class OrderController extends Controller
             'Content-Type: application/json',
             'API_KEY: ' . $this->api_key
         ]);
-    
         $response = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
