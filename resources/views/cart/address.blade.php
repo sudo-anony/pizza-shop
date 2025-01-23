@@ -28,7 +28,7 @@
             @endif
         </div>
         <div class="form-group">
-            <button type="button" data-toggle="modal" data-target="#modal-order-new-address"  class="btn btn-outline-success">{{ __('Add new') }}</button>
+            <button type="button" data-toggle="modal" data-target="#modal-order-new-address-new"  class="btn btn-outline-success">{{ __('Add new') }}</button>
         </div>
         <input type="hidden" name="deliveryCost" id="deliveryCost" value="0" />
       </div>

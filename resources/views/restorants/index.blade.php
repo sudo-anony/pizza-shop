@@ -87,7 +87,7 @@
                                            @if($restorant->active == 1)
                                                 <span class="badge badge-success">{{ __('Active') }}</span>
                                            @else
-                                                <span class="badge badge-warning">{{ __('Not active') }}</span>
+                                                <span class="badge badge-warning">s{{ __('Not active') }}</span>
                                            @endif
                                         </td>
                                         <td class="text-right">

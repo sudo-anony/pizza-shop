@@ -17,12 +17,8 @@
         <input type="hidden" id="rid" value="{{ $restorant->id }}"/>
         @include('partials.fields',['fields'=>[
             ['ftype'=>'input','name'=>"Restaurant Name",'id'=>"name",'placeholder'=>"Restaurant Name",'required'=>true,'value'=>$restorant->name],
-            ['ftype'=>'input','name'=>"API KEY",'id'=>"api_key",'placeholder'=>"API KEY",'required'=>true,'value'=>$restorant->api_key],
-            ['ftype'=>'input','name'=>"Broker Name",'id'=>"broker",'placeholder'=>"Broker Name",'required'=>true,'value'=>$restorant->broker],
-            ['ftype'=>'input','name'=>"Restaurant description",'id'=>"description",'placeholder'=>"Restaurant description",'required'=>true,'value'=>$restorant->description],
-            ['ftype'=>'input','name'=>"Restaurant address",'id'=>"address",'placeholder'=>"Restaurant address",'required'=>true,'value'=>$restorant->address],
-            ['ftype'=>'input','name'=>"Restaurant phone",'id'=>"phone",'placeholder'=>"Restaurant phone",'required'=>true,'value'=>$restorant->phone],
         ]])
+
         <div class="form-group">
             <label class="form-control-label">Select Counter</label>
             <select name="counter" id="select_counter" required class="form-control">
@@ -32,6 +28,19 @@
                 <option value="non-food">3pos</option>
             </select>
         </div>
+
+        @include('partials.fields',['fields'=>[
+            ['ftype'=>'input','name'=>"API KEY",'id'=>"api_key",'placeholder'=>"API KEY",'required'=>true,'value'=>$restorant->api_key],
+            ['ftype'=>'input','name'=>"Broker Name",'id'=>"broker",'placeholder'=>"Broker Name",'required'=>true,'value'=>$restorant->broker],
+            ['ftype'=>'input','name'=>"Restaurant description",'id'=>"description",'placeholder'=>"Restaurant description",'required'=>true,'value'=>$restorant->description],
+            ['ftype'=>'input','name'=>"Restaurant address",'id'=>"address",'placeholder'=>"Restaurant address",'required'=>true,'value'=>$restorant->address],
+            ['ftype'=>'input','name'=>"Restaurant phone",'id'=>"phone",'placeholder'=>"Restaurant phone",'required'=>true,'value'=>$restorant->phone],
+            ['ftype'=>'input','name'=>"City",'id'=>"city",'placeholder'=>"City",'required'=>true,'value'=>$restorant->city],
+            ['ftype'=>'input','name'=>"Zip",'id'=>"zip",'placeholder'=>"Zip code",'required'=>true,'value'=>$restorant->zip],
+            ['ftype'=>'input','name'=>"TAX ID",'id'=>"taxID",'placeholder'=>"Tax ID",'required'=>true,'value'=>$restorant->taxID]
+            
+        ]])
+
         @if(config('settings.multi_city'))
             @include('partials.fields',['fields'=>[
                 ['ftype'=>'select','name'=>"Restaurant city",'id'=>"city_id",'data'=>$cities,'required'=>true,'value'=>$restorant->city_id],

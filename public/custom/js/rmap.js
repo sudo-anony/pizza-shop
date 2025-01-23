@@ -1,3 +1,4 @@
+
 "use strict";
 var map, infoWindow, marker, lng, lat;
 function initMap() {}
@@ -106,48 +107,73 @@ function initMapA() {
 }
 
 $("#submitNewAddress").on("click",function() {
-    debugger;
     saveLocation(lat, lng);
 });
 var isSubmitting = false;
 function saveLocation(lat, lng){
     if (isSubmitting) {
-        return; // If the flag is true, do nothing (prevents double submission)
+        return;
     }
     var new_address = $('#new_address').val();
     var zip = $('#zip').val();
     var street = $('#street').val();
     var location = $('#location').val();
-    if(new_address.length > 0){
-        isSubmitting = true;
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $.ajax({
-            type:'POST',
-            url: '/addresses',
-            dataType: 'json',
-            data: {
-                new_address: new_address,
-                lat: lat,
-                lng: lng,
-                zip: zip, 
-                street: street,
-                location: location
-            },
-            success:function(response){
-                if(response.status){
-                    debugger
-                    window.location.href = "/addresses";
-                }
-            }, error: function (response) {
-                debugger
-            }
-        })
+    var addressId = $('#address_id').val();
+    let url = "/addresses";
+    let type = 'POST';
+    if (addressId.length > 0){
+        url = `/addresses/${addressId}`;
+        type = 'PUT';
     }
+        if(new_address.length > 0){
+            isSubmitting = true;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+    
+            $.ajax({
+                type: type,
+                url: url,
+                dataType: 'json',
+                data: {
+                    new_address: new_address,
+                    lat: lat,
+                    lng: lng,
+                    zip: zip, 
+                    street: street,
+                    location: location
+                },
+                success:function(response){
+                    if(response.status){
+                        window.location.href = "/addresses";
+                    }
+                }, error: function (response) {
+                }
+            })
+        }
+    
+
+}
+
+
+function openAddressModal(data = {}) {
+    const modalTitle = document.getElementById("modal-title-notification");
+    const addressId = document.getElementById("address_id");
+    const newAddressInput = document.getElementById("new_address");
+    const streetInput = document.getElementById("street");
+    const zipInput = document.getElementById("zip");
+    const locationInput = document.getElementById("location");
+    modalTitle.textContent = "Edit Address";
+    addressId.value = data.id;
+    newAddressInput.value = data.address || "";
+    streetInput.value = data.street || "";
+    zipInput.value = data.zip || "";
+    locationInput.value = data.location || "";
+    const modalElement = document.getElementById('modal-new-address');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {

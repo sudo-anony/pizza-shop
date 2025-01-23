@@ -59,7 +59,11 @@
                                                             {{ __('Delete') }}
                                                         </button>
                                                     </form>
+                                                    <button class="dropdown-item" style="cursor:pointer" onclick="openAddressModal({{ json_encode($address) }})">
+                                                        Edit
+                                                    </button>
                                                 </div>
+                                            
                                             </div>
                                         </td>
                                     </tr>
@@ -124,7 +128,7 @@
         }
 
         $("#submitNewAddress").on("click",function() {
-            debugger;
+            return 
             saveLocation(lat, lng);
         });
 
@@ -133,7 +137,6 @@
             var zip = $('#zip').val();
             var street = $('#street').val();
             var location = $('#location').val();
-            debugger
             if(new_address.length > 0){
 
                 $.ajaxSetup({

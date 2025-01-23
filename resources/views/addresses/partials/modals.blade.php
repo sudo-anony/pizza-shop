@@ -16,7 +16,7 @@
                                 <input class="form-control my-3" name="street" id="street" placeholder="{{ __( 'New street here' ) }} ..." type="text" required>
                                 <input class="form-control my-3" name="zip" id="zip" placeholder="{{ __( 'New Zip Code here' ) }} ..." type="number" required>
                                 <input class="form-control my-3" name="location" id="location" placeholder="{{ __( 'New location here' ) }} ..." type="text" required>
-
+                                <input class="form-control my-3" name="address_id" id="address_id" type="hidden" value="">
                                 @if ($errors->has('category_name'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('category_name') }}</strong>

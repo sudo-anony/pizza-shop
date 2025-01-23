@@ -92,7 +92,15 @@ class AddressControler extends Controller
     public function update(Request $request, Address $address): JsonResponse
     {
         $address->lat = $request->lat;
+        $address->address = strip_tags($request->new_address);
         $address->lng = $request->lng;
+        $address->zip = $request->zip;
+        $address->location = $request->location;
+        $address->street = $request->street;
+        $address->apartment = $request->apartment ?? $request->apartment;
+        $address->intercom = $request->intercom ?? $request->intercom;
+        $address->floor = $request->floor ?? $request->floor;
+        $address->entry = $request->entry ?? $request->entry;
 
         $address->update();
 

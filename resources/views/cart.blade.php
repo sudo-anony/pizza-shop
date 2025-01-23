@@ -183,5 +183,93 @@
     }
   </script>
   <script src="{{ asset('custom') }}/js/checkout.js"></script>
+  <script async defer
+        src= "https://maps.googleapis.com/maps/api/js?key=<?php echo config('settings.google_maps_api_key'); ?>&callback=initMapA">
+    </script>
+    <script type="text/javascript">
+        "use strict";
+        var map, infoWindow, marker, lng, lat;
+        function initMapA() {
+            map = new google.maps.Map(document.getElementById('map2'), {center: {lat: -34.397, lng: 150.644}, zoom: 15 });
+            marker = new google.maps.Marker({ position: {lat: -34.397, lng: 150.644}, map: map, title: 'Click to zoom'});
+            infoWindow = new google.maps.InfoWindow;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                var pos = { lat: position.coords.latitude, lng: position.coords.longitude };
+
+                    map.setCenter(pos);
+                    marker.setPosition(pos);
+                 
+                    lat = position.coords.latitude;
+                    lng = position.coords.longitude;
+                }, function() {
+                           
+                });
+            } 
+
+            map.addListener('click', function(event) {
+                var currPos = new google.maps.LatLng(event.latLng.lat(),event.latLng.lng());
+                marker.setPosition(currPos);
+               
+
+                lat = event.latLng.lat()
+                lng = event.latLng.lng();
+            });
+        }
+
+        $("#submitNewAddressnew").on("click",function() {
+          debugger
+            saveLocation(lat, lng);
+        });
+
+        var isSubmitting = false;
+        function saveLocation(lat, lng){
+            if (isSubmitting) {
+                return;
+            }
+            var new_address = $('#new_address').val();
+            var zip = $('#zip').val();
+            var street = $('#street').val();
+            var location = $('#location').val();
+            let url = "/addresses";
+            let type = 'POST';
+            if(new_address.length > 0){
+                isSubmitting = true;
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+        
+                $.ajax({
+                    type: type,
+                    url: url,
+                    dataType: 'json',
+                    data: {
+                        new_address: new_address,
+                        lat: lat,
+                        lng: lng,
+                        zip: zip, 
+                        street: street,
+                        location: location
+                    },
+                    success:function(response){
+                        if(response.status){
+                            window.location.href = "/cart-checkout";
+                        }
+                    }, error: function (response) {
+                    }
+                })
+            }
+        }
+
+
+        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+            infoWindow.setPosition(pos);
+            infoWindow.setContent(browserHasGeolocation ? 'Error: The Geolocation service failed.' : 'Error: Your browser doesn\'t support geolocation.');
+            infoWindow.open(map);
+        }
+    </script>
 @endsection
 

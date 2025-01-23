@@ -348,7 +348,6 @@ var initAddress=function(){
 
     //Save on click for location
     $("#submitNewAddress").on("click",function() {
-        debugger;
         var address_name = $("#address").val();
         var address_number = $("#address_number").val();
         var number_apartment = $("#number_apartment").val();
