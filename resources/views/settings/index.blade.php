@@ -86,14 +86,14 @@
                                         <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#cssjs" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="ni ni-palette mr-2"></i>{{ __ ('CSS & JS') }}</a>
                                     </li>
 
-                                   
-
-
-
+                                    <li class="nav-item">
+                                        <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#api" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">API</a>
+                                    </li>
 
                                 </ul>
                             </div>
                             <br/>
+                           
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
                                         @include('partials.input',['id'=>'site_name','name'=>'Site Name','placeholder'=>'Site Name here ...','value'=>$settings->site_name, 'required'=>true])
@@ -187,6 +187,11 @@
                                         @include('partials.textarea',['id'=>'cssfront','name'=>'CSS - Frontend','placeholder'=>'CSS - Frontend','value'=>$cssfront, 'required'=>false])
                                         @include('partials.textarea',['id'=>'cssfrontmenu','name'=>'CSS - Menu','placeholder'=>'CSS - Menu','value'=>$cssfrontmenu, 'required'=>false])
                                         @include('partials.textarea',['id'=>'cssback','name'=>'CSS - Backend','placeholder'=>'CSS - Backend','value'=>$cssback, 'required'=>false])
+                                    </div>
+
+                                    <div class="tab-pane fade" id="api" role="tabpanel" aria-labelledby="api">
+                                        @include('partials.input',['id'=>'export_order','name'=>'EXPORT ORDER','placeholder'=>'EXPORT ORDER here ...','value'=>$settings->pos, 'required'=>false])
+                                        @include('partials.input',['id'=>'3pos','name'=>'3 POS','placeholder'=>'3 POS here ...','value'=>$settings->exportOrder, 'required'=>false])
                                     </div>
 
                                     @foreach ($envConfigs as $groupConfig)

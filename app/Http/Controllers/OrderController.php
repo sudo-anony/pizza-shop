@@ -522,6 +522,14 @@ class OrderController extends Controller
         ]);
         $response = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if ($http_code == 200) {
+            $status = Status::where('id', 14)->first();
+            $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
+            
+        } else {
+            $status = Status::where('id', 15)->first();
+            $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
+        }
         curl_close($ch);
         $api_response = json_decode($response, true);
     }

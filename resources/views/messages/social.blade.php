@@ -44,7 +44,7 @@ foreach ($order->items()->get() as $key => $item) {
 @if ($order->discount>0)
 🏷️ {{ __('Discount').": ".money(($order->discount), config('settings.cashier_currency'), config('settings.do_convertion')) }}
 @endif
-🧾 {{__('Total: ').money(($order->order_price_with_discount+$order->delivery_price), config('settings.cashier_currency'), config('settings.do_convertion')) }}
+🧾 s{{__('Total: ').money(($order->order_price_with_discount+$order->delivery_price), config('settings.cashier_currency'), config('settings.do_convertion')) }}
 ---------
 
 @if (strlen($order->comment)>0)   

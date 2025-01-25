@@ -28,10 +28,11 @@
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                                 <tr>
-                                    <th scope="col">{{ __('Address') }}</th>
+                                    <!-- <th scope="col">{{ __('Address') }}</th> -->
                                     <th scope="col">Location</th>
                                     <th scope="col">Street</th>
                                     <th scope="col">Zip Code</th>
+                                    <th scope="col">Plus Code</th>
                                     <th scope="col">Longitude</th>
                                     <th scope="col">Latitude</th>
                                     <th scope="col"></th>
@@ -40,10 +41,11 @@
                             <tbody>
                                 @foreach ($addresses as $address)
                                     <tr>
-                                        <td>{{$address->address}}</td>
+                                        <!-- <td>{{$address->address}}</td> -->
                                         <td>{{$address->location}}</td>
                                         <td>{{$address->street}}</td>
                                         <td>{{$address->zip}}</td>
+                                        <td>{{$address->plusCode}}</td>
                                         <td>{{$address->lng}}</td>
                                         <td>{{$address->lat}}</td>
                                         <td class="text-right">

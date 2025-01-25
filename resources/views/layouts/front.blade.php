@@ -44,7 +44,10 @@ Coded by www.creative-tim.com
     <!-- Select2 -->
     <link type="text/css" href="{{ asset('custom') }}/css/select2.min.css" rel="stylesheet">
 
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.4/openlocationcode.min.js" 
+        integrity="sha512-nNdmCJgFefLPn6W79uEUxH2n4+qbc0kJM8uBD8f7GlmusrQN9L13hpSBRxLHdLs+6oSDurcCuDlBXVKaz/hpcA==" 
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     @if (config('settings.google_analytics'))

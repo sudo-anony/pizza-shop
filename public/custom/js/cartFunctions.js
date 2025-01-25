@@ -126,7 +126,8 @@ function getCartContentAndTotalPrice(){
  };
 
 $("#tip_btn").on('click',function() {
-  var tip = parseFloat($('#tip').val());
+  let integerValue = parseInt($('#tip').val().replace('€', '').trim());
+  var tip = parseFloat(integerValue);
   if(tip>0){
     $('#tipapplied').val(1);
   }else{
@@ -266,12 +267,13 @@ function dineTypeSwitch(mod){
   $('.tablepicker').hide();
   $('.takeaway_picker').hide();
   $('.qraddressBox').hide();
+  $('#restinfo').show();
 
   if(mod=="dinein"){
     $('.tablepicker').show();
     $('.takeaway_picker').hide();
     $('.qraddressBox').hide();
-
+    $('#restinfo').show();
     //phone
     $('#localorder_phone').hide();
   }
@@ -292,7 +294,7 @@ function dineTypeSwitch(mod){
     $('.takeaway_picker').show();
     orderTypeSwither(mod);
     $('.qraddressBox').show();
-
+    $('#restinfo').hide();
   //phone
   $('#localorder_phone').show();
 }
@@ -309,11 +311,13 @@ function orderTypeSwither(mod){
           updatePrices(cartTotal.totalPrice,null,false)
           $('.picTime').show();
           $('#addressBox').hide();
+          $('#restinfo').show();
       }
 
       if(mod=="delivery"){
           $('.delTime').show();
           $('#addressBox').show();
+          $('#restinfo').hide();
           getCartContentAndTotalPrice();
       }
 }
@@ -567,6 +571,7 @@ window.onload = function () {
       }
     }
   })
+
 
   //VUE TOTAL Mobile
   cartTotalMobile= new Vue({

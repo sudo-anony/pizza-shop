@@ -416,7 +416,6 @@ class SettingsController extends Controller
         Cache::flush();
 
         $settings = Settings::find($id);
-
         $settings->site_name = strip_tags($request->site_name);
         $settings->description = strip_tags($request->site_description);
         $settings->header_title = $request->header_title;
@@ -428,6 +427,8 @@ class SettingsController extends Controller
         $settings->typeform = strip_tags($request->typeform) ? strip_tags($request->typeform) : '';
         $settings->mobile_info_title = strip_tags($request->mobile_info_title) ? strip_tags($request->mobile_info_title) : '';
         $settings->mobile_info_subtitle = strip_tags($request->mobile_info_subtitle) ? strip_tags($request->mobile_info_subtitle) : '';
+        $settings->pos = strip_tags($request->pos) ? strip_tags($request->pos) : '';
+        $settings->exportOrder = strip_tags($request->exportOrder) ? strip_tags($request->exportOrder) : '';
         $settings->delivery = (float) $request->delivery;
         $settings->order_fields = $request->order_fields;
         $settings->update();

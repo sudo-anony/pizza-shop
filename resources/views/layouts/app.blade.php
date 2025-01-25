@@ -44,7 +44,10 @@
 
         <!-- Range datepicker -->
         <link rel="stylesheet" type="text/css" href="{{ asset('vendor') }}/daterangepicker/daterangepicker.css" />
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/openlocationcode/1.0.4/openlocationcode.min.js" 
+        integrity="sha512-nNdmCJgFefLPn6W79uEUxH2n4+qbc0kJM8uBD8f7GlmusrQN9L13hpSBRxLHdLs+6oSDurcCuDlBXVKaz/hpcA==" 
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer"></script>
         @yield('head')
         @laravelPWA
         @include('layouts.rtl')

@@ -27,7 +27,7 @@
 
                             <div v-if="tip"> 
                                 <span v-if="tip">{{ __('Applied tip') }}:</span>
-                                <span v-if="tip" class="ammount">@{{ tipFormat }}</span>
+                                <span v-if="tip" class="">@{{ tipFormat }}</span>
                                 <br />  
                             </div>
                            
@@ -146,3 +146,5 @@
   @if(config('settings.is_demo') && config('settings.enable_stripe'))
     @include('cart.democards')
   @endif
+
+

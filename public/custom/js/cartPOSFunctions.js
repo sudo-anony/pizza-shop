@@ -431,11 +431,13 @@ function orderTypeSwither(mod){
           updatePrices(cartTotal.totalPrice,null,false)
           $('.picTime').show();
           $('#addressBox').hide();
+          $('#restinfo').show();
       }
 
       if(mod=="delivery"){
           $('.delTime').show();
           $('#addressBox').show();
+          $('#restinfo').hide();
           getCartContentAndTotalPrice();
       }
 }

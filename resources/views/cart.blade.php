@@ -48,6 +48,10 @@
                         @include('cart.customfields')
 
                         <!-- Comment -->
+                         <div id="restinfo" style="display: none">
+                            @include('cart.restaurant')
+                         </div>
+                       
                         @include('cart.comment')
                     @elseif(config('app.isag'))  
                         @if(count($timeSlots)>0)
@@ -67,6 +71,9 @@
                             @include('cart.newclient')
 
                             <!-- Comment -->
+                            <div id="restinfo" style="display: none">
+                            @include('cart.restaurant')
+                         </div>
                             @include('cart.comment')
                         @endif
 
@@ -99,7 +106,7 @@
                               @include('cart.time')
                           </div>
                       @endif
-
+                     
                       <!-- LOCAL ORDERING -->
                       @include('cart.localorder.table')
 
@@ -110,6 +117,9 @@
                       @include('cart.customfields')
 
                       <!-- Comment -->
+                      <div id="restinfo" style="display: none">
+                            @include('cart.restaurant')
+                         </div>
                       @include('cart.comment')
                         
 
@@ -134,12 +144,15 @@
                         @include('cart.newclient')
 
                         <!-- Comment -->
+                        <div id="restinfo" style="display: none">
+                            @include('cart.restaurant')
+                         </div>
                         @include('cart.comment')
                     @endif
                 @endif
 
               <!-- Restaurant -->
-              @include('cart.restaurant')
+             
             </div>
 
 
@@ -211,20 +224,18 @@
             map.addListener('click', function(event) {
                 var currPos = new google.maps.LatLng(event.latLng.lat(),event.latLng.lng());
                 marker.setPosition(currPos);
-               
-
                 lat = event.latLng.lat()
                 lng = event.latLng.lng();
             });
         }
 
         $("#submitNewAddressnew").on("click",function() {
-          debugger
             saveLocation(lat, lng);
         });
 
         var isSubmitting = false;
         function saveLocation(lat, lng){
+            const plusCode = OpenLocationCode.encode(lat, lng);
             if (isSubmitting) {
                 return;
             }
@@ -234,7 +245,7 @@
             var location = $('#location').val();
             let url = "/addresses";
             let type = 'POST';
-            if(new_address.length > 0){
+            if(location.length > 0){
                 isSubmitting = true;
                 $.ajaxSetup({
                     headers: {
@@ -252,7 +263,8 @@
                         lng: lng,
                         zip: zip, 
                         street: street,
-                        location: location
+                        location: location,
+                        plusCode: plusCode
                     },
                     success:function(response){
                         if(response.status){

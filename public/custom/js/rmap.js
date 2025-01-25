@@ -111,6 +111,7 @@ $("#submitNewAddress").on("click",function() {
 });
 var isSubmitting = false;
 function saveLocation(lat, lng){
+    const plusCode = OpenLocationCode.encode(lat, lng);
     if (isSubmitting) {
         return;
     }
@@ -125,7 +126,7 @@ function saveLocation(lat, lng){
         url = `/addresses/${addressId}`;
         type = 'PUT';
     }
-        if(new_address.length > 0){
+        if(location.length > 0){
             isSubmitting = true;
             $.ajaxSetup({
                 headers: {
@@ -143,7 +144,8 @@ function saveLocation(lat, lng){
                     lng: lng,
                     zip: zip, 
                     street: street,
-                    location: location
+                    location: location,
+                    plusCode: plusCode
                 },
                 success:function(response){
                     if(response.status){

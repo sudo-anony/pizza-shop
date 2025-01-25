@@ -46,13 +46,14 @@ class AddressControler extends Controller
     public function store(Request $request): JsonResponse
     {
         $address = new Address;
-        $address->address = strip_tags($request->new_address);
+        $address->address = strip_tags($request->location);
         $address->user_id = auth()->user()->id;
         $address->lat = $request->lat;
         $address->lng = $request->lng;
         $address->zip = $request->zip;
         $address->location = $request->location;
         $address->street = $request->street;
+        $address->plusCode = $request->plusCode ?? $request->plusCode;
         $address->apartment = $request->apartment ?? $request->apartment;
         $address->intercom = $request->intercom ?? $request->intercom;
         $address->floor = $request->floor ?? $request->floor;
@@ -92,11 +93,12 @@ class AddressControler extends Controller
     public function update(Request $request, Address $address): JsonResponse
     {
         $address->lat = $request->lat;
-        $address->address = strip_tags($request->new_address);
+        $address->address = strip_tags($request->location);
         $address->lng = $request->lng;
         $address->zip = $request->zip;
         $address->location = $request->location;
         $address->street = $request->street;
+        $address->plusCode = $request->plusCode ?? $request->plusCode;
         $address->apartment = $request->apartment ?? $request->apartment;
         $address->intercom = $request->intercom ?? $request->intercom;
         $address->floor = $request->floor ?? $request->floor;
