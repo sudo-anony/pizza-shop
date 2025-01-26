@@ -735,6 +735,12 @@ class FrontEndController extends Controller
         }
     }
 
+    public function langswitch ($locale){
+        App::setLocale(strtolower($locale));
+        session(['applocale_change' => strtolower($locale)]);
+        return redirect()->back();
+    }
+
     /**
      * Show stores.
      *

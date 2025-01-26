@@ -74,8 +74,8 @@
                                     </li>
 
 
-
                                     @foreach ($envConfigs as $groupConfig)
+                                    
                                         <li class="nav-item">
                                             <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#{{$groupConfig['slug']}}" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false"><i class="{{$groupConfig['icon']}}"></i> {{ __ ($groupConfig['name']) }}</a>
                                         </li>

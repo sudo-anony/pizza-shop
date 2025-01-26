@@ -51,7 +51,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [FrontEndController::class, 'index'])->name('front');
 Route::get('/'.config('settings.url_route').'/{alias}', [FrontEndController::class, 'restorant'])->name('vendor');
 Route::get('/city/{city}', [FrontEndController::class, 'showStores'])->name('show.stores');
-Route::get('/lang', [FrontEndController::class, 'langswitch'])->name('lang.switch');
+Route::get('/lang/{lang?}', [FrontEndController::class, 'langswitch'])->name('lang.switch');
 
 Route::post('/search/location', [FrontEndController::class, 'getCurrentLocation'])->name('search.location');
 

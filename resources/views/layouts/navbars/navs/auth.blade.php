@@ -46,7 +46,7 @@
               </a>
               <div class="dropdown-menu">
                 @foreach ($availableLanguages as $short => $lang)
-                <a href="{{ route('home',$short)}}" class="dropdown-item">
+                <a href="{{ route('lang.switch',$short)}}" class="dropdown-item">
                   <!--<img src="{{ asset('images') }}/icons/flags/{{ strtoupper($short)}}.png" /> -->
                   {{ __($lang) }}</a>
                 @endforeach

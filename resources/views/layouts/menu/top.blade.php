@@ -1,3 +1,4 @@
+
 <nav id="navbar-main" class="navbar navbar-light navbar-expand-lg fixed-top">
   <div class="container-fluid">
       <a class="navbar-brand mr-lg-5" href="/">
@@ -75,7 +76,7 @@
               </a>
               <div class="dropdown-menu">
                 @foreach ($availableLanguages as $short => $lang)
-                <a href="{{ route('home',$short)}}" class="dropdown-item">
+                <a href="{{ route('lang.switch',$short)}}" class="dropdown-item">
                   <!--<img src="{{ asset('images') }}/icons/flags/{{ strtoupper($short)}}.png" /> -->
                   {{ __($lang) }}</a>
                 @endforeach
