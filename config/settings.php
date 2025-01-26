@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'front_languages' => env('FRONT_LANGUAGES', 'EN,English,IT,Italian,FR,French,DE,German,ES,Spanish,RU,Russian,PT,Portuguese,TR,Turkish,ar,Arabic'),
+    'front_languages' => env('FRONT_LANGUAGES', 'EN,English,IT,Italian,FR,French,DE,German,ES,Spanish,RU,Russian,PT,Portuguese,tr,Turkish,ar,Arabic'),
     'onesignal_android_app_id' => env('ONESIGNAL_ANDROID_APP_ID', ''),
     'onesignal_ios_app_id' => env('ONESIGNAL_IOS_APP_ID', ''),
     'enable_birth_date_on_register' => env('ENABLE_BIRTH_DATE_ON_REGISTER', false),

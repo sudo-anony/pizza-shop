@@ -5,4 +5,5 @@ return [
     'delivery_area_name' => 'Liefergebiet Name',
     'client_phone' => 'Kunden Telefonnummer',
     'client_name' => 'Kundenname',
+     
 ];

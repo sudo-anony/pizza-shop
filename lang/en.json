@@ -224,7 +224,6 @@
     "Pay with card": "Pay with card",
     "Pay via iDeal": "Pay via iDeal",
     "Place order": "Place order",
-    "Pay Now": "PAY NOW",
     "Name on card": "Name on card",
     "Submit payment": "Submit payment",
     "Clients Management": "Clients Management",
@@ -674,16 +673,12 @@
     "notifications_acc_closed_msg": "Account has been successfully deleted. Please check your email!",
     "notifications_notification_callwaiter": "You have new customer on",
     "notifications_notification_neworder": "You have new order with ID",
-
     "notifications_new_coupon": "New coupon created in :vendor_name",
     "notifications_new_coupon_details": "Coupon code: :coupon_code",
     "notifications_new_coupon_info": "Coupon title: :coupon_title",
-
     "notifications_new_loyalty_account": "New account created in :vendor_name",
     "notifications_new_loyalty_details_account": "Loyalty card id: :card_id",
     "notifications_new_card_init_password": "Loyalty program initial password: :password",
-
-
     "settings_system_status": "System status",
     "settings_how_to_fix_this": "How to fix this",
     "settings_setup_progress": "Setup Progress",
@@ -783,8 +778,6 @@
     "closed": "Closed",
     "rejected_by_driver": "Reject",
     "accepted_by_driver": "Accept",
-    "accepted_by_pos": "Accepted by POS",
-    "rejected_by_pos": "Rejected by POS",
     "prepared_order": "Order prepared",
     "Updates": "Updates",
     "Updates Management": "Updates Management",
@@ -1908,12 +1901,13 @@
     "Allergen was deleted.": "Allergen was deleted.",
     "Allergens updated.": "Allergens updated.",
     "Contains": "Contains",
-    "i_agree_to" : "I agree to the",
-    "privacy_policy"  : "Privacy Policy",
-    "terms_of_service" : "Terms of Service",
-    "settings_stripe_not_ok":"You have enabled pricing plans and platform for subscriptions is Stripe. But you haven't entered real stripe key and stripe secret in Site Settings -> Finances. Eaither enter correct values, or change your subscription provider",
-    "Not in range":"Not in range",
-    "Online":"Online",
-    "Get Directions":"Get Directions",
-    "Waiter":"Waiter"
+    "i_agree_to": "I agree to the",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_service": "Terms of Service",
+    "settings_stripe_not_ok": "You have enabled pricing plans and platform for subscriptions is Stripe. But you haven't entered real stripe key and stripe secret in Site Settings -> Finances. Eaither enter correct values, or change your subscription provider",
+    "Not in range": "Not in range",
+    "Online": "Online",
+    "Get Directions": "Get Directions",
+    "Waiter": "Waiter",
+    "Enable variants": "Enable variants"
 }

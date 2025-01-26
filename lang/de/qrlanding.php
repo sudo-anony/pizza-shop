@@ -6,7 +6,7 @@ return [
     'below' => 'unten',
     'contactles_menu' => 'Kontaktloses QR-Menü',
     'cookies' => 'Cookies',
-    'dashboard' => 'Dashboard',
+    'dashboard' => 'Dashboardek',
     'demo' => 'Demo',
     'demo_button' => 'Erstellen Sie jetzt ein Menü für Sie!',
     'demo_subtitle' => 'Öffnen Sie einfach die Kamera auf Ihrem Telefon und scannen Sie den',
