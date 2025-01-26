@@ -28,14 +28,21 @@
             </a>
           @endif
           <!-- End owner and staf -->
-            
-            @if(isset($availableLanguages)&&count($availableLanguages)>1&&isset($locale))
+          @php
+             $availableLanguages = [
+                  'en' => 'English',
+                  'de' => 'German',
+                  'AR' => 'Arabic',
+                  'TR' => 'Turkish',
+                  'it' => 'Italian'
+              ];
+          @endphp
+
+
             <li class="nav-item dropdown">
               <a href="#" class="nav-link" data-toggle="dropdown" role="button">
                 <i class="ni ni-world-2"></i>
-                @foreach ($availableLanguages as $short => $lang)
-                  @if(strtolower($short) == strtolower($locale))<span class="nav-link-inner--text">{{ __($lang) }}</span>@endif
-                @endforeach
+               
               </a>
               <div class="dropdown-menu">
                 @foreach ($availableLanguages as $short => $lang)
@@ -45,7 +52,6 @@
                 @endforeach
               </div>
             </li>
-          @endif
 
            
 
