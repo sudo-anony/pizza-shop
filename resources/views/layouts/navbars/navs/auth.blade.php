@@ -32,17 +32,18 @@
              $availableLanguages = [
                   'en' => 'English',
                   'de' => 'German',
-                  'AR' => 'Arabic',
-                  'TR' => 'Turkish',
+                  'ar' => 'Arabic',
+                  'tr' => 'Turkish',
                   'it' => 'Italian'
               ];
+              $locale = session('applocale_change');
           @endphp
 
 
             <li class="nav-item dropdown">
               <a href="#" class="nav-link" data-toggle="dropdown" role="button">
                 <i class="ni ni-world-2"></i>
-               
+                {{ $availableLanguages[$locale] ?? 'Unknown' }}
               </a>
               <div class="dropdown-menu">
                 @foreach ($availableLanguages as $short => $lang)
