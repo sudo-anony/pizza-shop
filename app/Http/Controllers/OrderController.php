@@ -363,7 +363,11 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
-
+        if ($request->has('tip')) {
+            $tip = $request->input('tip');  
+            $numericTip = preg_replace('/\D/', '', $tip); 
+            $request->merge(['tip' => $numericTip]); 
+        }
         //Convert web request to mobile like request
         if (config('app.isdrive', false)) {
             //iDrive ride
@@ -438,15 +442,21 @@ class OrderController extends Controller
         $address = Address::find($latestOrder->address_id);
         
         $addressObj = $address ? [
-            "addressInfo" => $address->address,
+            "addressInfo" => $address->addressinfo,
             "location" => $address->location,
             "street" => $address->street,
-            "zip" => $address->zip
+            "zip" => $address->zip,
+            "name" => $address->name,
+            "email" => $address->email,
+            "phone" => $address->phone
         ] : [
             "addressInfo" => 'NA 1',
             "location" => 'NA 1',
             "street" => 'NA 1',
-            "zip" => '00000'
+            "zip" => '00000',
+            "name" => $user->name,
+            "email" => $user->email,
+            "phone" => $user->phone
         ];
        
         $itemsArray = [];
@@ -490,9 +500,9 @@ class OrderController extends Controller
             "deliverycost" => $this->format_price($latestOrder->delivery_price),
             "tip" => $this->format_price($latestOrder->tip), 
             "customer" => [
-                "name" => $user->name,
-                "phone" => $user->phone,
-                "email" => $user->email,
+                "name" => $addressObj['name'],
+                "phone" => $addressObj['phone'],
+                "email" => $addressObj['email'],
                 "street" => $addressObj['street'],
                 "zip" => strval($addressObj['zip']),
                 "location" => $addressObj['location'],
@@ -510,8 +520,7 @@ class OrderController extends Controller
             "customerinfo" =>$latestOrder->comment,
             "info" => $latestOrder->comment
         ];
-        $json_data = json_encode($order_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);  
-        
+        $json_data = json_encode($order_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE); 
         $ch = curl_init($this->api_url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
@@ -527,7 +536,10 @@ class OrderController extends Controller
             $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
             
         } else {
-            $status = Status::where('id', 15)->first();
+            $status = new Status;
+            $status->name = (string) $http_code;
+            $status->alias = (string) $http_code;
+            $status->save();
             $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
         }
         curl_close($ch);

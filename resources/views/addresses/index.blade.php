@@ -29,12 +29,11 @@
                             <thead class="thead-light">
                                 <tr>
                                     <!-- <th scope="col">{{ __('Address') }}</th> -->
-                                    <th scope="col">Location</th>
+                                    <th scope="col">Company</th>
+                                    <th scope="col">Name</th>
                                     <th scope="col">Street</th>
                                     <th scope="col">Zip Code</th>
-                                    <th scope="col">Plus Code</th>
-                                    <th scope="col">Longitude</th>
-                                    <th scope="col">Latitude</th>
+                                    <th scope="col">Google Plus Code</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
@@ -42,12 +41,11 @@
                                 @foreach ($addresses as $address)
                                     <tr>
                                         <!-- <td>{{$address->address}}</td> -->
-                                        <td>{{$address->location}}</td>
+                                        <td>{{$address->companyname}}</td>
+                                        <td>{{$address->name}}</td>
                                         <td>{{$address->street}}</td>
                                         <td>{{$address->zip}}</td>
                                         <td>{{$address->plusCode}}</td>
-                                        <td>{{$address->lng}}</td>
-                                        <td>{{$address->lat}}</td>
                                         <td class="text-right">
                                             <div class="dropdown">
                                                 <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

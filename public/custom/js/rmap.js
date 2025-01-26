@@ -111,7 +111,8 @@ $("#submitNewAddress").on("click",function() {
 });
 var isSubmitting = false;
 function saveLocation(lat, lng){
-    const plusCode = OpenLocationCode.encode(lat, lng);
+    lat = 0; lng = 0;
+    // const plusCode = OpenLocationCode.encode(lat, lng);
     if (isSubmitting) {
         return;
     }
@@ -120,58 +121,80 @@ function saveLocation(lat, lng){
     var street = $('#street').val();
     var location = $('#location').val();
     var addressId = $('#address_id').val();
+    var name = $('#name').val();
+    var email = $('#email').val();
+    var phone = $('#phone').val();
+    var companyname = $('#companyname').val();
+    var departmentname = $('#departmentname').val();
+    var plusCode = $('#plusCode').val();
+    
+    
     let url = "/addresses";
     let type = 'POST';
     if (addressId.length > 0){
         url = `/addresses/${addressId}`;
         type = 'PUT';
     }
-        if(location.length > 0){
-            isSubmitting = true;
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-    
-            $.ajax({
-                type: type,
-                url: url,
-                dataType: 'json',
-                data: {
-                    new_address: new_address,
-                    lat: lat,
-                    lng: lng,
-                    zip: zip, 
-                    street: street,
-                    location: location,
-                    plusCode: plusCode
-                },
-                success:function(response){
-                    if(response.status){
-                        window.location.href = "/addresses";
-                    }
-                }, error: function (response) {
-                }
-            })
+    isSubmitting = true;
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
-    
+    });
 
+    $.ajax({
+        type: type,
+        url: url,
+        dataType: 'json',
+        data: {
+            new_address: new_address,
+            lat: lat,
+            lng: lng,
+            zip: zip, 
+            street: street,
+            location: location,
+            plusCode: plusCode,
+            name: name ,
+            email: email,
+            companyname: companyname,
+            departmentname: departmentname,
+            phone: phone
+        },
+        success:function(response){
+            if(response.status){
+                window.location.href = "/addresses";
+            }
+        }, error: function (response) {
+        }
+    })
 }
 
 
 function openAddressModal(data = {}) {
     const modalTitle = document.getElementById("modal-title-notification");
     const addressId = document.getElementById("address_id");
-    const newAddressInput = document.getElementById("new_address");
+    // const newAddressInput = document.getElementById("new_address");
     const streetInput = document.getElementById("street");
     const zipInput = document.getElementById("zip");
     const locationInput = document.getElementById("location");
+    const phone = document.getElementById("phone");
+    const email = document.getElementById("email");
+    const departmentname = document.getElementById("departmentname");
+    const name = document.getElementById("name");
+    const companyname = document.getElementById("companyname");
+    const plusCode = document.getElementById("plusCode");
     modalTitle.textContent = "Edit Address";
     addressId.value = data.id;
-    newAddressInput.value = data.address || "";
+    // newAddressInput.value = data.address || "";
     streetInput.value = data.street || "";
     zipInput.value = data.zip || "";
+    locationInput.value = data.location || "";
+    phone.value = data.phone || "";
+    email.value = data.email || "";
+    departmentname.value = data.departmentname || "";
+    plusCode.value = data.plusCode || "";
+    name.value = data.name || "";
+    companyname.value = data.companyname || "";
     locationInput.value = data.location || "";
     const modalElement = document.getElementById('modal-new-address');
     const modal = new bootstrap.Modal(modalElement);

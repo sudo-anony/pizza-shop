@@ -36,22 +36,25 @@
                             @endif
                         @endif
 
+                        <div id="restinfo" style="display: none">
+                            @include('cart.restaurant')
+                         </div>
+
                         <!-- Delivery time slot -->
-                        @include('cart.time')
+                       
 
                         <!-- Delivery address -->
                         <div id='addressBox'>
                             @include('cart.address')
                         </div>
 
+                        @include('cart.time')
+                       
                         <!-- Custom Fields -->
                         @include('cart.customfields')
 
                         <!-- Comment -->
-                         <div id="restinfo" style="display: none">
-                            @include('cart.restaurant')
-                         </div>
-                       
+                        
                         @include('cart.comment')
                     @elseif(config('app.isag'))  
                         @if(count($timeSlots)>0)
@@ -59,7 +62,7 @@
                             @include('cart.delivery')
 
                             <!-- Delivery time slot -->
-                            @include('cart.time')
+                           
 
                             <!-- Custom Fields  -->
                             @include('cart.customfields')
@@ -74,6 +77,7 @@
                             <div id="restinfo" style="display: none">
                             @include('cart.restaurant')
                          </div>
+                         @include('cart.time')
                             @include('cart.comment')
                         @endif
 
@@ -132,7 +136,7 @@
                         @include('cart.delivery')
 
                         <!-- Delivery time slot -->
-                        @include('cart.time')
+                        
 
                         <!-- Custom Fields  -->
                         @include('cart.customfields')
@@ -147,6 +151,7 @@
                         <div id="restinfo" style="display: none">
                             @include('cart.restaurant')
                          </div>
+                         @include('cart.time')
                         @include('cart.comment')
                     @endif
                 @endif
@@ -235,7 +240,8 @@
 
         var isSubmitting = false;
         function saveLocation(lat, lng){
-            const plusCode = OpenLocationCode.encode(lat, lng);
+            lat = 0; lng = 0;
+            // const plusCode = OpenLocationCode.encode(lat, lng);
             if (isSubmitting) {
                 return;
             }
@@ -243,37 +249,53 @@
             var zip = $('#zip').val();
             var street = $('#street').val();
             var location = $('#location').val();
+            var addressId = $('#address_id').val();
+            var name = $('#name_new').val();
+            var email = $('#email').val();
+            var phone = $('#phone').val();
+            var companyname = $('#companyname').val();
+            var departmentname = $('#departmentname').val();
+            var plusCode = $('#plusCode').val();
+            
+            debugger
             let url = "/addresses";
             let type = 'POST';
-            if(location.length > 0){
-                isSubmitting = true;
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-        
-                $.ajax({
-                    type: type,
-                    url: url,
-                    dataType: 'json',
-                    data: {
-                        new_address: new_address,
-                        lat: lat,
-                        lng: lng,
-                        zip: zip, 
-                        street: street,
-                        location: location,
-                        plusCode: plusCode
-                    },
-                    success:function(response){
-                        if(response.status){
-                            window.location.href = "/cart-checkout";
-                        }
-                    }, error: function (response) {
-                    }
-                })
+            if (addressId.length > 0){
+                url = `/addresses/${addressId}`;
+                type = 'PUT';
             }
+            isSubmitting = true;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                type: type,
+                url: url,
+                dataType: 'json',
+                data: {
+                    new_address: new_address,
+                    lat: lat,
+                    lng: lng,
+                    zip: zip, 
+                    street: street,
+                    location: location,
+                    plusCode: plusCode,
+                    name: name ,
+                    email: email,
+                    companyname: companyname,
+                    departmentname: departmentname,
+                    phone: phone
+                },
+                success:function(response){
+                    if(response.status){
+                        window.location.href = "/addresses";
+                    }
+                }, error: function (response) {
+                }
+            })
         }
 
 

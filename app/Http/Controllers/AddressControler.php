@@ -45,13 +45,23 @@ class AddressControler extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        
+        $plusCode = $request->plusCode; // e.g., "8J3PG79R+VJ"
+        $baseUrl = "https://plus.codes/";
+        $addressUrl = $baseUrl . urlencode($plusCode);
         $address = new Address;
         $address->address = strip_tags($request->location);
         $address->user_id = auth()->user()->id;
+        $address->addressinfo = $addressUrl;
         $address->lat = $request->lat;
         $address->lng = $request->lng;
         $address->zip = $request->zip;
         $address->location = $request->location;
+        $address->phone = $request->phone;
+        $address->name = $request->name;
+        $address->email = $request->email;
+        $address->companyname = $request->companyname;
+        $address->departmentname = $request->departmentname;
         $address->street = $request->street;
         $address->plusCode = $request->plusCode ?? $request->plusCode;
         $address->apartment = $request->apartment ?? $request->apartment;
@@ -92,12 +102,21 @@ class AddressControler extends Controller
      */
     public function update(Request $request, Address $address): JsonResponse
     {
+        $plusCode = $request->plusCode; // e.g., "8J3PG79R+VJ"
+        $baseUrl = "https://plus.codes/";
+        $addressUrl = $baseUrl . urlencode($plusCode);
         $address->lat = $request->lat;
         $address->address = strip_tags($request->location);
         $address->lng = $request->lng;
         $address->zip = $request->zip;
         $address->location = $request->location;
+        $address->phone = $request->phone;
+        $address->name = $request->name;
+        $address->email = $request->email;
+        $address->companyname = $request->companyname;
+        $address->departmentname = $request->departmentname;
         $address->street = $request->street;
+        $address->addressinfo = $addressUrl;
         $address->plusCode = $request->plusCode ?? $request->plusCode;
         $address->apartment = $request->apartment ?? $request->apartment;
         $address->intercom = $request->intercom ?? $request->intercom;
