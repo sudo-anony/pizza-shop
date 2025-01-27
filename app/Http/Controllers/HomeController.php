@@ -115,8 +115,8 @@ class HomeController extends Controller
 
         }
         if ($locale != 'android-chrome-256x256.png') {
-            App::setLocale(strtolower($locale));
-            session(['applocale_change' => strtolower($locale)]);
+            // App::setLocale(strtolower($locale));
+            // session(['applocale_change' => strtolower($locale)]);
         }
 
         if (auth()->user()->hasRole('owner') || auth()->user()->hasRole('staff')) {
@@ -291,7 +291,7 @@ class HomeController extends Controller
 
         $dataToDisplay = [
             'availableLanguages' => $availableLanguages,
-            'locale' => $locale,
+            // 'locale' => $locale,
             'expenses' => $expenses,
             'doWeHaveExpensesApp' => $doWeHaveExpensesApp,
             'last30daysOrders' => $last30daysOrders,

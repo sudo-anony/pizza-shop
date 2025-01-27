@@ -53,9 +53,7 @@
             </a>
           </li>
           @endif
-          @yield('addiitional_button_1')
-          @yield('addiitional_button_2')
-          @yield('addiitional_button_3')
+        
           <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
           @php
               $availableLanguages = [
@@ -70,7 +68,7 @@
 
 
             <li class="nav-item dropdown">
-              <a href="#" class="nav-link" data-toggle="dropdown" role="button">
+              <a href="#" class="btn btn-neutral btn-icon web-menu" data-toggle="dropdown" role="button">
                 <i class="ni ni-world-2"></i>
                 {{ $availableLanguages[$locale] ?? 'Unknown' }}
               </a>
