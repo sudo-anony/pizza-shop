@@ -15,7 +15,7 @@
                                 <h3 class="mb-0">{{ __('My Addresses') }}</h3>
                             </div>
                             <div class="col-2 text-end">
-                                <button data-toggle="modal" data-target="#modal-new-address"  class=" btn btn-success mt-4 btn-sm w-100" >New Address</button>
+                                <button data-toggle="modal" onclick="openAddressModal()" data-target="#modal-new-address"  class=" btn btn-success mt-4 btn-sm w-100" >New Address</button>
                             </div>
                         </div>
                     </div>
@@ -29,12 +29,16 @@
                             <thead class="thead-light">
                                 <tr>
                                     <!-- <th scope="col">{{ __('Address') }}</th> -->
-                                    <th scope="col">Company</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Street</th>
-                                    <th scope="col">Zip Code</th>
-                                    <th scope="col">Google Plus Code</th>
+                                    <th scope="col">{{ __('Company') }}</th>
+                                    <th scope="col">{{ __('Department') }}</th>
+                                    <th scope="col">{{ __('Name') }}</th>
+                                    <th scope="col">{{ __('Email') }}</th>
+                                    <th scope="col">{{ __('Street') }}</th>
+                                    <th scope="col">{{ __('Zip Code') }}</th>
+                                    <th scope="col">{{ __('Google Plus Code') }}</th>
+                                    <th scope="col">{{ __('Phone') }}</th>
                                     <th scope="col"></th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,10 +46,13 @@
                                     <tr>
                                         <!-- <td>{{$address->address}}</td> -->
                                         <td>{{$address->companyname}}</td>
+                                        <td>{{$address->departmentname}}</td>
                                         <td>{{$address->name}}</td>
+                                        <td>{{$address->email}}</td>
                                         <td>{{$address->street}}</td>
                                         <td>{{$address->zip}}</td>
                                         <td>{{$address->plusCode}}</td>
+                                        <td>{{$address->mobileFormat}} {{$address->phone}}</td>
                                         <td class="text-right">
                                             <div class="dropdown">
                                                 <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -60,7 +67,7 @@
                                                         </button>
                                                     </form>
                                                     <button class="dropdown-item" style="cursor:pointer" onclick="openAddressModal({{ json_encode($address) }})">
-                                                        Edit
+                                                        {{ __('Edit') }}
                                                     </button>
                                                 </div>
                                             

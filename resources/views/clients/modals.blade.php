@@ -1,5 +1,5 @@
 <style>
-    #modal-new-address input#phone{
+    #modal-order-new-address-new input#phone{
         padding-left: 90px !important;
     }
 </style>
@@ -107,7 +107,6 @@
         </div>
     </div>
 </div>
-
 
 
 

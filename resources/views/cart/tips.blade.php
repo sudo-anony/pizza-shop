@@ -16,6 +16,8 @@
   new Cleave('#tip', {
     numeral: true,
     numeralThousandsGroupStyle: 'thousand',
-    prefix: '€'
+    prefix: '€',
+    delimiter: '.',
+    numeralDecimalMark: ',' 
   });
 </script>

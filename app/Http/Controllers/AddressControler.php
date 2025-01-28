@@ -23,7 +23,6 @@ class AddressControler extends Controller
     {
         if (auth()->user()->hasRole('client')) {
             $addresses = Address::where(['user_id' => auth()->user()->id])->where(['active' => 1])->get();
-
             return view('addresses.index', ['addresses' => $addresses]);
         } else {
             return redirect()->route('orders.index')->withStatus(__('No Access'));
@@ -44,12 +43,12 @@ class AddressControler extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request): JsonResponse
-    {
-        
+    {        
         $plusCode = $request->plusCode; // e.g., "8J3PG79R+VJ"
         $baseUrl = "https://plus.codes/";
         $addressUrl = $baseUrl . urlencode($plusCode);
         $address = new Address;
+        $address->mobileFormat = $request->get('mobileFormat');
         $address->address = strip_tags($request->location);
         $address->user_id = auth()->user()->id;
         $address->addressinfo = $addressUrl;
@@ -102,8 +101,9 @@ class AddressControler extends Controller
      */
     public function update(Request $request, Address $address): JsonResponse
     {
-        $plusCode = $request->plusCode; // e.g., "8J3PG79R+VJ"
+        $plusCode = $request->plusCode;
         $baseUrl = "https://plus.codes/";
+        $address->mobileFormat = $request->get('mobileFormat');
         $addressUrl = $baseUrl . urlencode($plusCode);
         $address->lat = $request->lat;
         $address->address = strip_tags($request->location);

@@ -123,6 +123,14 @@ class Controller extends BaseController
                     $new_obj = (object) [];
                     $new_obj->id = $address->id;
                     $new_obj->address = $address->address;
+                    $new_obj->name = $address->name;
+                    $new_obj->email = $address->email;
+                    $new_obj->zip = $address->zip;
+                    $new_obj->street = $address->street;
+                    $new_obj->companyname = $address->companyname;
+                    $new_obj->departmentname = $address->departmentname;
+                    $new_obj->phone = $address->phone;
+                    $new_obj->mobileFormat = $address->mobileFormat;
 
                     if (! empty($polygon)) {
                         if (isset($polygon[0]) && $this->withinArea($point, $polygon, $numItems)) {

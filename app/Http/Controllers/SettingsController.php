@@ -414,7 +414,6 @@ class SettingsController extends Controller
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
         Cache::flush();
-
         $settings = Settings::find($id);
         $settings->site_name = strip_tags($request->site_name);
         $settings->description = strip_tags($request->site_description);
@@ -423,16 +422,15 @@ class SettingsController extends Controller
         $settings->facebook = strip_tags($request->facebook) ? strip_tags($request->facebook) : '';
         $settings->instagram = strip_tags($request->instagram) ? strip_tags($request->instagram) : '';
         $settings->playstore = strip_tags($request->playstore) ? strip_tags($request->playstore) : '';
+        $settings->pos = isset($request->pos) && $request->pos !== '' ? strip_tags($request->pos) : '';
+        $settings->expertOrder = isset($request->expertOrder) && $request->expertOrder !== '' ? strip_tags($request->expertOrder) : '';
         $settings->appstore = strip_tags($request->appstore) ? strip_tags($request->appstore) : '';
         $settings->typeform = strip_tags($request->typeform) ? strip_tags($request->typeform) : '';
         $settings->mobile_info_title = strip_tags($request->mobile_info_title) ? strip_tags($request->mobile_info_title) : '';
         $settings->mobile_info_subtitle = strip_tags($request->mobile_info_subtitle) ? strip_tags($request->mobile_info_subtitle) : '';
-        $settings->pos = strip_tags($request->pos) ? strip_tags($request->pos) : '';
-        $settings->exportOrder = strip_tags($request->exportOrder) ? strip_tags($request->exportOrder) : '';
         $settings->delivery = (float) $request->delivery;
         $settings->order_fields = $request->order_fields;
         $settings->update();
-
         fwrite(fopen(__DIR__.'/../../../public/byadmin/front.js', 'w'), str_replace('tagscript', 'script', $request->jsfront));
         fwrite(fopen(__DIR__.'/../../../public/byadmin/back.js', 'w'), str_replace('tagscript', 'script', $request->jsback));
         fwrite(fopen(__DIR__.'/../../../public/byadmin/front.css', 'w'), str_replace('tagscript', 'script', $request->cssfront));

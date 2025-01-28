@@ -190,8 +190,9 @@
                                     </div>
 
                                     <div class="tab-pane fade" id="api" role="tabpanel" aria-labelledby="api">
-                                        @include('partials.input',['id'=>'export_order','name'=>'EXPERT ORDER','placeholder'=>'Enter API url  ...','value'=>$settings->pos, 'required'=>false])
-                                        @include('partials.input',['id'=>'3pos','name'=>'3 POS','placeholder'=>'Enter API url  ...','value'=>$settings->exportOrder, 'required'=>false])
+                                    
+                                        @include('partials.input',['id'=>'expertOrder','name'=>'EXPERT ORDER','placeholder'=>'Enter API url  ...','value'=>$settings->expertOrder, 'required'=>false])
+                                        @include('partials.input',['id'=>'pos','name'=>'3 POS','placeholder'=>'Enter API url  ...','value'=>$settings->pos, 'required'=>false])
                                     </div>
 
                                     @foreach ($envConfigs as $groupConfig)

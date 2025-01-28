@@ -239,6 +239,7 @@
         });
 
         var isSubmitting = false;
+      
         function saveLocation(lat, lng){
             lat = 0; lng = 0;
             // const plusCode = OpenLocationCode.encode(lat, lng);
@@ -250,14 +251,15 @@
             var street = $('#street').val();
             var location = $('#location').val();
             var addressId = $('#address_id').val();
-            var name = $('#name_new').val();
+            var name = $('#name').val();
             var email = $('#email').val();
             var phone = $('#phone').val();
             var companyname = $('#companyname').val();
             var departmentname = $('#departmentname').val();
             var plusCode = $('#plusCode').val();
+            const dialCodeElement = document.querySelector('.iti__selected-dial-code');
+            const dialCode = dialCodeElement.textContent.trim();
             
-            debugger
             let url = "/addresses";
             let type = 'POST';
             if (addressId.length > 0){
@@ -287,7 +289,8 @@
                     email: email,
                     companyname: companyname,
                     departmentname: departmentname,
-                    phone: phone
+                    phone: phone,
+                    mobileFormat: dialCode
                 },
                 success:function(response){
                     if(response.status){

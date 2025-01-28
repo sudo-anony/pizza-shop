@@ -10,6 +10,7 @@
             </span>
         @endif
     </div>
+    <input type="hidden" value="{{ __( 'Pay Now' ) }}" id="ali">
 
     <div class="form">
         <div style="width: 100%;" id="card-element" class="form-control">
@@ -24,27 +25,14 @@
     <div class="text-center" id="totalSubmitStripe">
         <i id="indicatorStripe" style="display: none" class="fa fa-spinner fa-spin"></i>
         <button type="submit" id="stripeSend" class="btn btn-success mt-4 paymentbutton">
-            {{ __('Pay Now') }} - <span id="totalPriceText"></span>
         </button>
     </div>
 
 </form>
-@endif
 
+
+@endif
 <!-- Make sure jQuery is included before this -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
-  $(document).ready(function() {
-    // Make sure this ID exists in the HTML and get the value from it
-    let totalPrice = $("#tootalPricewithDeliveryRaw").val();
-    
-    // Check if the value exists and update the text in the button
-    if (totalPrice) {
-        $("#totalPriceText").text(totalPrice);
-    } else {
-        // Handle the case where the value is empty or doesn't exist
-        console.log("No value found for totalPrice");
-    }
-  });
-</script>
+

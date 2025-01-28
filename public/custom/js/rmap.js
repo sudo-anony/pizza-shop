@@ -127,7 +127,8 @@ function saveLocation(lat, lng){
     var companyname = $('#companyname').val();
     var departmentname = $('#departmentname').val();
     var plusCode = $('#plusCode').val();
-    
+    const dialCodeElement = document.querySelector('.iti__selected-dial-code');
+    const dialCode = dialCodeElement.textContent.trim();
     
     let url = "/addresses";
     let type = 'POST';
@@ -158,7 +159,8 @@ function saveLocation(lat, lng){
             email: email,
             companyname: companyname,
             departmentname: departmentname,
-            phone: phone
+            phone: phone,
+            mobileFormat: dialCode
         },
         success:function(response){
             if(response.status){
@@ -183,9 +185,10 @@ function openAddressModal(data = {}) {
     const name = document.getElementById("name");
     const companyname = document.getElementById("companyname");
     const plusCode = document.getElementById("plusCode");
+    const el = { mobileFormat: data.mobileFormat || "" };
+    selectCountryByMobileFormat(el);
     modalTitle.textContent = "Edit Address";
     addressId.value = data.id;
-    // newAddressInput.value = data.address || "";
     streetInput.value = data.street || "";
     zipInput.value = data.zip || "";
     locationInput.value = data.location || "";
@@ -200,6 +203,38 @@ function openAddressModal(data = {}) {
     const modal = new bootstrap.Modal(modalElement);
     modal.show();
 }
+
+
+
+function selectCountryByMobileFormat(data) {
+    if (data){
+        const dialCode = data.mobileFormat.replace('+', '');
+
+        const observer = new MutationObserver(() => {
+            const countryElement = document.querySelector(`li[data-dial-code="${dialCode}"]`);
+            if (countryElement) {
+                countryElement.setAttribute('tabindex', '0');
+                countryElement.focus();
+                countryElement.classList.add('iti__active', 'iti__highlight');
+    
+                const dropdown = document.querySelector('.iti__selected-dial-code');
+                if (dropdown) {
+                    dropdown.textContent = `+${dialCode}`;
+                }
+    
+                console.log(`Selected country: ${countryElement.innerText}`);
+                observer.disconnect();
+            }
+            const flagElement = document.querySelector('.iti__flag');
+            if (flagElement) {
+                const countryCode = countryElement.getAttribute('data-country-code');
+                flagElement.className = `iti__flag iti__${countryCode}`;
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+}
+
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.setPosition(pos);

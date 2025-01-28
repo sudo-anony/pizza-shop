@@ -70,7 +70,7 @@
             <li class="nav-item dropdown">
               <a href="#" class="btn btn-neutral btn-icon web-menu" data-toggle="dropdown" role="button">
                 <i class="ni ni-world-2"></i>
-                {{ $availableLanguages[$locale] ?? 'Unknown' }}
+                {{ $availableLanguages[$locale] ?? 'German' }}
               </a>
               <div class="dropdown-menu">
                 @foreach ($availableLanguages as $short => $lang)

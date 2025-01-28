@@ -5,6 +5,6 @@
             type="button"
             class="btn btn-success mt-4 paymentbutton"
             onclick="document.getElementById('order-form').submit();"
-        >{{ __('Place order') }}</button>
+        ></button>
     </div>
 @endif

@@ -16,6 +16,7 @@ use App\Order;
 use App\Address;
 use App\Repositories\Orders\OrderRepoGenerator;
 use App\Restorant;
+use App\Settings;
 use App\Services\ConfChanger;
 use App\Status;
 use App\User;
@@ -428,14 +429,15 @@ class OrderController extends Controller
         }
         $user = auth()->user();
         $latestOrder = $user->orders()->latest()->first();
-        $broker = $latestOrder->restorant;
-        if (!empty($broker->api_key)) {
-            $this->submitOrder($user , $latestOrder , $broker);
+        $broker = $latestOrder->restorant; 
+        $setting = Settings::where('id',1)->first();
+        if (!empty($broker->api_key) && !empty($setting->expertOrder)) {
+            $this->submitOrder($user , $latestOrder , $broker,$setting->expertOrder);
         }        
         return $orderRepo->redirectOrInform();
     }
 
-    public function submitOrder($user , $latestOrder , $broker) {
+    public function submitOrder($user , $latestOrder , $broker, $url) {
         $orderTime = $latestOrder->created_at->format("Y-m-d\TH:i:s\Z");
         $deliveryTime = $latestOrder->created_at->addHour()->format("Y-m-d\TH:i:s\Z");
         $orderItems = Orderitems::where('order_id', $latestOrder->id)->get();
@@ -458,6 +460,8 @@ class OrderController extends Controller
             "email" => $user->email,
             "phone" => $user->phone
         ];
+        $total_prepaid_amount = $this->format_price($latestOrder->order_price) + ($this->format_price($latestOrder->tip) ?: 0);
+
        
         $itemsArray = [];
         foreach ($orderItems as $item) {
@@ -495,7 +499,7 @@ class OrderController extends Controller
             "id" => $unique_id,
             "ordertime" => $orderTime,
             "deliverytime" => $deliveryTime,
-            "orderprice" => $this->format_price($latestOrder->order_price), 
+            "orderprice" => $total_prepaid_amount, 
             "orderdiscount" => $this->format_price($latestOrder->discount),
             "deliverycost" => $this->format_price($latestOrder->delivery_price),
             "tip" => $this->format_price($latestOrder->tip), 
@@ -512,7 +516,7 @@ class OrderController extends Controller
                 "type" => $latestOrder->delivery_method == 2 ? 3 : $latestOrder->delivery_method,
                 "provider" => $latestOrder->payment_method,
                 "transactionid" => "TX" . time(),
-                "prepaid" => $this->format_price($latestOrder->order_price)
+                "prepaid" => $total_prepaid_amount
             ],
             "items" => $itemsArray,
             "bonuscard" => "BONUS123",
@@ -521,7 +525,8 @@ class OrderController extends Controller
             "info" => $latestOrder->comment
         ];
         $json_data = json_encode($order_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE); 
-        $ch = curl_init($this->api_url);
+       
+        $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -530,7 +535,9 @@ class OrderController extends Controller
             'API_KEY: ' . $this->api_key
         ]);
         $response = curl_exec($ch);
+        
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        dd($response,$http_code ,$json_data);
         if ($http_code == 200) {
             $status = Status::where('id', 14)->first();
             $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 

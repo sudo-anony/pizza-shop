@@ -148,3 +148,26 @@
   @endif
 
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+
+$(document).ready(function() {
+    updatePrice();
+    setInterval(updatePrice, 1000);
+});
+
+function updatePrice() {
+    let total = cartTotal.withDeliveryFormat; 
+    let totalPrice = total;
+    var payNowText =  $("#ali").val();
+    if (totalPrice) {
+        var element = $(".paymentbutton");
+        element.text(`${payNowText} ${totalPrice}`);
+    } else {
+        console.log("No value found for totalPrice");
+    }
+}
+
+</script>
+

@@ -20,7 +20,7 @@
                                 <!-- <input class="form-control my-3" name="new_address" id="new_address" placeholder="{{ __( 'New address here' ) }} ..." type="text" required> -->
                                 <input class="form-control my-3" name="name" id="name" placeholder="{{ __( 'Enter name here' ) }} ..." type="text" required>
                                 <input class="form-control my-3" name="email" id="email" placeholder="{{ __( 'Enter email here' ) }} ..." type="email" required>
-                                <input class="form-control my-3" name="phone" id="phone" placeholder="{{ __( 'Enter phone here' ) }} ..." type="number" required>
+                                <input class="form-control my-3" name="phone" id="phone" placeholder="{{ __( 'Enter phone here' ) }} ..." type="phone" required>
                                 <input class="form-control my-3" name="companyname" id="companyname" placeholder="{{ __( 'Enter company name here' ) }} ..." type="text" required>
                                 <input class="form-control my-3" name="departmentname" id="departmentname" placeholder="{{ __( 'Enter department name here' ) }} ..." type="text" required>
                                 <input class="form-control my-3" name="street" id="street" placeholder="{{ __( 'Enter street here' ) }} ..." type="text" required>

@@ -1,3 +1,14 @@
+<style>
+.select2-container {
+    box-sizing: border-box;
+    display: inline-block;
+    margin: 0;
+    position: relative;
+    vertical-align: middle;
+    width: 100% !important;
+}
+
+</style>
 <div class="card card-profile shadow">
     <div class="px-4">
       <div class="mt-5">
@@ -8,13 +19,14 @@
         <input type="hidden" value="{{$restorant->id}}" id="restaurant_id"/>
         <div class="form-group{{ $errors->has('addressID') ? ' has-danger' : '' }}">
             @if(count($addresses))
+            
                 <select name="addressID" id="addressID" class="form-control{{ $errors->has('addressID') ? ' is-invalid' : '' }}  noselecttwo" required>
                     <option disabled selected value> {{__('-- select an option -- ')}}</option>
                     @foreach ($addresses as $key => $address)
                         @if(config('settings.enable_cost_per_distance'))
                             <option data-cost={{ $address->cost_per_km}} id="{{ 'address'.$address->id }}"  <?php if(!$address->inRadius){echo "disabled";} ?> value={{ $address->id }}>{{$address->address." - ".money( $address->cost_per_km, config('settings.cashier_currency'),config('settings.do_convertion')) }} @if (!$address->inRadius)- {{ __('Not in range') }}@endif</option>
                         @else
-                    <option data-cost={{ config('global.delivery')}} id="{{ 'address'.$address->id }}"  <?php if(!$address->inRadius){echo "disabled";} ?> value={{ $address->id }}>{{$address->address}} @if (!$address->inRadius)- {{ __('Not in range') }}@endif</option>
+                    <option data-cost={{ config('global.delivery')}} id="{{ 'address'.$address->id }}"  <?php if(!$address->inRadius){echo "disabled";} ?> value={{ $address->id }}>{{$address->name . " - " . $address->email . " - " . $address->companyname . " - " . $address->departmentname . " - " . $address->address . " - " . $address->zip . " - " . $address->mobileFormat . " - " . $address->phone}} @if (!$address->inRadius)- {{ __('Not in range') }}@endif</option>
                         @endif
                     @endforeach
                 </select>
