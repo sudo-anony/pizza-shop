@@ -537,7 +537,6 @@ class OrderController extends Controller
         $response = curl_exec($ch);
         
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        dd($response,$http_code ,$json_data);
         if ($http_code == 200) {
             $status = Status::where('id', 14)->first();
             $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
