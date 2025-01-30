@@ -7,10 +7,29 @@ window.onload = function () {
     initCOD();
     disableFunctions();
 
-    if(ENABLE_STRIPE){
-        initStripePayment();
+    console.log("ENABLE_STRIPE:", ENABLE_STRIPE);
+
+    if (ENABLE_STRIPE) {
+        
+        setTimeout(() => {
+            const stripeButton = document.getElementById("stripeSend");
+            console.log("Stripe button found:", stripeButton);
+
+            if (stripeButton) {
+                stripeButton.addEventListener("click", function () {
+         
+                    if(validateOrderFormSubmit()){
+                        console.log("Stripe button clicked");
+                        initStripePayment();
+                    }                   
+                });
+            } else {
+                console.error("Stripe button NOT found at runtime!");
+            }
+        }, 1000);
     }
-}
+};
+
 var disableFunctions=function(){
     if(SYSTEM_IS_WP=="1"){
        
@@ -149,131 +168,34 @@ var initCOD=function(){
  * Payment Functions
  *
  */
-var initStripePayment=function(){
+var initStripePayment = async function () {
+    $("#stripe-payment-form").submit();
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    
-
-    //On select payment method
-    $('input:radio[name="paymentType"]').change(
-
-        function(){
-            //HIDE ALL
-            $('#totalSubmitCOD').hide()
-            $('#totalSubmitStripe').hide()
-            $('#stripe-payment-form').hide()
-
-            if($(this).val()=="cod"){
-                //SHOW COD
-                $('#totalSubmitCOD').show();
-            }else if($(this).val()=="stripe"){
-                //SHOW STRIPE
-                $('#totalSubmitStripe').show();
-                $('#stripe-payment-form').show()
-            }
-        }
-    );
-
-     // Create a Stripe client.
-     var stripe = Stripe(STRIPE_KEY);
-
-     // Create an instance of Elements.
-     var elements = stripe.elements();
-
-    // Custom styling can be passed to options when creating an Element.
-    // (Note that this demo uses a wider set of styles than the guide below.)
-    var style = {
-        base: {
-            color: '#32325d',
-            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-            fontSmoothing: 'antialiased',
-            fontSize: '16px',
-            '::placeholder': {
-            color: '#aab7c4'
-            }
+    // Fetch the Checkout session URL
+    const response = await fetch('/create-checkout-session', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
         },
-        invalid: {
-            color: '#fa755a',
-            iconColor: '#fa755a'
-        }
-    };
-
-    var options = {
-        // Custom styling can be passed to options when creating an Element.
-        style: {
-            base: {
-            // Add your base input styles here. For example:
-            fontSize: '16px',
-            color: '#32325d',
-            padding: '2px 2px 4px 2px',
-            },
-        }
+    });
+    
+    const { url, error } = await response.json();
+    debugger
+    if (error) {
+        alert('Failed to create a Checkout session: ' + error);
+        return;
     }
 
-    // Create an instance of the card Element.
-    var card = elements.create('card', {style: style});
-
-    // Add an instance of the card Element into the `card-element` <div>.
-    card.mount('#card-element');
-
-    // Handle real-time validation errors from the card Element.
-    card.addEventListener('change', function(event) {
-        var displayError = document.getElementById('card-errors');
-        if (event.error) {
-            displayError.textContent = event.error.message;
-        } else {
-            displayError.textContent = '';
-        }
-    });
-
-    const cardHolderName = document.getElementById('name');
-
-    // Handle form submission  - for card.
-    var form = document.getElementById('stripe-payment-form');
-    form.addEventListener('submit', async function(event) {
-        event.preventDefault();
-
-        //IF delivery - we need to have selected address
-        if(validateOrderFormSubmit()){
-            const { paymentMethod, error } = await stripe.createPaymentMethod(
-                'card', card, {
-                    billing_details: { name: cardHolderName.value }
-                }
-            );
-
-            if (error) {
-                // Display "error.message" to the user...
-                alert(error.message);
-            } else {
-                stripePaymentMethodHandler(paymentMethod.id);
-            }
-        }
-
-
-
-    });
-
-    // Submit the form with the payment ID.
-    function stripePaymentMethodHandler(payment_id) {
-        // Insert the token ID into the form so it gets submitted to the server
-        var form = document.getElementById('order-form');
-        var hiddenInput = document.createElement('input');
-        hiddenInput.setAttribute('type', 'hidden');
-        hiddenInput.setAttribute('name', 'stripePaymentId');
-        hiddenInput.setAttribute('value', payment_id);
-        form.appendChild(hiddenInput);
-
-        // Submit the form
-        form.submit();
-
-        //Disable the field
-        $('#stripeSend').hide();
-        $('#indicatorStripe').show();
-        setTimeout(function(){ 
-          $('#stripeSend').show(); 
-          $('#indicatorStripe').hide();
-        }, 10000);
+    // Redirect to the Stripe Checkout page
+    if (url) {
+        window.location.href = url;
     }
-}
+};
+
+
+
 
 /**
  *

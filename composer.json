@@ -48,6 +48,7 @@
         "spatie/laravel-translatable": "^6.3",
         "spatie/laravel-welcome-notification": "^2.3",
         "spatie/opening-hours": "^2.13",
+        "stripe/stripe-php": "^10.21",
         "twilio/sdk": "^6.11",
         "unicodeveloper/laravel-paystack": "^1.1",
         "willvincent/laravel-rateable": "^3.1"

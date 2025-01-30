@@ -190,6 +190,9 @@ Route::middleware('auth', 'impersonate')->group(function () {
 
     Route::resource('orders', OrderController::class);
     Route::post('/rating/{order}', [OrderController::class, 'rateOrder'])->name('rate.order');
+    
+    Route::post('/create-payment-intent', [OrderController::class, 'paymentIntentAction'])->name('paymentIntent');
+    Route::post('/create-checkout-session', [OrderController::class, 'checkout'])->name('checkout');
     Route::get('/check/rating/{order}', [OrderController::class, 'checkOrderRating'])->name('check.rating');
 
     Route::get('ordertracingapi/{order}', [OrderController::class, 'orderLocationAPI']);
