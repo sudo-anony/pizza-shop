@@ -46,15 +46,28 @@ trait HasStripe
             //User to apply the charge to
             $user = auth()->user() ? auth()->user() : $this->vendor->user;
 
-            if ($this->order->isMobileOrder) {
-                //Mobile Order
-                $srtipe_payment_id = $this->mobileCharge($total_price, $chargeOptions, $user);
-            } else {
-                //Web order
-                $srtipe_payment_id = $this->webCharge($total_price, $chargeOptions, $user);
-            }
-
-            $this->order->srtipe_payment_id = $srtipe_payment_id;
+            // if ($this->order->isMobileOrder) {
+            //     //Mobile Order
+            //     $srtipe_payment_id = $this->mobileCharge($total_price, $chargeOptions, $user);
+            // } else {
+            //     //Web order
+            //     $srtipe_payment_id = $this->webCharge($total_price, $chargeOptions, $user);
+            // }
+            // Stripe::setApiKey(config('settings.stripe_secret'));
+            // $session = \Stripe\Checkout\Session::retrieve($this->request->stripe_token);
+            // dd($session);
+            // if (!empty($session->payment_intent)) {
+            //     // Retrieve the PaymentIntent from the session
+            //     $paymentIntent = \Stripe\PaymentIntent::retrieve($session->payment_intent);
+                
+            //     // Use payment_method from the PaymentIntent if available
+            //     $stripe_payment_id = $paymentIntent->payment_method ?? $this->request->stripe_token;
+            // } else {
+            //     // If no PaymentIntent is available, use the stripe_token directly
+            //     $stripe_payment_id = $this->request->stripe_token;
+            // }
+            
+            $this->order->srtipe_payment_id = $this->request->stripe_token;
             $this->order->payment_status = 'paid';
             $this->order->payment_processor_fee = ($total_price * config('settings.stripe_fee') / 10000) + config('settings.stripe_static_fee');
             $this->order->update();
@@ -85,28 +98,28 @@ trait HasStripe
         return Validator::make([], []);
     }
 
-    public function webCharge($total_price, $chargeOptions, $user)
-    {
-        return $user->charge($total_price, $this->request->stripe_token, $chargeOptions)->id;
-    }
+    // public function webCharge($total_price, $chargeOptions, $user)
+    // {
+    //     return $user->charge($total_price, $this->request->stripe_token, $chargeOptions)->id;
+    // }
 
-    public function mobileCharge($total_price, $chargeOptions, $user)
-    {
-        Stripe::setApiKey(config('settings.stripe_secret'));
+    // public function mobileCharge($total_price, $chargeOptions, $user)
+    // {
+    //     Stripe::setApiKey(config('settings.stripe_secret'));
 
-        $customer = Customer::create([
-            'email' => $user->email,
-            'source' => $this->request->stripe_token,
-        ]);
+    //     $customer = Customer::create([
+    //         'email' => $user->email,
+    //         'source' => $this->request->stripe_token,
+    //     ]);
 
-        $charge = Charge::create([
-            'customer' => $customer->id,
-            'amount' => $total_price,
-            'currency' => config('settings.cashier_currency'),
-        ]);
+    //     $charge = Charge::create([
+    //         'customer' => $customer->id,
+    //         'amount' => $total_price,
+    //         'currency' => config('settings.cashier_currency'),
+    //     ]);
 
-        return $charge->id;
-    }
+    //     return $charge->id;
+    // }
 
     public function stripeConnect()
     {

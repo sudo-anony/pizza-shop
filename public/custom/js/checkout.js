@@ -7,29 +7,12 @@ window.onload = function () {
     initCOD();
     disableFunctions();
 
-    console.log("ENABLE_STRIPE:", ENABLE_STRIPE);
-
     if (ENABLE_STRIPE) {
         
-        setTimeout(() => {
-            const stripeButton = document.getElementById("stripeSend");
-            console.log("Stripe button found:", stripeButton);
-
-            if (stripeButton) {
-                stripeButton.addEventListener("click", function () {
+        initStripePayment();
          
-                    if(validateOrderFormSubmit()){
-                        console.log("Stripe button clicked");
-                        initStripePayment();
-                    }                   
-                });
-            } else {
-                console.error("Stripe button NOT found at runtime!");
-            }
-        }, 1000);
     }
-};
-
+}
 var disableFunctions=function(){
     if(SYSTEM_IS_WP=="1"){
        
@@ -168,40 +151,88 @@ var initCOD=function(){
  * Payment Functions
  *
  */
-var initStripePayment = async function () {
-    $("#stripe-payment-form").submit();
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+var initStripePayment=function(){
 
-    // Fetch the Checkout session URL
-    const response = await fetch('/create-checkout-session', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-        },
-    });
     
-    const { url, error } = await response.json();
-    debugger
-    if (error) {
-        alert('Failed to create a Checkout session: ' + error);
-        return;
-    }
 
-    // Redirect to the Stripe Checkout page
-    if (url) {
-        window.location.href = url;
-    }
-};
+    //On select payment method
+    $('input:radio[name="paymentType"]').change(
 
+        function(){
+            //HIDE ALL
+            $('#totalSubmitCOD').hide()
+            $('#totalSubmitStripe').hide()
+            $('#stripe-payment-form').hide()
 
+            if($(this).val()=="cod"){
+                //SHOW COD
+                $('#totalSubmitCOD').show();
+            }else if($(this).val()=="stripe"){
+                //SHOW STRIPE
+                $('#totalSubmitStripe').show();
+                $('#stripe-payment-form').show()
+            }
+        }
+    );
 
+    var form = document.getElementById('stripe-payment-form');
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        if(validateOrderFormSubmit()){
+            debugger;
+            var cartItems = Object.values(cartContent.items); 
+            var formattedItems = cartItems.map(item => {
+                return {
+                  id: item.id,
+                  name: item.name,
+                  price: item.price,
+                  quantity: item.quantity,
+                  image: item.attributes.image,
+                  friendly_price: item.attributes.friendly_price
+                };
+              });
+            var name = formattedItems[0].name;
+            var quantities = formattedItems.map(item => parseInt(item.quantity)); 
+            var totalQuantity = quantities.reduce((sum, quantity) => sum + quantity, 0);
+            var totalPrice = total.totalPrice;
+            var form = document.getElementById('order-form');
+            var formData = new FormData(form);
+            var formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
+            localStorage.setItem('orderForm', JSON.stringify(formObject));
+        
+            console.log('Form saved to localStorage:', formObject);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const response = await fetch('/create-checkout-session', {
+                method: 'POST',
+                body: JSON.stringify({
+                    totalPrice: totalPrice,
+                    name: name,
+                    totalQuantity: totalQuantity
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+            });
+            
+            const { url, error } = await response.json();
+            if (error) {
+                localStorage.removeItem('orderForm');
+                console.log('Form submission successful, removed from localStorage');
+                alert('Failed to create a Checkout session: ' + error);
+                return;
+            }
+            if (url) {
+                window.location.href = url;
+            }
+        }
+    });
 
-/**
- *
- * Address Functions
- *
- */
+}
+
 var initAddress=function(){
     
 

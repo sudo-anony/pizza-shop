@@ -34,8 +34,8 @@ use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use willvincent\Rateable\Rating;
 use Stripe\Stripe;
-use Stripe\PaymentIntent;
 use Stripe\Checkout\Session;
+use Stripe\PaymentIntent;
 
 class OrderController extends Controller
 {
@@ -44,47 +44,60 @@ class OrderController extends Controller
     private $api_key = "9615d48a-cc88-4c3e-8e43-102047366a71";
 
 
-    public function paymentIntentAction (){
+    public function orderSuccess(Request $request){
+        $sessionId = $request->query('session_id');
+        
+        if (!$sessionId) {
+            return redirect('/')->with('error', 'Session ID missing.');
+        }
         Stripe::setApiKey(env('STRIPE_SECRET'));
-
-        try {
-            $paymentIntent = PaymentIntent::create([
-                'amount' => 5000,
-                'currency' => 'usd',
-                'payment_method_types' => ['card', 'klarna','sofort','sepa_debit'],
-            ]);
     
-            return response()->json([
-                'clientSecret' => $paymentIntent->client_secret,
+        try {
+            // Retrieve the checkout session
+            $session = \Stripe\Checkout\Session::retrieve($sessionId);
+            
+            // Fetch the PaymentIntent to get the PaymentMethod ID
+            if (!empty($session->payment_intent)) {
+                $paymentIntent = \Stripe\PaymentIntent::retrieve($session->payment_intent);
+                $paymentMethodId = $paymentIntent->payment_method ?? null;
+            } else {
+                return redirect('/')->with('error', 'No Payment Intent found.');
+            }
+    
+            return view('cart.success', [
+                'session' => $session,
+                'paymentMethodId' => $paymentMethodId
             ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return redirect('/')->with('error', 'Failed to retrieve payment details.');
         }
     }
     
+    
 
-    public function checkout(){
+    public function checkout(Request $request){
+        
         Stripe::setApiKey(env('STRIPE_SECRET')); 
         try {
             $checkoutSession = Session::create([
                 'payment_method_types' => [
-                'card',  
-                'klarna', 
-                'sepa_debit', 
-                'sofort',
+                    'card',  
+                    'klarna', 
+                    'sepa_debit', 
+                    'sofort',
                 ],
                 'mode' => 'payment',
                 'line_items' => [[
                     'price_data' => [
                         'currency' => 'eur',
                         'product_data' => [
-                            'name' => 'Test Product',
+                            'name' => $request->name,
                         ],
-                        'unit_amount' => 5000,
+                        'unit_amount' => $request->totalPrice * 100,
                     ],
                     'quantity' => 1,
                 ]],
-                'success_url' => url('/order/success'),
+                'success_url' => url('/completeOrder') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => url('/cancel'),
             ]);
     
@@ -93,6 +106,7 @@ class OrderController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
     
 
     private function format_price($value) {
