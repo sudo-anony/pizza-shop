@@ -612,20 +612,19 @@ class OrderController extends Controller
             $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
             
         } else {
-            $status = new Status;
-            $status->name = (string) $http_code;
-            $status->alias = (string) $http_code;
-            $status->save();
+            $status = Status::where('name', $http_code)->first();
+            if (!$status) {
+                $status = new Status;
+                $status->name = (string) $http_code;
+                $status->alias = (string) $http_code;
+                $status->save();
+            }
             $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
         }
         curl_close($ch);
         $api_response = json_decode($response, true);
     }
-
-
-
     
-
     public function orderLocationAPI(Order $order): JsonResponse
     {
         if ($order->status->pluck('alias')->last() == 'picked_up') {
