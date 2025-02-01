@@ -13,7 +13,7 @@ use NotificationChannels\OneSignal\OneSignalMessage;
 use NotificationChannels\OneSignal\OneSignalWebButton;
 use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioSmsMessage;
-
+use App\Address;
 class OrderNotification extends Notification
 {
     use Queueable;
@@ -184,6 +184,17 @@ class OrderNotification extends Notification
             //Rejected
             $greeting = __('Order rejected');
             $line = __('Unfortunately your order is rejected. There where issues with the order and we need to reject it. Pls contact us for more info.');
+        } elseif ($this->status.'' == '200') {
+            $address = Address::find($this->order->address_id);
+            if ($address){
+                $newEmail =$address->email;
+            } else {
+                $newEmail =$this->order->client->email;
+            }
+            
+            $notifiable->email_override = $newEmail;
+            $greeting = __('Order Payment Confirmation');
+            $line = __('We are pleased to confirm that your recent order has been successfully processed, and payment has been received. Thank you for choosing ') . ' ' . config('app.name'). ''.'!' ;
         }
 
         $message = (new MailMessage)
@@ -247,6 +258,9 @@ class OrderNotification extends Notification
             //Rejected
             $greeting = __('Order rejected');
             $line = __('Unfortunately your order is rejected. There where issues with the order and we need to reject it. Pls contact us for more info.');
+        } elseif ($this->status.'' == '200') {
+            $greeting = __('Order Payment Confirmation');
+            $line = __('We are pleased to confirm that your recent order has been successfully processed, and payment has been received. Thank you for choosing ') . ' ' . config('app.name'). ''.'!' ;
         }
 
         return [

@@ -132,7 +132,7 @@ function saveLocation(lat, lng){
     
     let url = "/addresses";
     let type = 'POST';
-    if (addressId.length > 0){
+    if (addressId.length > 0 && addressId !== 'undefined'){
         url = `/addresses/${addressId}`;
         type = 'PUT';
     }

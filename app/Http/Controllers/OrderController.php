@@ -1333,11 +1333,17 @@ class OrderController extends Controller
         // TODO: Check if the order is paid
         // Send Email to the customer about order
         // We should use Webhooks to send payment confirmation email
-        $email =$order->client->email;
+        // $address = Address::find($order->address_id);
+        // if ($address){
+        //     $email =$address->email;
+           
+        // } else {
+        //     $email =$order->client->email;
+        // }
         if($order->payment_status == 'paid'){
-            Mail::to($email)->send(new OrderPaymentConfirmation($order));
+            $order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
         }
-
+        
         return view('orders.success', ['order' => $order, 'showWhatsApp' => $showWhatsApp]);
     }
 }

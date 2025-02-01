@@ -57,6 +57,11 @@ class User extends Authenticatable
         'phone_verified_at' => 'datetime',
     ];
 
+    public function routeNotificationForMail()
+    {
+        return $this->email_override ?? $this->email;
+    }
+
     public function getAcceptanceratingAttribute()
     {
         if ($this->numorders == 0) {
