@@ -1923,7 +1923,27 @@
         "Not in range": "ليس في النطاق",
         "Online": "متصل",
         "Get Directions": "احصل على الاتجاهات",
-        "Waiter": "نادل"
+        "Waiter": "نادل",
+
+        "Pay Now": "ادفع الآن",
+  "Company": "الشركة",
+  "Department": "القسم",
+  "Name": "الاسم",
+  "Email": "البريد الإلكتروني",
+  "Street": "الشارع",
+  "Zip Code": "الرمز البريدي",
+  "Google Plus Code": "رمز جوجل بلس",
+  "Phone": "الهاتف",
+  "Edit": "تعديل",
+  "Enter name here": "أدخل الاسم هنا",
+  "Enter email here": "أدخل البريد الإلكتروني هنا",
+  "Enter phone here": "أدخل رقم الهاتف هنا",
+  "Enter company name here": "أدخل اسم الشركة هنا",
+  "Enter department name here": "أدخل اسم القسم هنا",
+  "Enter street here": "أدخل الشارع هنا",
+  "Enter Zip Code here": "أدخل الرمز البريدي هنا",
+  "Enter location here": "أدخل الموقع هنا",
+  "Enter plus code here": "أدخل رمز بلس هنا"
     
     
                                             

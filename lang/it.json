@@ -1918,7 +1918,27 @@
             "Not in range": "Non nel range",
             "Online": "Online",
             "Get Directions": "Ottieni indicazioni",
-            "Waiter": "Cameriere"
+            "Waiter": "Cameriere",
+
+            "Pay Now": "Paga Ora",
+            "Company": "Azienda",
+            "Department": "Dipartimento",
+            "Name": "Nome",
+            "Email": "Email",
+            "Street": "Via",
+            "Zip Code": "Codice Postale",
+            "Google Plus Code": "Codice Plus di Google",
+            "Phone": "Telefono",
+            "Edit": "Modifica",
+            "Enter name here": "Inserisci il nome qui",
+            "Enter email here": "Inserisci l'email qui",
+            "Enter phone here": "Inserisci il telefono qui",
+            "Enter company name here": "Inserisci il nome dell'azienda qui",
+            "Enter department name here": "Inserisci il nome del dipartimento qui",
+            "Enter street here": "Inserisci la via qui",
+            "Enter Zip Code here": "Inserisci il codice postale qui",
+            "Enter location here": "Inserisci la posizione qui",
+            "Enter plus code here": "Inserisci il codice plus qui"
 
 
         

@@ -1923,7 +1923,26 @@
         "Not in range": "Aralıkta değil",
         "Online": "Çevrimiçi",
         "Get Directions": "Yol tarifi al",
-        "Waiter": "Garson"
+        "Waiter": "Garson",
+        "Pay Now": "Şimdi Öde",
+        "Company": "Şirket",
+        "Department": "Departman",
+        "Name": "Ad",
+        "Email": "E-posta",
+        "Street": "Sokak",
+        "Zip Code": "Posta Kodu",
+        "Google Plus Code": "Google Plus Kodu",
+        "Phone": "Telefon",
+        "Edit": "Düzenle",
+        "Enter name here": "Adı buraya girin",
+        "Enter email here": "E-postayı buraya girin",
+        "Enter phone here": "Telefonu buraya girin",
+        "Enter company name here": "Şirket adını buraya girin",
+        "Enter department name here": "Departman adını buraya girin",
+        "Enter street here": "Sokağı buraya girin",
+        "Enter Zip Code here": "Posta kodunu buraya girin",
+        "Enter location here": "Konumu buraya girin",
+        "Enter plus code here": "Plus kodunu buraya girin"
     
     
     

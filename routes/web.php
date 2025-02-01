@@ -48,6 +48,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/mailable', function () {
+    $invoice = [];
+ 
+    return new App\Mail\OrderPaymentConfirmation($invoice);
+});
+
 Route::get('/', [FrontEndController::class, 'index'])->name('front');
 Route::get('/'.config('settings.url_route').'/{alias}', [FrontEndController::class, 'restorant'])->name('vendor');
 Route::get('/city/{city}', [FrontEndController::class, 'showStores'])->name('show.stores');

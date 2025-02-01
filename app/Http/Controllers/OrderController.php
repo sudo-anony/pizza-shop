@@ -36,6 +36,8 @@ use willvincent\Rateable\Rating;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
 use Stripe\PaymentIntent;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderPaymentConfirmation;
 
 class OrderController extends Controller
 {
@@ -605,6 +607,7 @@ class OrderController extends Controller
             'API_KEY: ' . $this->api_key
         ]);
         $response = curl_exec($ch);
+       
         
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($http_code == 200) {
@@ -624,7 +627,11 @@ class OrderController extends Controller
         curl_close($ch);
         $api_response = json_decode($response, true);
     }
+
+
+
     
+
     public function orderLocationAPI(Order $order): JsonResponse
     {
         if ($order->status->pluck('alias')->last() == 'picked_up') {
@@ -1321,6 +1328,14 @@ class OrderController extends Controller
             if (strlen($order->restorant->whatsapp_phone) < 3) {
                 $showWhatsApp = false;
             }
+        }
+
+        // TODO: Check if the order is paid
+        // Send Email to the customer about order
+        // We should use Webhooks to send payment confirmation email
+        $email =$order->client->email;
+        if($order->payment_status == 'paid'){
+            Mail::to($email)->send(new OrderPaymentConfirmation($order));
         }
 
         return view('orders.success', ['order' => $order, 'showWhatsApp' => $showWhatsApp]);
