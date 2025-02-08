@@ -9,7 +9,7 @@
                 </div>
                 <h2 class="display-2">{{ __("You're all set!") }}</h2>
                 <h1 class="mb-4">
-                    <span class="badge badge-primary">{{ __('Order')." #".$order->id_formated }}</span>
+                    <span class="badge badge-primary">{{ __('Order')." #".$order->randomID }}</span>
                 </h1>
                 <div class="d-flex justify-content-center">
                     <div class="col-8">

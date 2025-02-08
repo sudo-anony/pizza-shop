@@ -34,7 +34,7 @@
                                     </span>
                                 @endif
                             </div>
-                            <!-- <div id="map2" class="form-control form-control-alternative"></div> -->
+                            <div id="map2" class="form-control form-control-alternative"></div>
                             <div class="text-center">
                                 <button type="button" id="submitNewAddress" class="btn btn-primary my-4">{{ __('Save') }}</button>
                             </div>

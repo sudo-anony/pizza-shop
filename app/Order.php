@@ -27,7 +27,7 @@ class Order extends Model
 
     protected $table = 'orders';
 
-    protected $appends = ['id_formated', 'order_price_with_discount', 'time_created', 'time_formated', 'last_status', 'is_prepared', 'actions', 'configs', 'tableassigned'];
+    protected $appends = ['id_formated', 'order_price_with_discount', 'time_created', 'time_formated', 'last_status', 'is_prepared', 'actions', 'configs', 'tableassigned','randomID'];
 
     protected $guarded = [];
 

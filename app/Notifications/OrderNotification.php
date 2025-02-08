@@ -199,9 +199,9 @@ class OrderNotification extends Notification
 
         $message = (new MailMessage)
             ->greeting($greeting)
-            ->subject(__('Order notification').' #'.$this->order->id)
+            ->subject(__('Order notification').' #'.$this->order->randomID)
             ->line($line)
-            ->action(__('View Order'), url('/orders/'.$this->order->id));
+            ->action(__('View Order'), url('/orders/'.$this->order->randomID));
 
         //Add order details
         $message->line(__('Order items'));
@@ -245,7 +245,7 @@ class OrderNotification extends Notification
         } elseif ($this->status.'' == '3') {
             //Accepted
             $greeting = __('Your order has been accepted');
-            $line = __('order').'#'.$this->order->id.' '.__('We are now working on it!');
+            $line = __('order').'#'.$this->order->id_formated.' '.__('We are now working on it!');
         } elseif ($this->status.'' == '4') {
             //Assigned to driver
             $greeting = __('There is new order for you.');

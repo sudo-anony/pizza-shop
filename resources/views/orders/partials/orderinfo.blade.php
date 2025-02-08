@@ -1,13 +1,20 @@
-
+@php
+    use App\Address;
+    $address = Address::find($order->address_id);
+@endphp
 <div class="card-body">
     @include('partials.flash') 
     @if ($order->restorant)
         <h6 class="heading-small text-muted mb-4">{{ __('Restaurant information') }}</h6>
         <div class="pl-lg-4">
-            <h3>{{ $order->restorant->name }}</h3>
-            <h4>{{ $order->restorant->address }}</h4>
-            <h4>{{ $order->restorant->phone }}</h4>
+        <h3>{{ $order->restorant->name }}</h3>
+
+        <h4>{{ $order->restorant->address }}</h4>
+        <h4>{{ $order->restorant->phone }}</h4>
+        @if($order->restorant && $order->restorant->user )
             <h4>{{ $order->restorant->user->name.", ".$order->restorant->user->email }}</h4>
+        @endif
+
         </div>
         <hr class="my-4" />
     @endif
@@ -17,10 +24,25 @@
      @if (config('app.isft')&&$order->client)
          <h6 class="heading-small text-muted mb-4">{{ __('Client Information') }}</h6>
          <div class="pl-lg-4">
+            @if ($address)
+            <h3>{{ __('Name')}}: {{ $address->name }}</h3>
+            <h3>{{ __('Phone')}}: {{ $address->mobileFormat. $address->phone }}</h3>
+            <!-- <h3>{{ __('Email')}}: {{ $address->email }}</h3> -->
+            <h3>{{ __('Company Name')}}: {{  $address->companyname }}</h3>
+            <h3>{{ __('Department Name')}}: {{  $address->departmentname }}</h3>
+            <h3>{{ __('Street')}}: {{  $address->street }}</h3>
+            <h3>{{ __('Zip Code')}}: {{  $address->zip }}</h3>
+            <h3>{{ __('Address')}}: {{ $address->address }}</h3>
+            
+            @else
              <h3>{{ $order->client?$order->client->name:"" }}</h3>
              <h4>{{ $order->client?$order->client->email:"" }}</h4>
              <h4>{{ $order->address?$order->address->address:"" }}</h4>
- 
+             @if($order->client&&!empty($order->client->phone))
+             <br/>
+             <h4>{{ __('Contact')}}: {{ $order->client->phone }}</h4>
+             @endif
+            @endif
              @if(!empty($order->address->apartment))
                  <h4>{{ __("Apartment number") }}: {{ $order->address->apartment }}</h4>
              @endif
@@ -33,13 +55,10 @@
              @if(!empty($order->address->intercom))
                  <h4>{{ __("Intercom") }}: {{ $order->address->intercom }}</h4>
              @endif
-             @if($order->client&&!empty($order->client->phone))
-             <br/>
-             <h4>{{ __('Contact')}}: {{ $order->client->phone }}</h4>
-             @endif
+            
          </div>
          <hr class="my-4" />
-     @else
+        @else
          @if ($order->table)
              <h6 class="heading-small text-muted mb-4">{{ __('Table Information') }}</h6>
              <div class="pl-lg-4">

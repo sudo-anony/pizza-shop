@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Notifications\WelcomeNotification;
 
 class RegisterController extends Controller
 {
@@ -88,6 +89,7 @@ class RegisterController extends Controller
         ]);
 
         $user->assignRole('client');
+        $user->notify(new WelcomeNotification($user));
 
         //Send welcome email
         return $user;

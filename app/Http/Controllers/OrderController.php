@@ -38,7 +38,6 @@ use Stripe\Checkout\Session;
 use Stripe\PaymentIntent;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OrderPaymentConfirmation;
-
 class OrderController extends Controller
 {
 
@@ -46,8 +45,10 @@ class OrderController extends Controller
     private $api_key = "9615d48a-cc88-4c3e-8e43-102047366a71";
 
 
+
     public function orderSuccess(Request $request){
         $sessionId = $request->query('session_id');
+        $random = $request->query('id');
         
         if (!$sessionId) {
             return redirect('/')->with('error', 'Session ID missing.');
@@ -68,7 +69,8 @@ class OrderController extends Controller
     
             return view('cart.success', [
                 'session' => $session,
-                'paymentMethodId' => $paymentMethodId
+                'paymentMethodId' => $paymentMethodId,
+                'id'=> $random
             ]);
         } catch (\Exception $e) {
             return redirect('/')->with('error', 'Failed to retrieve payment details.');
@@ -77,9 +79,11 @@ class OrderController extends Controller
     
     
 
-    public function checkout(Request $request){
-        
+    public function checkout(Request $request) {
+        $totalOrders = Order::count();
+        $randomID = '000' . $totalOrders;        
         Stripe::setApiKey(env('STRIPE_SECRET')); 
+    
         try {
             $checkoutSession = Session::create([
                 'payment_method_types' => [
@@ -93,21 +97,24 @@ class OrderController extends Controller
                     'price_data' => [
                         'currency' => 'eur',
                         'product_data' => [
-                            'name' => $request->name,
+                            'name' => $request->name, 
+                            'description' => "Order #{$randomID}",
                         ],
                         'unit_amount' => $request->totalPrice * 100,
                     ],
                     'quantity' => 1,
                 ]],
-                'success_url' => url('/completeOrder') . '?session_id={CHECKOUT_SESSION_ID}',
+                'success_url' => url('/completeOrder') . '?session_id={CHECKOUT_SESSION_ID}&id=' . $randomID,
                 'cancel_url' => url('/cancel'),
             ]);
     
             return response()->json(['url' => $checkoutSession->url]);
+    
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
     
     
 
@@ -501,6 +508,12 @@ class OrderController extends Controller
         }
         $user = auth()->user();
         $latestOrder = $user->orders()->latest()->first();
+        if ($latestOrder instanceof Order && $request->has('randomID')) {
+            $randomID = $request->randomID;
+            $latestOrder->randomID = $randomID;
+            $latestOrder->save();
+        }
+        
         $broker = $latestOrder->restorant; 
         $setting = Settings::where('id',1)->first();
         if (!empty($broker->api_key) && !empty($setting->expertOrder)) {
@@ -653,8 +666,13 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Order $order)
-    {
+    public function show($orderNumber)
+    {   
+        $order = Order::where('id',$orderNumber)->first();
+        if (!$order){
+            $order = Order::all()->firstWhere('randomID', $orderNumber);
+        }
+
         //Do we have pdf invoice
         $pdFInvoice = Module::has('pdf-invoice');
 

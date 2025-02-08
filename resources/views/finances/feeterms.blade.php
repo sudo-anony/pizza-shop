@@ -1,4 +1,4 @@
-<!-- Fee Info -->
+<!-- Fee Infoss -->
 <div class="col-5">
     <div class="card  bg-secondary shadow">
         <div class="card-header border-0">

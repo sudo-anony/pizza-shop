@@ -1,4 +1,16 @@
 <div id="tracking_map" class="form-control form-control-alternative"></div>
+@php
+use App\Address;
+$address = Address::find($order->address_id);
+$restorant = $order->restorant;
+if ($address){
+  $lat = $address->lat;
+  $lng = $address->lng;
+}else {
+  $lat = $restorant->lat;
+  $lng = $restorant->lng;
+}
+@endphp
 <script>
 
   var start="/images/pin.png"

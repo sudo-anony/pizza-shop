@@ -1,6 +1,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var PAYMENTID = <?php echo json_encode($paymentMethodId); ?>;
+        var ID = <?php echo json_encode($id); ?>;
         var savedData = JSON.parse(localStorage.getItem('orderForm'));
 
         if (savedData) {
@@ -12,6 +13,12 @@
                 paymentInput.setAttribute('name', 'stripePaymentId');
                 paymentInput.setAttribute('value', PAYMENTID);
                 form.appendChild(paymentInput);
+
+                var randomID = document.createElement('input');
+                randomID.setAttribute('type', 'hidden');
+                randomID.setAttribute('name', 'randomID');
+                randomID.setAttribute('value', ID);
+                form.appendChild(randomID);
 
                 Object.keys(savedData).forEach(key => {
                     var input = document.createElement('input');

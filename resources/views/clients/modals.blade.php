@@ -128,7 +128,7 @@
                         <form>
                             <div class="form-group{{ $errors->has('new_address') ? ' has-danger' : '' }}">
                                 <!-- <input class="form-control my-3" name="new_address" id="new_address" placeholder="{{ __( 'New address here' ) }} ..." type="text" required> -->
-                                <input class="form-control my-3" name="name" id="name_new" placeholder="{{ __( 'Enter name here' ) }} ..." type="text" required>
+                                <input class="form-control my-3" name="name" id="name" placeholder="{{ __( 'Enter name here' ) }} ..." type="text" required>
                                 <input class="form-control my-3" name="email" id="email" placeholder="{{ __( 'Enter email here' ) }} ..." type="email" required>
                                 <input class="form-control my-3" name="phone" id="phone" placeholder="{{ __( 'Enter phone here' ) }} ..." type="number" required>
                                 <input class="form-control my-3" name="companyname" id="companyname" placeholder="{{ __( 'Enter company name here' ) }} ..." type="text" required>
@@ -144,7 +144,7 @@
                                     </span>
                                 @endif
                             </div>
-                            <!-- <div id="map2" class="form-control form-control-alternative"></div> -->
+                            <div id="map2" class="form-control form-control-alternative"></div>
                             <div class="text-center">
                                 <button type="button" id="submitNewAddressnew" class="btn btn-primary my-4">{{ __('Save') }}</button>
                             </div>

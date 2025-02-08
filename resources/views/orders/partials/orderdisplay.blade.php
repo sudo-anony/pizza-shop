@@ -36,7 +36,10 @@
 <tr>
     <td>
         
-        <a class="btn badge badge-success badge-pill" href="{{ route('orders.show',$order->id )}}">#{{ $order->id_formated }}</a>
+        <a class="btn badge badge-success badge-pill" href="{{ route('orders.show', $order->id) }}">
+        #{{ !empty($order->randomID) ? $order->randomID : $order->id_formated }}
+        </a>
+
     </td>
     @hasrole('admin|driver')
     <th scope="row">

@@ -208,29 +208,37 @@
         "use strict";
         var map, infoWindow, marker, lng, lat;
         function initMapA() {
-            map = new google.maps.Map(document.getElementById('map2'), {center: {lat: -34.397, lng: 150.644}, zoom: 15 });
-            marker = new google.maps.Marker({ position: {lat: -34.397, lng: 150.644}, map: map, title: 'Click to zoom'});
+            if (lat && lng) {
+                map = new google.maps.Map(document.getElementById('map2'), {center: {lat: lat, lng: lng}, zoom: 15 });
+                marker = new google.maps.Marker({ position: {lat: lat, lng: lng}, map: map, title: 'Click to zoom'});
+            }else {
+                map = new google.maps.Map(document.getElementById('map2'), {center: {lat: -34.397, lng: 150.644}, zoom: 15 });
+                marker = new google.maps.Marker({ position: {lat: -34.397, lng: 150.644}, map: map, title: 'Click to zoom'});
+            }
+        
             infoWindow = new google.maps.InfoWindow;
-
-            if (navigator.geolocation) {
+            if (lat && lng) {   
+                var pos = { lat: parseFloat(lat), lng: parseFloat(lng) };
+                map.setCenter(pos);
+                marker.setPosition(pos);
+            } else if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
-                var pos = { lat: position.coords.latitude, lng: position.coords.longitude };
-
+                    var pos = { lat: position.coords.latitude, lng: position.coords.longitude };
                     map.setCenter(pos);
                     marker.setPosition(pos);
-                 
                     lat = position.coords.latitude;
                     lng = position.coords.longitude;
                 }, function() {
-                           
+                    console.error("Geolocation permission denied or error occurred.");
                 });
-            } 
-
+            }    
             map.addListener('click', function(event) {
                 var currPos = new google.maps.LatLng(event.latLng.lat(),event.latLng.lng());
                 marker.setPosition(currPos);
+
                 lat = event.latLng.lat()
                 lng = event.latLng.lng();
+                console.log(lat,lng);
             });
         }
 
@@ -241,8 +249,6 @@
         var isSubmitting = false;
       
         function saveLocation(lat, lng){
-            lat = 0; lng = 0;
-            // const plusCode = OpenLocationCode.encode(lat, lng);
             if (isSubmitting) {
                 return;
             }
