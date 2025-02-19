@@ -57,7 +57,6 @@ class OrderRepoGenerator extends BaseOrderRepository
 
         //Class
         $generatedClass = 'App\Repositories\Orders\\'.$serviceType.'\\'.$expeditionType.$paymentType.'Order';
-
         return new $generatedClass($vendor_id, $request, $expedition, $hasPayment, $isStripe);
     }
 }

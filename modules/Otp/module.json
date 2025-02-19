@@ -1,0 +1,22 @@
+{
+    "alias": "otp",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\Otp\\Providers\\Main"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "global_fields":[
+        {
+            "separator":"OTP verification",
+            "title": "Enable OTP verification before making orders. Twillo details should be preset",
+            "key": "ENABLE_SMS_VERIFICATION",
+            "ftype": "bool",
+            "value":false
+        }
+    ]
+}

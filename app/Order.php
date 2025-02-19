@@ -23,6 +23,11 @@ class Order extends Model
         static::addGlobalScope(new RestorantScope);
     }
 
+    public function getRandomIDAttribute()
+    {
+        return $this->attributes['randomID'] ?? null; // Use null to avoid undefined key error
+    }
+
     protected $modelName = \App\Order::class;
 
     protected $table = 'orders';

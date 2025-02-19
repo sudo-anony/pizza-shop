@@ -59,11 +59,9 @@ class Restorant extends MyModel
             'ordersMessage' => '',
             'ordersAlertType' => 'success',
         ];
-        $currentPlan = null;
-        if ($this->user){
-            $currentPlan = Plans::withTrashed()->find($this->user->mplanid());
-        }
 
+        //Find the plan
+        $currentPlan = Plans::withTrashed()->find($this->user->mplanid());
         if ($currentPlan == null) {
             //Make artificial plan - usefull when migrating the system  - or wrong free plan id
             $currentPlan = new Plans();

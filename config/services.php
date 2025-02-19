@@ -48,4 +48,10 @@ return [
         'rest_api_key' => env('ONESIGNAL_REST_API_KEY', ''),
     ],
 
+    'stripe' => [
+        'secret' => env('STRIPE_SECRET'),
+        'public' => env('STRIPE_PUBLIC'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ],
+
 ];

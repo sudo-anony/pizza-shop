@@ -37,6 +37,8 @@ use App\Http\Controllers\VisitsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Stripe\RefundController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -48,11 +50,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/mailable', function () {
-    $invoice = [];
- 
-    return new App\Mail\OrderPaymentConfirmation($invoice);
-});
+Route::get('/refund', [RefundController::class, 'getChargeId'])->name('stripe.refund');
 
 Route::get('/', [FrontEndController::class, 'index'])->name('front');
 Route::get('/'.config('settings.url_route').'/{alias}', [FrontEndController::class, 'restorant'])->name('vendor');
@@ -161,6 +159,9 @@ Route::middleware('auth', 'impersonate')->group(function () {
             //Language menu
             Route::post('storenewlanguage', [RestorantController::class, 'storeNewLanguage'])->name('storenewlanguage');
         });
+
+        // Order refund
+        Route::post('order/refund/{order}', [RefundController::class, 'getChargeId'])->name('orders.refund');
     });
 
     Route::resource('cities', CitiesController::class);

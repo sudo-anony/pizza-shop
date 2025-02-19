@@ -8,6 +8,9 @@
         <th class="table-web" scope="col">{{ __('Time Slot') }}</th>
         <th class="table-web" scope="col">{{ __('Method') }}</th>
         <th scope="col">{{ __('Last status') }}</th>
+        @hasrole('admin|owner')
+            <th class="table-web" scope="col">{{ __('Refund') }}</th>
+        @endif
         @hasrole('admin|owner|driver')
             <th class="table-web" scope="col">{{ __('Client') }}</th>
         @endif
@@ -36,10 +39,7 @@
 <tr>
     <td>
         
-        <a class="btn badge badge-success badge-pill" href="{{ route('orders.show', $order->id) }}">
-        #{{ !empty($order->randomID) ? $order->randomID : $order->id_formated }}
-        </a>
-
+        <a class="btn badge badge-success badge-pill" href="{{ route('orders.show',$order->id )}}"> #{{ !empty($order->randomID) ? $order->randomID : $order->id_formated }}</a>
     </td>
     @hasrole('admin|driver')
     <th scope="row">
@@ -66,6 +66,20 @@
     <td>
         @include('orders.partials.laststatus')
     </td>
+    @hasrole('admin|owner')
+        <td class="table-web">
+            @if ($order->status->contains(22))
+                <span class="badge badge-success badge-pill">{{ __('Refunded') }}</span>
+            @elseif($order->payment_method == 'stripe' && $order->stripe_charge_id != null)
+                <form action="{{ route('admin.orders.refund', $order->id) }}" method="POST" style="display:inline;" onsubmit="refundOrder({{ $order->id }}); return false;" id="refund-form-{{ $order->id }}">
+                    @csrf
+                    <button type="submit" class="btn btn-danger btn-sm">{{ __('Refund Order') }}</button>
+                </form>
+            @else
+                <span class="badge badge-danger badge-pill">{{ __('Not Refundable') }}</span>
+            @endif
+        </td>
+    @endif
     @hasrole('admin|owner|driver')
     <td class="table-web">
         @if ($order->client)
@@ -106,3 +120,25 @@
 </tr>
 @endforeach
 </tbody>
+
+@section('js')
+    <!-- CKEditor -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function refundOrder(orderId) {
+            Swal.fire({
+                title: '{{ __('Are you sure?') }}',
+                text: '{{ __('This action is irreversible') }}',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '{{ __('Yes, refund it!') }}',
+                cancelButtonText: '{{ __('No, cancel!') }}',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('refund-form-' + orderId).submit();
+                }
+            });
+        }
+    </script>
+@endsection

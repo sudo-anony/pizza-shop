@@ -38,6 +38,7 @@ use Stripe\Checkout\Session;
 use Stripe\PaymentIntent;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OrderPaymentConfirmation;
+
 class OrderController extends Controller
 {
 
@@ -45,11 +46,9 @@ class OrderController extends Controller
     private $api_key = "9615d48a-cc88-4c3e-8e43-102047366a71";
 
 
-
     public function orderSuccess(Request $request){
         $sessionId = $request->query('session_id');
         $random = $request->query('id');
-        
         if (!$sessionId) {
             return redirect('/')->with('error', 'Session ID missing.');
         }
@@ -62,7 +61,11 @@ class OrderController extends Controller
             // Fetch the PaymentIntent to get the PaymentMethod ID
             if (!empty($session->payment_intent)) {
                 $paymentIntent = \Stripe\PaymentIntent::retrieve($session->payment_intent);
+                $paymentIntentId = $paymentIntent->id ?? null;
                 $paymentMethodId = $paymentIntent->payment_method ?? null;
+                $chargeId = $paymentIntent->latest_charge ?? null;
+                // dd($paymentIntentId, $paymentMethodId, $chargeId);
+
             } else {
                 return redirect('/')->with('error', 'No Payment Intent found.');
             }
@@ -70,7 +73,9 @@ class OrderController extends Controller
             return view('cart.success', [
                 'session' => $session,
                 'paymentMethodId' => $paymentMethodId,
-                'id'=> $random
+                'paymentIntent' => $paymentIntentId,
+                'chargeId' => $chargeId,
+		'id'=> $random
             ]);
         } catch (\Exception $e) {
             return redirect('/')->with('error', 'Failed to retrieve payment details.');
@@ -79,26 +84,30 @@ class OrderController extends Controller
     
     
 
-    public function checkout(Request $request) {
-        $totalOrders = Order::count();
-        $randomID = '000' . $totalOrders;        
+    public function checkout(Request $request){
+      	$totalOrders = Order::count();
+        $randomID = '000' . $totalOrders; 
+        
         Stripe::setApiKey(env('STRIPE_SECRET')); 
-    
         try {
             $checkoutSession = Session::create([
                 'payment_method_types' => [
                     'card',  
                     'klarna', 
                     'sepa_debit', 
-                    'sofort',
+          //          'sofort',
+                      'paypal', 
+                   
+                   'revolut_pay',
+                 
                 ],
                 'mode' => 'payment',
                 'line_items' => [[
                     'price_data' => [
                         'currency' => 'eur',
                         'product_data' => [
-                            'name' => $request->name, 
-                            'description' => "Order #{$randomID}",
+                            'name' => $request->name,
+			    'description' => "Order #{$randomID}",
                         ],
                         'unit_amount' => $request->totalPrice * 100,
                     ],
@@ -109,12 +118,10 @@ class OrderController extends Controller
             ]);
     
             return response()->json(['url' => $checkoutSession->url]);
-    
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    
     
     
 
@@ -361,9 +368,15 @@ class OrderController extends Controller
         }
 
         //stripe token
+        // TODO: Need to save charge id in order
+
         $stripe_token = null;
+        $stripe_payment_intent = null;
+        $stripe_charge_id = null;
         if ($request->has('stripePaymentId')) {
             $stripe_token = $request->stripePaymentId;
+            $stripe_payment_intent = $request->stripePaymentIntent;
+            $stripe_charge_id = $request->stripeChargeId;
         }
 
         //Custom fields
@@ -430,6 +443,8 @@ class OrderController extends Controller
             'items' => $items,
             'comment' => $request->comment,
             'stripe_token' => $stripe_token,
+            'stripe_payment_intent' => $stripe_payment_intent,
+            'stripe_charge_id' => $stripe_charge_id,
             'dinein_table_id' => $table_id,
             'phone' => $phone,
             'customFields' => $customFields,
@@ -508,12 +523,11 @@ class OrderController extends Controller
         }
         $user = auth()->user();
         $latestOrder = $user->orders()->latest()->first();
-        if ($latestOrder instanceof Order && $request->has('randomID')) {
+	if ($latestOrder instanceof Order && $request->has('randomID')) {
             $randomID = $request->randomID;
             $latestOrder->randomID = $randomID;
             $latestOrder->save();
         }
-        
         $broker = $latestOrder->restorant; 
         $setting = Settings::where('id',1)->first();
         if (!empty($broker->api_key) && !empty($setting->expertOrder)) {
@@ -667,13 +681,12 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($orderNumber)
-    {   
-        $order = Order::where('id',$orderNumber)->first();
+    {
+        //Do we have pdf invoice
+ 	$order = Order::where('id',$orderNumber)->first();
         if (!$order){
             $order = Order::all()->firstWhere('randomID', $orderNumber);
         }
-
-        //Do we have pdf invoice
         $pdFInvoice = Module::has('pdf-invoice');
 
         //Change currency
@@ -1351,17 +1364,11 @@ class OrderController extends Controller
         // TODO: Check if the order is paid
         // Send Email to the customer about order
         // We should use Webhooks to send payment confirmation email
-        // $address = Address::find($order->address_id);
-        // if ($address){
-        //     $email =$address->email;
-           
-        // } else {
-        //     $email =$order->client->email;
-        // }
-        if($order->payment_status == 'paid'){
-            $order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
-        }
+   	if($order->payment_status == 'paid'){
+        $order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
+    }
         
+
         return view('orders.success', ['order' => $order, 'showWhatsApp' => $showWhatsApp]);
     }
 }

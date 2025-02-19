@@ -26,6 +26,7 @@ class PaymentController extends Controller
     public function handleOrderPaymentStripe(Request $request, Order $order): RedirectResponse
     {
         if ($request->success.'' == 'true') {
+            dd($request->all());
             $order->payment_status = 'paid';
             $order->update();
 

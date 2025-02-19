@@ -24,9 +24,9 @@
                     <option disabled selected value> {{__('-- select an option -- ')}}</option>
                     @foreach ($addresses as $key => $address)
                         @if(config('settings.enable_cost_per_distance'))
-                            <option data-cost={{ $address->cost_per_km}} id="{{ 'address'.$address->id }}"  <?php if(!$address->inRadius){echo "disabled";} ?> value={{ $address->id }}>{{$address->address." - ".money( $address->cost_per_km, config('settings.cashier_currency'),config('settings.do_convertion')) }} @if (!$address->inRadius)- {{ __('Not in range') }}@endif</option>
+                            <option data-cost={{ $address->cost_per_km}} id="{{ 'address'.$address->id }}"   value={{ $address->id }}>{{$address->address." - ".money( $address->cost_per_km, config('settings.cashier_currency'),config('settings.do_convertion')) }} @if (!$address->inRadius)- {{ __('Not in range') }}@endif</option>
                         @else
-                    <option data-cost={{ config('global.delivery')}} id="{{ 'address'.$address->id }}"  <?php if(!$address->inRadius){echo "disabled";} ?> value={{ $address->id }}>{{$address->name . " - " . $address->phone . " - " . $address->companyname . " - " . $address->departmentname . " - " . $address->street . " - " . $address->zip . " - " . $address->address}} @if (!$address->inRadius)- {{ __('Not in range') }}@endif</option>
+                    <option data-cost={{ config('global.delivery')}} id="{{ 'address'.$address->id }}"   value={{ $address->id }}>{{$address->name . " - " . $address->phone . " - " . $address->companyname . " - " . $address->departmentname . " - " . $address->street . " - " . $address->zip . " - " . $address->address}} @if (!$address->inRadius)- {{ __('Not in range') }}@endif</option>
                         @endif
                     @endforeach
                 </select>

@@ -22,7 +22,7 @@ trait HasStripe
         try {
             $total_price = (int) (($this->order->order_price_with_discount + $this->order->delivery_price) * 100);
             $chargeOptions = [];
-            $user = auth()->user() ? auth()->user() : $this->vendor->user;
+
             //Setup based on vendor
             if (config('settings.stripe_useVendor')) {
 
@@ -32,8 +32,8 @@ trait HasStripe
                 config(['settings.stripe_secret' => $this->vendor->getConfig('stripe_secret', '')]);
                 config(['cashier.key' => $this->vendor->getConfig('stripe_key')]);
                 config(['cashier.secret' => $this->vendor->getConfig('stripe_secret')]);
-                
-            } elseif (config('settings.enable_stripe_connect') && $user) {
+
+            } elseif (config('settings.enable_stripe_connect') && $this->vendor->user->stripe_account) {
                 $chargeOptions = $this->stripeConnect();
             }
 
@@ -44,7 +44,7 @@ trait HasStripe
             }
 
             //User to apply the charge to
-            
+            $user = auth()->user() ? auth()->user() : $this->vendor->user;
 
             // if ($this->order->isMobileOrder) {
             //     //Mobile Order
@@ -66,8 +66,12 @@ trait HasStripe
             //     // If no PaymentIntent is available, use the stripe_token directly
             //     $stripe_payment_id = $this->request->stripe_token;
             // }
+            // dd($this->request);
             
             $this->order->srtipe_payment_id = $this->request->stripe_token;
+            // INFO: Stripe Payment Intent
+            $this->order->stripe_payment_intent = $this->request->stripe_payment_intent;
+            $this->order->stripe_charge_id = $this->request->stripe_charge_id;
             $this->order->payment_status = 'paid';
             $this->order->payment_processor_fee = ($total_price * config('settings.stripe_fee') / 10000) + config('settings.stripe_static_fee');
             $this->order->update();
@@ -139,13 +143,13 @@ trait HasStripe
 
         //Make it for stripe
         $application_fee_amount = (int) (float) ($application_fee_amount * 100);
-        $user = auth()->user() ? auth()->user() : $this->vendor->user;
+
         //Create the charge object
         $chargeOptions = [
             'application_fee_amount' => $application_fee_amount,
             'currency' => config('settings.cashier_currency'),
             'transfer_data' => [
-                'destination' => $user->stripe_account.'',
+                'destination' => $this->vendor->user->stripe_account.'',
             ],
         ];
 
