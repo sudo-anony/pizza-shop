@@ -17,8 +17,9 @@ use Illuminate\Support\Facades\Session;
 use Laravel\Cashier\Billable;
 use Spatie\Permission\Traits\HasRoles;
 use Twilio\Rest\Client;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Billable;
     use HasConfig;

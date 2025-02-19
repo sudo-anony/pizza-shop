@@ -89,9 +89,8 @@ class RegisterController extends Controller
         ]);
 
         $user->assignRole('client');
-        $user->notify(new WelcomeNotification($user));
-
-        //Send welcome email
+        // $user->notify(new WelcomeNotification($user));
+        // $user->sendEmailVerificationNotification();
         return $user;
     }
 

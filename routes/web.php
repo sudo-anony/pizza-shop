@@ -59,7 +59,7 @@ Route::get('/lang/{lang?}', [FrontEndController::class, 'langswitch'])->name('la
 
 Route::post('/search/location', [FrontEndController::class, 'getCurrentLocation'])->name('search.location');
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/selectpay/{order}', [PaymentController::class, 'selectPaymentGateway'])->name('selectpay');
 Route::get('/selectedpaymentt/{order}/{payment}', [PaymentController::class, 'selectedPaymentGateway'])->name('selectedpaymentt');

@@ -75,14 +75,15 @@ class HomeController extends Controller
 
     public function pureSaaSIndex($lang = null)
     {
-        $locale = Cookie::get('lang') ? Cookie::get('lang') : config('settings.app_locale');
+        $locale = null;
+        //$locale = Cookie::get('lang') ? Cookie::get('lang') : config('settings.app_locale');
         if ($lang != null) {
             //this is language route
             $locale = $lang;
         }
         if ($locale != 'android-chrome-256x256.png') {
-            App::setLocale(strtolower($locale));
-            session(['applocale_change' => strtolower($locale)]);
+            // App::setLocale(strtolower($locale));
+            //session(['applocale_change' => strtolower($locale)]);
         }
 
         $dataToDisplay = [];
@@ -94,7 +95,7 @@ class HomeController extends Controller
 
         $response = new \Illuminate\Http\Response(view('dashboard_pure', $dataToDisplay));
         $response->withCookie(cookie('lang', $locale, 120));
-        App::setLocale(strtolower($locale));
+        // App::setLocale(strtolower($locale));
 
         return $response;
     }
@@ -308,7 +309,7 @@ class HomeController extends Controller
 
         $response = new \Illuminate\Http\Response(view('dashboard', $dataToDisplay));
         $response->withCookie(cookie('lang', $locale, 120));
-        App::setLocale(strtolower($locale));
+        // App::setLocale(strtolower($locale));
 
         return $response;
     }

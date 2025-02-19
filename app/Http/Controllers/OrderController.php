@@ -1365,7 +1365,7 @@ class OrderController extends Controller
         // Send Email to the customer about order
         // We should use Webhooks to send payment confirmation email
    	if($order->payment_status == 'paid'){
-        $order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
+        //$order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
     }
         
 
