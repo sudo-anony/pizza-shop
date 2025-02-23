@@ -22,6 +22,14 @@
                                     </span>
                                 @endif
                             </div>
+                            <div class="form-group{{ $errors->has('subtitle') ? ' has-danger' : '' }}">
+                                <input class="form-control" name="subtitle" id="subtitle" placeholder="{{ __('Subtitle') }} ..." type="text">
+                                @if ($errors->has('subtitle'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('subtitle') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary my-4">{{ __('Save') }}</button>
                             </div>
@@ -55,6 +63,14 @@
                                 @if ($errors->has('category_name'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('category_name') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="form-group{{ $errors->has('subtitle') ? ' has-danger' : '' }}">
+                                <input class="form-control" name="subtitle" id="cat_subtitle" placeholder="{{ __('Subtitle') }} ..." type="text">
+                                @if ($errors->has('subtitle'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('subtitle') }}</strong>
                                     </span>
                                 @endif
                             </div>

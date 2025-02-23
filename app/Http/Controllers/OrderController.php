@@ -85,9 +85,59 @@ class OrderController extends Controller
     
 
     public function checkout(Request $request){
-      	$totalOrders = Order::count();
-        $randomID = '000' . $totalOrders; 
+        if($request->deliveryMethod !== 'pickup')
+        {
+            if(array_key_exists('addressID', $request->formDetails)){
+                $address = Address::findOrFail($request->formDetails['addressID']);
+            }else{
+                $address = null;
+            }
+        }else{
+            $address = null;
+        }
+        $restaurant_id = $request->restaurant_id;
+        $totalOrders = Order::count();
+        $randomID = str_pad($restaurant_id, 3, '0', STR_PAD_LEFT) . '000' . $totalOrders; 
         
+        if($address && $address->email){
+            $email = $address->email;
+        }else{
+            $email = auth()->user()->email;
+        }
+
+        $items = [];
+
+        foreach($request->cartItems as $item){
+            $items[] = [
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => $item['name'],
+                        // 'description' => $item['id'],
+                    ],
+                    'unit_amount' => $item['price'] * 100,
+                ],
+                'quantity' => $item['quantity'],
+            ];
+        }
+
+        if($request->tip){
+            $tipString = str_replace(['€', ' '], '', $request->tip);
+            $tipString = str_replace('.', '', $tipString);
+            $tipString = str_replace(',', '.', $tipString);
+            $tip = floatval($tipString);
+            $items[] = [
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => 'Tip',
+                        'description' => 'Tip',
+                    ],
+                    'unit_amount' => $tip * 100,
+                ],
+                'quantity' => 1,
+            ];
+        }
         Stripe::setApiKey(env('STRIPE_SECRET')); 
         try {
             $checkoutSession = Session::create([
@@ -102,19 +152,25 @@ class OrderController extends Controller
                  
                 ],
                 'mode' => 'payment',
-                'line_items' => [[
-                    'price_data' => [
-                        'currency' => 'eur',
-                        'product_data' => [
-                            'name' => $request->name,
-			    'description' => "Order #{$randomID}",
-                        ],
-                        'unit_amount' => $request->totalPrice * 100,
-                    ],
-                    'quantity' => 1,
-                ]],
+                // 'line_items' => [[
+                //     'price_data' => [
+                //         'currency' => 'eur',
+                //         'product_data' => [
+                //             'name' => $request->name,
+                //             'description' => "Order #{$randomID}",
+                //         ],
+                //         'unit_amount' => $request->totalPrice * 100,
+                //     ],
+                //     'quantity' => 1,
+                // ]],
+                'line_items' => $items,
+                'customer_email' => $email, // Use authenticated user's email if address is not set
                 'success_url' => url('/completeOrder') . '?session_id={CHECKOUT_SESSION_ID}&id=' . $randomID,
-                'cancel_url' => url('/cancel'),
+                'cancel_url' => route('cart.checkout'),
+                'metadata' => [
+                    'order_id' => $randomID,
+                    'customer_email' => $email,
+                ],
             ]);
     
             return response()->json(['url' => $checkoutSession->url]);
@@ -456,11 +512,19 @@ class OrderController extends Controller
         return new Request($requestData);
     }
 
+    protected function moneyToFloat($money)
+    {
+        $money = str_replace(['€', ' '], '', $money);
+        $money = str_replace('.', '', $money);
+        $money = str_replace(',', '.', $money);
+        return (float) $money;
+    }
+
     public function store(Request $request)
     {
         if ($request->has('tip')) {
             $tip = $request->input('tip');  
-            $numericTip = preg_replace('/\D/', '', $tip); 
+            $numericTip = $this->moneyToFloat($tip); 
             $request->merge(['tip' => $numericTip]); 
         }
         //Convert web request to mobile like request

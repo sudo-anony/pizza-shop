@@ -156,9 +156,10 @@
         </div>
         @endif
 
-        @if(auth()->user()->hasRole('owner')&&config('settings.enable_pricing'))
-            <br /><br />
-            @include("plans.info",['planAttribute'=> auth()->user()->restorant->getPlanAttribute(),'showLinkToPlans'=>true])
+        @if(auth()->user()->hasRole('owner') && config('settings.enable_pricing'))
+            {{-- TODO: Check if we can disable by setting false to enable_pricing does not affect the client requirment --}}
+            {{-- <br /><br /> --}}
+            {{-- @include("plans.info",['planAttribute'=> auth()->user()->restorant->getPlanAttribute(),'showLinkToPlans'=>true]) --}}
         @endif
         
         @include('layouts.footers.auth')

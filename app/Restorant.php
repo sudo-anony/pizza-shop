@@ -210,6 +210,11 @@ class Restorant extends MyModel
         return $this->hasMany(\App\Categories::class, 'company_id', 'id')->where(['categories.active' => 1])->ordered();
     }
 
+    public function all_categories(): HasMany
+    {
+        return $this->hasMany(\App\Categories::class, 'company_id', 'id')->ordered();
+    }
+
     public function localmenus(): HasMany
     {
         return $this->hasMany(\App\Models\LocalMenu::class, 'restaurant_id', 'id');

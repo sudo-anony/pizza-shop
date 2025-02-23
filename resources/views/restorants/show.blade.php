@@ -150,7 +150,10 @@
             @foreach ( $restorant->categories as $key => $category)
                 @if(!$category->aitems->isEmpty())
                 <div id="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" class="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
-                    <h1>{{ $category->name }}</h1><br />
+                    <h1 style="line-height: 1;">{{ $category->name }}</h1>
+                    @if (!empty($category->subtitle))
+                        <h4 class="category-subtitle">{{ $category->subtitle }}</h4>
+                    @endif
                 </div>
                 @endif
                 <div class="row {{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
@@ -159,14 +162,16 @@
                             <div class="strip">
                                 @if(!empty($item->image))
                                 <figure>
-                                    <a  @if (!($item->qty_management==1&&$item->qty<1)) onClick="setCurrentItem({{ $item->id }})" @endif href="javascript:void(0)"><img src="{{ $item->logom }}" loading="lazy" data-src="{{ config('global.restorant_details_image') }}" class="img-fluid lazy" alt=""></a>
+                                    <a @if (!($item->qty_management==1 && $item->qty<1)) onClick="setCurrentItem({{ $item->id }}, '{{ $item->allergens }}')" @endif href="javascript:void(0)">
+                                        <img src="{{ $item->logom }}" loading="lazy" data-src="{{ config('global.restorant_details_image') }}" class="img-fluid lazy" alt="">
+                                    </a>
                                 </figure>
                                 @endif
                                 
                                 @if ($item->qty_management==1&&$item->qty<1)
                                     [{{ __('Out of stock')}}] - {{ $item->name }}
                                 @else
-                                    <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }})" href="javascript:void(0)">{{ $item->name }}</a></b></div>
+                                    <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }}, '{{ $item->allergens }}')" href="javascript:void(0)">{{ $item->name }}</a></b></div>
                                 @endif
 
                                 <div class="res_description">{{ $item->short_description}}</div>

@@ -118,7 +118,7 @@ return [
     'admin_password' => env('ADMIN_PASSWORD', 'secret'),
     'enable_pickup' => env('ENABLE_PICKUP', true),
     'enable_default_cookie_consent' => env('ENABLE_DEFAULT_COOKIE_CONSENT', true),
-    'datetime_display_format' => env('DATETIME_DISPLAY_FORMAT', 'd M Y H:i'),
+    'datetime_display_format' => env('DATETIME_DISPLAY_FORMAT', 'd M Y h:i'),
     'datetime_workinghours_display_format_new' => env('DATETIME_WORKING_HOURS_DISPLAY_FORMAT_NEW', 'E HH:mm'),
     'restaurant_link_register_position' => env('RESTAURANT_LINK_REGISTER_POSITION', 'footer'),
     'restaurant_link_register_title' => env('RESTAURANT_LINK_REGISTER_TITLE', 'Register your restaurant'),

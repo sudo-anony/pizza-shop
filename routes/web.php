@@ -253,6 +253,7 @@ Route::middleware('auth', 'impersonate')->group(function () {
     Route::delete('/{item}/extras/{extras}', [ItemsController::class, 'deleteExtras'])->name('extras.destroy');
 
     Route::resource('categories', CategoriesController::class);
+    Route::patch('categories/{category}/toggle', [CategoriesController::class, 'toggle'])->name('categories.toggle');
 
     Route::resource('addresses', AddressControler::class);
     Route::get('/new/address/autocomplete', [AddressControler::class, 'newAddressAutocomplete']);

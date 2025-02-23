@@ -76,14 +76,14 @@ class ItemsController extends Controller
             $defaultLng = $this->getCompany()->localmenus->where('default', '1')->first();
 
             //Since 2.1.7 - there is sorting.
-            $categories = $this->getCompany()->categories;
+            $categories = $this->getCompany()->all_categories;
 
             //If first item order starts with 0
             if ($categories->first() && $categories->first()->order_index == 0) {
                 Categories::setNewOrder($categories->pluck('id')->toArray());
 
                 //Re-get categories
-                $categories = $this->getCompany()->categories;
+                $categories = $this->getCompany()->all_categories;
             }
 
             return view('items.index', [
@@ -185,6 +185,8 @@ class ItemsController extends Controller
                     }
                 }
             }
+            $items = $item->extras->load('variants');
+            // dd($items);
 
             return view('items.edit',
                 [

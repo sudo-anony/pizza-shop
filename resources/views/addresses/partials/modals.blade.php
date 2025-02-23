@@ -18,16 +18,33 @@
                         <form>
                             <div class="form-group{{ $errors->has('new_address') ? ' has-danger' : '' }}">
                                 <!-- <input class="form-control my-3" name="new_address" id="new_address" placeholder="{{ __( 'New address here' ) }} ..." type="text" required> -->
-                                <input class="form-control my-3" name="name" id="name" placeholder="{{ __( 'Enter name here' ) }} ..." type="text" required>
-                                <input class="form-control my-3" name="email" id="email" placeholder="{{ __( 'Enter email here' ) }} ..." type="email" required>
-                                <input class="form-control my-3" name="phone" id="phone" placeholder="{{ __( 'Enter phone here' ) }} ..." type="phone" required>
-                                <input class="form-control my-3" name="companyname" id="companyname" placeholder="{{ __( 'Enter company name here' ) }} ..." type="text" required>
-                                <input class="form-control my-3" name="departmentname" id="departmentname" placeholder="{{ __( 'Enter department name here' ) }} ..." type="text" required>
-                                <input class="form-control my-3" name="street" id="street" placeholder="{{ __( 'Enter street here' ) }} ..." type="text" required>
-                                <input class="form-control my-3" name="zip" id="zip" placeholder="{{ __( 'Enter Zip Code here' ) }} ..." type="number" required>
-                                <input class="form-control my-3" name="location" id="location" placeholder="{{ __( 'Enter location here' ) }} ..." type="text" required>
-                                <input class="form-control my-3" name="plusCode" id="plusCode" placeholder="{{ __( 'Enter plus code here' ) }} ..." type="text" required>
-                                <input class="form-control my-3" name="address_id" id="address_id" type="hidden" value="">
+                                <!-- filepath: /C:/Users/Arslan/AppData/Local/Temp/fz3temp-3/modals.blade.php -->
+                                <input class="form-control my-2" name="name" id="name" placeholder="{{ __( 'Enter name here' ) }} ..." type="text" required>
+                                <span class="text-danger" id="name-error"></span>
+                                
+                                <input class="form-control my-2" name="email" id="email" placeholder="{{ __( 'Enter email here' ) }} ..." type="email" required>
+                                <span class="text-danger" id="email-error"></span>
+                                
+                                <input class="form-control my-2" name="phone" id="phone" placeholder="{{ __( 'Enter phone here' ) }} ..." type="phone" required>
+                                <span class="text-danger" id="phone-error"></span>
+                                
+                                <input class="form-control my-2" name="companyname" id="companyname" placeholder="{{ __( 'Enter company name here' ) }} ..." type="text">
+                                
+                                <input class="form-control my-2" name="departmentname" id="departmentname" placeholder="{{ __( 'Enter department name here' ) }} ..." type="text">
+                                
+                                <input class="form-control my-2" name="street" id="street" placeholder="{{ __( 'Enter street here' ) }} ..." type="text" required>
+                                <span class="text-danger" id="street-error"></span>
+                                
+                                <input class="form-control my-2" name="zip" id="zip" placeholder="{{ __( 'Enter Zip Code here' ) }} ..." type="number" required>
+                                <span class="text-danger" id="zip-error"></span>
+                                
+                                <input class="form-control my-2" name="location" id="location" placeholder="{{ __( 'Enter location here' ) }} ..." type="text" required>
+                                <span class="text-danger" id="location-error"></span>
+                                
+                                <input class="form-control my-2" name="plusCode" id="plusCode" placeholder="{{ __( 'Enter plus code here' ) }} ..." type="text" required>
+                                <span class="text-danger" id="plusCode-error"></span>
+                                
+                                <input class="form-control my-2" name="address_id" id="address_id" type="hidden" value="">
                                 @if ($errors->has('category_name'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('category_name') }}</strong>

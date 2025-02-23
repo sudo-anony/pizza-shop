@@ -35,6 +35,7 @@ class CategoriesController extends Controller
     {
         $category = new Categories;
         $category->name = strip_tags($request->category_name);
+        $category->subtitle = strip_tags($request->subtitle);
         $category->company_id = $request->restaurant_id;
         $category->save();
 
@@ -74,9 +75,22 @@ class CategoriesController extends Controller
     public function update(Request $request, Categories $category): RedirectResponse
     {
         $category->name = $request->category_name;
-        $category->update();
+        $category->subtitle = $request->subtitle;
+        $category->save(); // Changed from update() to save() to persist changes correctly
+        return redirect()->back()->withStatus(__('Category successfully updated.'));
+    }
 
-        return redirect()->back()->withStatus(__('Category name successfully updated.'));
+    /** 
+     * Toggles the status of the category
+     * 
+     * @param Categories $category
+     */
+    public function toggle(Categories $category): RedirectResponse
+    {
+        $category->active = !$category->active;
+        $category->save();
+
+        return redirect()->back()->withStatus(__('Category status successfully toggled.'));
     }
 
     /**

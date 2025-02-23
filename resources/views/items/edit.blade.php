@@ -260,7 +260,17 @@
                                             <tr>
                                                 <th scope="row">{{ $extra->name }}</th>
                                                 <td class="budget">@money( $extra->price, config('settings.cashier_currency'),config('settings.do_convertion'))</td>
-                                                @if ($item->has_variants==1)<td class="budget">{{ $extra->extra_for_all_variants?__('All variants'):__('Selected') }}</td>@endif
+                                                @if ($item->has_variants==1)
+                                                    <td class="budget">
+                                                        @if ($extra->extra_for_all_variants==0)
+                                                            @foreach ($extra->variants as $variant)
+                                                                <span class="badge badge-primary">{{ $variant->optionsList }}</span>
+                                                            @endforeach
+                                                        @else
+                                                            {{ $extra->extra_for_all_variants?__('All variants'):__('Selected') }}
+                                                        @endif
+                                                    </td>
+                                                @endif
                                                 <td class="text-right">
                                                     <div class="dropdown">
                                                         <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

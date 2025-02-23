@@ -41,22 +41,23 @@
         <div class="row mt-4">
             <div class="col-12 col-lg-10 offset-lg-1">
                 
-
-                
                 <div class="row">
-                    <div class="col-12">
-                        <h1>{{ __(config('pdf-invoice.invoiceTitle','Order'))}} #{{$order->id}} </h1>
+                    <div class="col-md-8">
+                        <h1>{{ __(config('pdf-invoice.invoiceTitle','Order')) }} #{{$order->randomID}} </h1>
                         @if ($order->payment_status=="unpaid")
-                            <span class="badge badge-danger">{{__('Unpaid')}}</span>
+                            <span class="badge badge-danger">{{ __('Unpaid') }}</span>
                         @else
-                            <span class="badge badge-success">{{__('Paid')}}</span>
+                            <span class="badge badge-success">{{ __('Paid') }}</span>
                         @endif
-                        
-                        
-                        <small class="text-muted">{{$order->created_at->format(config('settings.datetime_display_format'))}}</small><br />
+                        <small class="text-muted">{{ $order->created_at->format('d M Y h:i') }}</small><br />
                         <small class="text-muted">{{ __("Payment method") }}: {{ __(strtoupper($order->payment_method)) }}</small>
                         <hr />
                     </div>
+                    @if(!empty($order->restorant->logo))
+                        <div class="col-md-4 text-right">
+                            <img src="{{ asset('uploads/restorants/'.$order->restorant->logo.'_thumbnail.jpg') }}" alt="Logo" style="max-height: 100px;">
+                        </div>
+                    @endif
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
@@ -66,8 +67,23 @@
                             <h3>{{ $order->client->name }}</h3>
                             <h4>{{ $order->client->email }}</h4>
                             @if(!empty($order->client->phone))
-                            <br/>
                             <h4>{{ __('Contact')}}: {{ $order->client->phone }}</h4>
+                            @endif
+                            @if(!empty($order->address->companyname))
+                            <h4>{{ $order->address->companyname }}</h4>
+                            @endif
+                            @if(!empty($order->address->departmentname))
+                            <h4>{{ __('Department') }}: {{ $order->address->departmentname }}</h4>
+                            @endif
+                            @if(!empty($order->address->street))
+                            <h4>{{ $order->address->street }}</h4>
+                            @endif
+                            
+                            @if(!empty($order->address->address))
+                                <h4>{{ $order->address?$order->address->address:"" }}</h4>
+                            @endif
+                            @if(!empty($order->address->zip))
+                                <h4>{{ $order->address->zip }}</h4>
                             @endif
                         </div>
                         
@@ -90,7 +106,7 @@
                     @endif
 
                     @if (!empty($order->address))
-                        <h4>{{ $order->address?$order->address->address:"" }}</h4>
+                        <!-- <h4>{{ $order->address?$order->address->address:"" }}</h4> -->
                     
                         @if(!empty($order->address->apartment))
                             <h4>{{ __("Apartment number") }}: {{ $order->address->apartment }}</h4>
@@ -130,16 +146,18 @@
                     <!-- /.col -->
 
                     <div class="text-95 col-sm-6 align-self-start d-sm-flex justify-content-end">
-                       
+                        
                         <div class="">
                             <h3>{{ $order->restorant->name }}</h3>
+                            <h4>{{ $order->restorant->user->name }}</h4>
                             <h4>{{ $order->restorant->address }}</h4>
-                            <h4>{{ $order->restorant->phone }}</h4>
+                            <h4>{{ __('Téléphone') }}: {{ $order->restorant->phone }}</h4>
+                            <h4>{{ $order->restorant->taxID }}</h4>
                             @if ($order->restorant->getConfig('number_de_siren',false))
                                 <h4>{{__('Numéro de inscription')}}: {{ $order->restorant->getConfig('number_de_siren','') }}</h4>
                                 <h4>{{__('Numéro Intracommunautaire')}}: {{ $order->restorant->getConfig('number_de_intercommunication',false) }}</h4>
                             @endif
-                            <h4>{{ $order->restorant->user->name.", ".$order->restorant->user->email }}</h4>
+                            <h4>{{ $order->restorant->user->email }}</h4>
                         </div>
                         
 
@@ -249,10 +267,10 @@
                             <!-- VAT -->
                             <div class="row my-2">
                                 <div class="col-7 text-right">
-                                    {{ __('VAT') }}
+                                    {{ __('VAT') }} {{ '( ' . $order->items->first()?->pivot?->vat . '% )' }}
                                 </div>
                                 <div class="col-5">
-                                    <span class="text-110">@money( $order->vatvalue, $currency,$convert)</span>
+                                    <span class="text-110">@money( $order->vatvalue, $currency, $convert)</span>
                                 </div>
                             </div>
 

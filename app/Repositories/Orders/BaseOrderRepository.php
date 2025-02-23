@@ -266,6 +266,10 @@ class BaseOrderRepository extends Controller
 
         //Set tip
         if ($this->request->has('tip')) {
+            $tipString = str_replace(['€', ' '], '', $this->request->tip);
+            $tipString = str_replace('.', '', $tipString);
+            $tipString = str_replace(',', '.', $tipString);
+            $tip = floatval($tipString);
             $this->order->tip = $this->request->tip;
         }
 

@@ -13,6 +13,9 @@
                         <div class="row">
                             <div class="col-sm col-md col-lg text-center" id="modalImgPart">
                                 <img id="modalImg" src="" width="295px" height="200px">
+                                <div id="allergensContainer">
+                                    <!-- Allergens will be loaded here by jQuery -->
+                                </div>
                             </div>
                             <div class="col-sm col-md col-lg col-lg" id="modalItemDetailsPart">
                                 <input id="modalID" type="hidden"></input>
