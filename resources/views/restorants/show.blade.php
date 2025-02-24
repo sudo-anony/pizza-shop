@@ -157,7 +157,12 @@
                 </div>
                 @endif
                 <div class="row {{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
-                    @foreach ($category->aitems as $item)
+                @php
+                    $sortedItems = $category->items->sortBy(function ($item) {
+                        return is_numeric($item->name) ? [(int)$item->name, ''] : [INF, $item->name];
+                    });
+                @endphp
+                    @foreach ($sortedItems as $item)
                         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
                             <div class="strip">
                                 @if(!empty($item->image))
@@ -184,7 +189,7 @@
                                             @money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    <!-- <div class="col-6">
                                         <div class="allergens" style="text-align: right;">
                                             @foreach ($item->allergens as $allergen)
                                              <div class='allergen' data-toggle="tooltip" data-placement="bottom" title="{{$allergen->title}}" >
@@ -193,7 +198,7 @@
                                             @endforeach
                                              
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 
                                 

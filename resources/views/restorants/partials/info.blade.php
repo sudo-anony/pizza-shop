@@ -22,12 +22,13 @@
         <div class="form-group">
             <label class="form-control-label">Select Counter</label>
             <select name="counter" id="select_counter" required class="form-control">
-                <option value="" disabled selected>Select Counter</option>
-                <option value="food" selected>None</option>
-                <option value="non-food">Expert Order</option>
-                <option value="non-food">3pos</option>
+                <option value="" disabled>Select Counter</option>
+                <option value="none" {{ empty($restorant->counter) || $restorant->counter == 'none' ? 'selected' : '' }}>None</option>
+                <option value="expert-order" {{ $restorant->counter == 'expert-order' ? 'selected' : '' }}>Expert Order</option>
+                <option value="3-pos" {{ $restorant->counter == '3-pos' ? 'selected' : '' }}>3pos</option>
             </select>
         </div>
+
 
         @include('partials.fields',['fields'=>[
             ['ftype'=>'input','name'=>"API KEY",'id'=>"api_key",'placeholder'=>"API KEY",'required'=>true,'value'=>$restorant->api_key],
@@ -107,18 +108,6 @@
             
         </div>
 
-        
-
-
-        
-
-        
-
-       
-       
-
-    
-        
         </div>
         <div class="col-md-6">
             @if(!config('app.issd',false))
@@ -155,3 +144,23 @@
         
     </form>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function toggleFields() {
+        let selectedValue = $("#select_counter").val();
+        if (selectedValue === "none") {
+            $("#api_key, #broker").closest('.form-group').hide();
+        } else {
+            $("#api_key, #broker").closest('.form-group').show();
+        }
+    }
+
+    $(document).ready(function() {
+        toggleFields(); // Run on page load to check initial state
+
+        $("#select_counter").change(function() {
+            toggleFields();
+        });
+    });
+</script>

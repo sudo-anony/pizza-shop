@@ -587,14 +587,18 @@ class OrderController extends Controller
         }
         $user = auth()->user();
         $latestOrder = $user->orders()->latest()->first();
-	if ($latestOrder instanceof Order && $request->has('randomID')) {
+	    if ($latestOrder instanceof Order && $request->has('randomID')) {
             $randomID = $request->randomID;
             $latestOrder->randomID = $randomID;
             $latestOrder->save();
         }
         $broker = $latestOrder->restorant; 
         $setting = Settings::where('id',1)->first();
-        if (!empty($broker->api_key) && !empty($setting->expertOrder)) {
+        if ($latestOrder->payment_method == 'cod'){
+            $status = Status::where('id', 2)->first();
+            $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
+        }
+        else if ($broker->counter == 'expert-order' && !empty($broker->api_key) && !empty($setting->expertOrder)) {
             $this->submitOrder($user , $latestOrder , $broker,$setting->expertOrder);
         }        
         return $orderRepo->redirectOrInform();
@@ -1429,7 +1433,7 @@ class OrderController extends Controller
         // Send Email to the customer about order
         // We should use Webhooks to send payment confirmation email
    	if($order->payment_status == 'paid'){
-        //$order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
+        $order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
     }
         
 

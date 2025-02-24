@@ -381,6 +381,7 @@ class RestorantController extends Controller
         $restaurant->broker = strip_tags($request->broker);
         $restaurant->zip = strip_tags($request->zip);
         $restaurant->taxID = strip_tags($request->taxID);
+        $restaurant->counter = strip_tags($request->counter);
         $restaurant->city = strip_tags($request->city);
         $thereIsRestaurantAddressChange = $restaurant->address.'' != $request->address.'';
 

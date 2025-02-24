@@ -245,30 +245,39 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-12">
                                 <div class="row row-grid">
-                                    @foreach ( $category->items as $item)
-                                        <div class="col-lg-3">
-                                            <a href="{{ route('items.edit', $item) }}">
-                                                <div class="card">
-                                                    <img class="card-img-top" src="{{ $item->logom }}" alt="...">
-                                                    <div class="card-body">
-                                                        <h3 class="card-title text-primary text-uppercase">{{ $item->name }}</h3>
-                                                        <p class="card-text description mt-3">{{ $item->description }}</p>
+                                @php
+                                    $sortedItems = $category->items->sortBy(function ($item) {
+                                        return is_numeric($item->name) ? [(int)$item->name, ''] : [INF, $item->name];
+                                    });
+                                @endphp
 
-                                                        <span class="badge badge-primary badge-pill">@money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))</span>
+                                @foreach ($sortedItems as $item)
+                                    <div class="col-lg-3">
+                                        <a href="{{ route('items.edit', $item) }}">
+                                            <div class="card">
+                                                <img class="card-img-top" src="{{ $item->logom }}" alt="...">
+                                                <div class="card-body">
+                                                    <h3 class="card-title text-primary text-uppercase">{{ $item->name }}</h3>
+                                                    <p class="card-text description mt-3">{{ $item->description }}</p>
 
-                                                        <p class="mt-3 mb-0 text-sm">
-                                                            @if($item->available == 1)
+                                                    <span class="badge badge-primary badge-pill">
+                                                        @money($item->price, config('settings.cashier_currency'), config('settings.do_convertion'))
+                                                    </span>
+
+                                                    <p class="mt-3 mb-0 text-sm">
+                                                        @if ($item->available == 1)
                                                             <span class="text-success mr-2">{{ __("AVAILABLE") }}</span>
-                                                            @else
+                                                        @else
                                                             <span class="text-danger mr-2">{{ __("UNAVAILABLE") }}</span>
-                                                            @endif
-                                                        </p>
-                                                    </div>
+                                                        @endif
+                                                    </p>
                                                 </div>
-                                                <br/>
-                                            </a>
-                                        </div>
-                                    @endforeach
+                                            </div>
+                                            <br/>
+                                        </a>
+                                    </div>
+                                @endforeach
+
                                     @if($canAdd)
                                     <div class="col-lg-3" >
                                         <a   data-toggle="modal" data-target="#modal-new-item" data-toggle="tooltip" data-placement="top" href="javascript:void(0);" onclick=(setSelectedCategoryId({{ $category->id }}))>
@@ -289,7 +298,12 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-12">
                                 <div class="row row-grid">
-                                    @foreach ( $category->items as $item)
+                                @php
+                                    $sortedItems = $category->items->sortBy(function ($item) {
+                                        return is_numeric($item->name) ? [(int)$item->name, ''] : [INF, $item->name];
+                                    });
+                                @endphp
+                                    @foreach ( $sortedItems as $item)
                                         <div class="col-lg-3">
                                             <a href="{{ route('items.edit', $item) }}">
                                                 <div class="card">
