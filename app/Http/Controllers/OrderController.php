@@ -37,6 +37,8 @@ use Stripe\Stripe;
 use Stripe\Checkout\Session;
 use Stripe\PaymentIntent;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+
 use App\Mail\OrderPaymentConfirmation;
 
 class OrderController extends Controller
@@ -490,6 +492,8 @@ class OrderController extends Controller
             $customFields['delivery_area_name'] = $deliveryAreaName;
         }
 
+        Log::info('Tip: ======================= ToMobileLink ' . $request->tip);
+
         $requestData = [
             'vendor_id' => $vendor_id,
             'delivery_method' => $delivery_method,
@@ -525,6 +529,10 @@ class OrderController extends Controller
         if ($request->has('tip')) {
             $tip = $request->input('tip');  
             $numericTip = $this->moneyToFloat($tip); 
+
+            Log::info('Tip: ============= in Store method ' . $numericTip);
+            Log::info('Tip: ============= in Store method ' . $tip);
+
             $request->merge(['tip' => $numericTip]); 
         }
         //Convert web request to mobile like request
@@ -594,11 +602,11 @@ class OrderController extends Controller
         }
         $broker = $latestOrder->restorant; 
         $setting = Settings::where('id',1)->first();
-        if ($latestOrder->payment_method == 'cod'){
+       	
+        if ($broker->counter == 'none'){
             $status = Status::where('id', 2)->first();
             $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
-        }
-        else if ($broker->counter == 'expert-order' && !empty($broker->api_key) && !empty($setting->expertOrder)) {
+        } else if ($broker->counter == 'expert-order' && !empty($broker->api_key) && !empty($setting->expertOrder)) {
             $this->submitOrder($user , $latestOrder , $broker,$setting->expertOrder);
         }        
         return $orderRepo->redirectOrInform();
@@ -629,7 +637,9 @@ class OrderController extends Controller
         ];
         $total_prepaid_amount = $this->format_price($latestOrder->order_price) + ($this->format_price($latestOrder->tip) ?: 0);
 
-       
+        Log::info('Submitting order for user: '.$user->id.' with total amount: '.$total_prepaid_amount);
+        Log::info('Order items: '.json_encode($orderItems));
+
         $itemsArray = [];
         foreach ($orderItems as $item) {
             $itemId = $item->item_id;
@@ -638,7 +648,11 @@ class OrderController extends Controller
             if ($findItem) {
                 $group = $findItem->category->name;
                 $name = $findItem->name;
-                $price = $findItem->price;
+                ($item->variant_name) ? $name .= ' (' . $item->variant_name . ')' : '';
+                ($item->extras) ? $name .= ' (' . implode(', ', json_decode($item->extras, true)) . ')' : '';
+                // Update price according to the variant selected + extras
+                // $price = $findItem->price;
+                $price = round($item->variant_price, 2);
                 $type = $findItem->type;
                 $uid = $findItem->uid;
                 
@@ -706,8 +720,10 @@ class OrderController extends Controller
         
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($http_code == 200) {
-            $status = Status::where('id', 14)->first();
-            $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
+  
+                $status = Status::where('id', 14)->first();
+                $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
+            
             
         } else {
             $status = Status::where('name', $http_code)->first();
@@ -1433,8 +1449,8 @@ class OrderController extends Controller
         // Send Email to the customer about order
         // We should use Webhooks to send payment confirmation email
    	if($order->payment_status == 'paid'){
-        $order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
-    }
+        	$order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
+    	}
         
 
         return view('orders.success', ['order' => $order, 'showWhatsApp' => $showWhatsApp]);

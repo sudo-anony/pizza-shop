@@ -377,11 +377,14 @@ class RestorantController extends Controller
     {
         $restaurant = Restorant::findOrFail($restaurantid);
         $restaurant->name = strip_tags($request->name);
+        
+        $restaurant->name_on_cover = $request->name_on_cover == 'true' ? 1 : 0;
+
         $restaurant->api_key = strip_tags($request->api_key);
         $restaurant->broker = strip_tags($request->broker);
         $restaurant->zip = strip_tags($request->zip);
         $restaurant->taxID = strip_tags($request->taxID);
-        $restaurant->counter = strip_tags($request->counter);
+	$restaurant->counter = strip_tags($request->counter);
         $restaurant->city = strip_tags($request->city);
         $thereIsRestaurantAddressChange = $restaurant->address.'' != $request->address.'';
 
@@ -497,7 +500,6 @@ class RestorantController extends Controller
         $restaurant->do_covertion = $request->do_covertion == 'true' ? 1 : 0;
 
         $restaurant->update();
-
         //Update custom fields
         if ($request->has('custom')) {
             $restaurant->setMultipleConfig($request->custom);
