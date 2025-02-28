@@ -14,6 +14,8 @@ use NotificationChannels\OneSignal\OneSignalWebButton;
 use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioSmsMessage;
 use App\Address;
+use Illuminate\Support\HtmlString;
+
 class OrderNotification extends Notification
 {
     use Queueable;
@@ -161,70 +163,133 @@ class OrderNotification extends Notification
      */
     public function toMail($notifiable): MailMessage
     {
-        //Change currency
+        // Change currency
         \App\Services\ConfChanger::switchCurrency($this->order->restorant);
-
-        if ($this->status.'' == '1') {
-            //Created
-            $greeting = __('There is new order');
-            $line = $this->order->delivery_method.'' == '3' ? __('You have just received an order on table').' '.$this->order->table->name : __('You have just received an order');
-        } elseif ($this->status.'' == '3') {
-            //Accepted
-            $greeting = __('Your order has been accepted');
-            $line = __('We are now working on it!');
-        } elseif ($this->status.'' == '4') {
-            //Assigned to driver
-            $greeting = __('There is new order for you.');
-            $line = __('There is new order assigned to you.');
-        } elseif ($this->status.'' == '5') {
-            //Prepared
-            $greeting = __('Your order is ready.');
-            $line = $this->order->delivery_method && $this->order->delivery_method.'' == '1' ? __('Your order is ready for delivery. Expect us soon.') : __('Your order is ready for pickup. We are expecting you.');
-        } elseif ($this->status.'' == '9') {
-            //Rejected
-            $greeting = __('Order rejected');
-            $line = __('Unfortunately your order is rejected. There where issues with the order and we need to reject it. Pls contact us for more info.');
-        } elseif ($this->status.'' == '200') {
-            $address = Address::find($this->order->address_id);
-            if ($address){
-                $newEmail =$address->email;
-            } else {
-                $newEmail =$this->order->client->email;
-            }
-            
-            $notifiable->email_override = $newEmail;
-            $greeting = __('Order Payment Confirmation');
-            $line = __('We are pleased to confirm that your recent order has been successfully processed, and payment has been received. Thank you for choosing ') . ' ' . config('app.name'). ''.'!' ;
+    
+        $greeting = __('Order Update');
+        $line = __('Your order status has been updated.');
+    
+        // Handle different statuses
+        switch ($this->status.'') {
+            case '1':
+                $address = Address::find($this->order->address_id);
+                $greeting = __('There is a new order').' #'.$this->order->randomID;
+                $line = $this->order->delivery_method == '3' ? 
+                    __('You have just received an order on table').' '.$this->order->table->name : 
+                    __('You have just received an order');
+                break;
+            case '3':
+                $greeting = __('Your order has been accepted');
+                $line = __('We are now working on it!');
+                break;
+            case '4':
+                $greeting = __('There is a new order for you.');
+                $line = __('There is a new order assigned to you.');
+                break;
+            case '5':
+                $greeting = __('Your order is ready.');
+                $line = $this->order->delivery_method == '1' ? 
+                    __('Your order is ready for delivery. Expect us soon.') : 
+                    __('Your order is ready for pickup. We are expecting you.');
+                break;
+            case '9':
+                $greeting = __('Order rejected');
+                $line = __('Unfortunately, your order has been rejected. Please contact us for more info.');
+                break;
+            case '200':
+                $address = Address::find($this->order->address_id);
+                if ($address) {
+                    $notifiable->email_override = $address->email ?? $this->order->client->email;
+                } else {
+                    $notifiable->email_override = $this->order->client->email;
+                }
+                $greeting = __('Order Payment Confirmation');
+                if ($this->order->payment_method == 'cod') {
+                    
+                    $line = __('Your Cash on Delivery (COD) order has been received.');
+                } else {
+                    $line = __('Your payment has been successfully processed. Thank you for choosing ') . config('app.name') . '!';
+                }
+              
+                
+                break;
         }
-
+        $restaurant = $this->order->restorant;
+        if (!empty($restaurant)) {
+          if (!empty($restaurant->logom)) {
+              $imagePath = asset($restaurant->logom);
+          }
+        }
+       
         $message = (new MailMessage)
-            ->greeting($greeting)
-            ->subject(__('Order notification').' #'.$this->order->randomID)
+            ->greeting(new HtmlString('<img src="' . $imagePath . '" style="width: 50px; height: auto; border-radius: 10px;" alt="Restaurant Logo"><br>' . $greeting))
+            ->subject(__('Order Notification') . ' #' . $this->order->randomID)
             ->line($line)
             ->action(__('View Order'), url('/orders/'.$this->order->randomID));
-
-        //Add order details
-        $message->line(__('Order items'));
-        $message->line(__('________________'));
-        foreach ($this->order->items as $key => $item) {
-            $lineprice = $item->pivot->qty.' X '.$item->name.$item->pivot->variant_name.' ( '.money($item->pivot->variant_price, config('settings.cashier_currency'), config('settings.do_convertion')).' ) = '.money($item->pivot->qty * $item->pivot->variant_price, config('settings.cashier_currency'), true);
+    
+        // **Restaurant Info**
+        
+        // **Customer Info**
+        if (!empty($address)) {
+            $customerDetails = new HtmlString(
+                '<strong>' . __('Customer Details:') . '</strong><br>' .
+                '<hr style="margin: 5px 0;">' .
+                e($address->companyname ?? __('N/A')) . '<br>' .
+                e($address->departmentname ?? __('N/A')) . '<br>' .
+                e($this->order->client->name) .'<br>' . 
+                e($address->zip ?? __('N/A')) . e($address->street ?? __('N/A')) . '<br><br>'
+            );
+        
+            $message->line($customerDetails);
+        }
+        
+        // **Order Items**
+        $message->line("**" .__('Order Items:'). "**")->line(__('________________'));
+    
+        foreach ($this->order->items as $item) {
+            $variantDetails = !empty($item->pivot->variant_name) ? ' - ' . $item->pivot->variant_name : '';
+            $lineprice = $item->pivot->qty . ' X ' . $item->name . $variantDetails . 
+                ' (' . money($item->pivot->variant_price, config('settings.cashier_currency'), config('settings.do_convertion')) . ') = ' .
+                money($item->pivot->qty * $item->pivot->variant_price, config('settings.cashier_currency'), true);
             $message->line($lineprice);
-        }
-        $message->line(__('________________'));
-        $message->line(__('Sub Total').': '.money($this->order->order_price, config('settings.cashier_currency'), config('settings.do_convertion')));
+    
+            if (!empty($item->pivot->extras)) {
+                $extras = json_decode($item->pivot->extras, true);
+                
+                if (is_array($extras) && count($extras) > 0) { // Check if array is not empty
+                    $extrasHtml = '<strong>' . __('Extras:') . '</strong><br>';
+                    
+                    foreach ($extras as $extra) {
+                        $extrasHtml .= '- ' . e($extra) . '<br>';
+                    }
+            
+                    $message->line(new HtmlString($extrasHtml));
+                }
+            }
 
-        if ($this->order->delivery_method && $this->order->delivery_method.'' == '1') {
-            $message->line(__('Delivery').': '.money($this->order->delivery_price, config('settings.cashier_currency'), config('settings.do_convertion')));
         }
-
+    
+        // **Order Summary**
+        $message->line(__('________________'))
+                ->line(__('Sub Total: ') . money($this->order->order_price, config('settings.cashier_currency'), config('settings.do_convertion')));
+    
+        if ($this->order->tip) {
+            $message->line(__('Tip: ') . money($this->order->tip, config('settings.cashier_currency'), config('settings.do_convertion')));
+        }
+    
+        if ($this->order->delivery_method == '1') {
+            $message->line(__('Delivery Fee: ') . money($this->order->delivery_price, config('settings.cashier_currency'), config('settings.do_convertion')));
+        }
+    
         if ($this->order->discount > 0) {
-            $message->line(__('Discount').': '.money($this->order->discount, config('settings.cashier_currency'), config('settings.do_convertion')));
+            $message->line(__('Discount: ') . money($this->order->discount, config('settings.cashier_currency'), config('settings.do_convertion')));
         }
-
-        $message->line(__('Total').': '.money($this->order->order_price_with_discount + $this->order->delivery_price, config('settings.cashier_currency'), config('settings.do_convertion')));
-
+    
+        $message->line(__('Total: ') . money($this->order->order_price_with_discount + $this->order->delivery_price, config('settings.cashier_currency'), config('settings.do_convertion')));
         return $message;
     }
+    
+    
 
     /**
      * Get the array representation of the notification.

@@ -305,7 +305,7 @@ class BaseOrderRepository extends Controller
     {
         try {
             //Inform owner - via email, sms or db
-            $this->vendor->user->notify((new OrderNotification($this->order, 1, $this->vendor->user))->locale(strtolower(config('settings.app_locale'))));
+            // $this->vendor->user->notify((new OrderNotification($this->order, 1, $this->vendor->user))->locale(strtolower(config('settings.app_locale'))));
 
             //Notify owner with pusher
             if (strlen(config('broadcasting.connections.pusher.secret')) > 4) {

@@ -98,7 +98,7 @@ class OrderController extends Controller
             $address = null;
         }
         $restaurant_id = $request->restaurant_id;
-        $totalOrders = Order::count();
+        $totalOrders = Order::count()+1;
         $randomID = str_pad($restaurant_id, 3, '0', STR_PAD_LEFT) . '000' . $totalOrders; 
         
         if($address && $address->email){
@@ -602,7 +602,14 @@ class OrderController extends Controller
         }
         $broker = $latestOrder->restorant; 
         $setting = Settings::where('id',1)->first();
-       	
+       	if ($latestOrder->payment_method == 'cod'){
+            if ($latestOrder instanceof Order ) {
+                $totalOrders = Order::count();
+                $randomID = str_pad($broker->id, 3, '0', STR_PAD_LEFT) . '000' . $totalOrders; 
+                $latestOrder->randomID = $randomID;
+                $latestOrder->save();
+            }
+        }
         if ($broker->counter == 'none'){
             $status = Status::where('id', 2)->first();
             $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
@@ -1448,11 +1455,11 @@ class OrderController extends Controller
         // TODO: Check if the order is paid
         // Send Email to the customer about order
         // We should use Webhooks to send payment confirmation email
-   	if($order->payment_status == 'paid'){
-        	$order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
-    	}
-        
+   	if($order->payment_status == 'paid' || $order->payment_method == 'cod'){
+        $order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
+        $order->restorant->user->notify((new OrderNotification($order, 1, $order->restorant->user))->locale(strtolower(config('settings.app_locale'))));
 
-        return view('orders.success', ['order' => $order, 'showWhatsApp' => $showWhatsApp]);
+    }     
+    return view('orders.success', ['order' => $order, 'showWhatsApp' => $showWhatsApp]);
     }
 }
