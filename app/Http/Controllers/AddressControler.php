@@ -54,6 +54,8 @@ class AddressControler extends Controller
         $address->addressinfo = $addressUrl;
         $address->lat = $request->lat;
         $address->lng = $request->lng;
+        $address->city = $request->city;
+        $address->country = $request->country;
         $address->zip = $request->zip;
         $address->location = $request->location;
         $address->phone = $request->phone;
@@ -109,6 +111,8 @@ class AddressControler extends Controller
         $address->address = strip_tags($request->location);
         $address->lng = $request->lng;
         $address->zip = $request->zip;
+        $address->city = $request->city;
+        $address->country = $request->country;
         $address->location = $request->location;
         $address->phone = $request->phone;
         $address->name = $request->name;

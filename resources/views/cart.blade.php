@@ -260,6 +260,8 @@
             var name = $('#name').val();
             var email = $('#email').val();
             var phone = $('#phone').val();
+            var city = $('#city').val();
+            var country = $('#country').val();
             var companyname = $('#companyname').val();
             var departmentname = $('#departmentname').val();
             var plusCode = $('#plusCode').val();
@@ -288,6 +290,8 @@
                     lat: lat,
                     lng: lng,
                     zip: zip, 
+                    city: city,
+                    country: country,
                     street: street,
                     location: location,
                     plusCode: plusCode,

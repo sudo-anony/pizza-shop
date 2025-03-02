@@ -135,6 +135,8 @@
                                 <input class="form-control my-3" name="departmentname" id="departmentname" placeholder="{{ __( 'Enter department name here' ) }} ..." type="text" required>
                                 <input class="form-control my-3" name="street" id="street" placeholder="{{ __( 'Enter street here' ) }} ..." type="text" required>
                                 <input class="form-control my-3" name="zip" id="zip" placeholder="{{ __( 'Enter Zip Code here' ) }} ..." type="number" required>
+                                <input class="form-control my-3" name="city" id="city" placeholder="{{ __( 'Enter City here' ) }} ..." type="text" required>
+                                <input class="form-control my-3" name="country" id="country" placeholder="{{ __( 'Enter Country here' ) }} ..." type="text" required>
                                 <input class="form-control my-3" name="location" id="location" placeholder="{{ __( 'Enter location here' ) }} ..." type="text" required>
                                 <input class="form-control my-3" name="plusCode" id="plusCode" placeholder="{{ __( 'Enter plus code here' ) }} ..." type="text" required>
                                 <input class="form-control my-3" name="address_id" id="address_id" type="hidden" value="">

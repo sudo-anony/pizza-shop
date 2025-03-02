@@ -35,6 +35,8 @@
                                     <th scope="col">{{ __('Email') }}</th>
                                     <th scope="col">{{ __('Street') }}</th>
                                     <th scope="col">{{ __('Zip Code') }}</th>
+                                    <th scope="col">{{ __('City') }}</th>
+                                    <th scope="col">{{ __('Country') }}</th>
                                     <th scope="col">{{ __('Google Plus Code') }}</th>
                                     <th scope="col">{{ __('Phone') }}</th>
                                     <th scope="col"></th>
@@ -51,6 +53,8 @@
                                         <td>{{$address->email}}</td>
                                         <td>{{$address->street}}</td>
                                         <td>{{$address->zip}}</td>
+                                        <td>{{$address->city}}</td>
+                                        <td>{{$address->country}}</td>
                                         <td>{{$address->plusCode}}</td>
                                         <td>{{$address->mobileFormat}} {{$address->phone}}</td>
                                         <td class="text-right">

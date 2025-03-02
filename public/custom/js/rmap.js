@@ -130,6 +130,8 @@ function saveLocation(lat, lng){
     var name = $('#name').val();
     var email = $('#email').val();
     var phone = $('#phone').val();
+    var city = $('#city').val();
+    var country = $('#country').val();
     var companyname = $('#companyname').val();
     var departmentname = $('#departmentname').val();
     var plusCode = $('#plusCode').val();
@@ -162,6 +164,8 @@ function saveLocation(lat, lng){
             location: location,
             plusCode: plusCode,
             name: name ,
+            city: city,
+            country: country,
             email: email,
             companyname: companyname,
             departmentname: departmentname,
@@ -189,6 +193,8 @@ function openAddressModal(data = {}) {
     const email = document.getElementById("email");
     const departmentname = document.getElementById("departmentname");
     const name = document.getElementById("name");
+    const city = document.getElementById("city");
+    const country = document.getElementById("country");
     const companyname = document.getElementById("companyname");
     const plusCode = document.getElementById("plusCode");
     const el = { mobileFormat: data.mobileFormat || "" };
@@ -199,6 +205,8 @@ function openAddressModal(data = {}) {
     zipInput.value = data.zip || "";
     locationInput.value = data.location || "";
     phone.value = data.phone || "";
+    city.value = data.city || "";
+    country.value = data.country || "";
     email.value = data.email || "";
     departmentname.value = data.departmentname || "";
     plusCode.value = data.plusCode || "";

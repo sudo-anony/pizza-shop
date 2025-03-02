@@ -37,6 +37,10 @@
                                 
                                 <input class="form-control my-2" name="zip" id="zip" placeholder="{{ __( 'Enter Zip Code here' ) }} ..." type="number" required>
                                 <span class="text-danger" id="zip-error"></span>
+                                <input class="form-control my-2" name="city" id="city" placeholder="{{ __( 'Enter City here' ) }} ..." type="text" required>
+                                <span class="text-danger" id="zip-error"></span>
+                                <input class="form-control my-2" name="country" id="country" placeholder="{{ __( 'Enter Country here' ) }} ..." type="text" required>
+                                <span class="text-danger" id="zip-error"></span>
                                 
                                 <input class="form-control my-2" name="location" id="location" placeholder="{{ __( 'Enter location here' ) }} ..." type="text" required>
                                 <span class="text-danger" id="location-error"></span>
