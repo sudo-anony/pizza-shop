@@ -216,13 +216,13 @@ class OrderNotification extends Notification
         }
         $restaurant = $this->order->restorant;
         if (!empty($restaurant)) {
-          if (!empty($restaurant->logom)) {
-              $imagePath = asset($restaurant->logom);
+          if (!empty($restaurant->logowide)) {
+              $imagePath = asset($restaurant->logowide);
           }
         }
        
         $message = (new MailMessage)
-            ->greeting(new HtmlString('<img src="' . $imagePath . '" style="width: 50px; height: auto; border-radius: 10px;" alt="Restaurant Logo"><br>' . $greeting))
+            ->greeting(new HtmlString('<img src="' . $imagePath . '" style="width: 100px; height: auto; border-radius: 10px;" alt="Restaurant Logo"><br>' . $greeting))
             ->subject(__('Order Notification') . ' #' . $this->order->randomID)
             ->line($line)
             ->action(__('View Order'), url('/orders/'.$this->order->randomID));

@@ -378,7 +378,7 @@ class RestorantController extends Controller
         $restaurant = Restorant::findOrFail($restaurantid);
         $restaurant->name = strip_tags($request->name);
         
-        $restaurant->name_on_cover = $request->name_on_cover == 'true' ? 1 : 0;
+        // $restaurant->name_on_cover = $request->name_on_cover == 'true' ? 1 : 0;
 
         $restaurant->api_key = strip_tags($request->api_key);
         $restaurant->broker = strip_tags($request->broker);
