@@ -130,6 +130,8 @@ class Controller extends BaseController
                     $new_obj->companyname = $address->companyname;
                     $new_obj->departmentname = $address->departmentname;
                     $new_obj->phone = $address->phone;
+                    $new_obj->city = $address->city;
+                    $new_obj->country = $address->country;
                     $new_obj->mobileFormat = $address->mobileFormat;
 
                     if (! empty($polygon)) {
