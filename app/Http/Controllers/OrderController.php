@@ -627,7 +627,7 @@ class OrderController extends Controller
         
         $addressObj = $address ? [
             "addressInfo" => $address->addressinfo,
-            "location" => $address->location,
+            "location" => $address->city ?? "NA",
             "street" => $address->street,
             "zip" => $address->zip,
             "name" => $address->name,
@@ -642,6 +642,7 @@ class OrderController extends Controller
             "email" => $user->email,
             "phone" => $user->phone
         ];
+        
         $total_prepaid_amount = $this->format_price($latestOrder->order_price) + ($this->format_price($latestOrder->tip) ?: 0);
 
         Log::info('Submitting order for user: '.$user->id.' with total amount: '.$total_prepaid_amount);
@@ -720,7 +721,7 @@ class OrderController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
-            'API_KEY: ' . $this->api_key
+            'API_KEY: ' . $broker->api_key
         ]);
         $response = curl_exec($ch);
        

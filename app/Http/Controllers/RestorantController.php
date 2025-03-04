@@ -448,10 +448,22 @@ class RestorantController extends Controller
                     ['name' => 'large', 'w' => 590, 'h' => 400],
                     ['name' => 'medium', 'w' => 295, 'h' => 200],
                     ['name' => 'thumbnail', 'w' => 200, 'h' => 200],
+                ],true
+            );
+        }
+        
+
+        if ($request->hasFile('resto_icon')) {
+            $restaurant->favIcon = $this->saveImageVersions(
+                $this->imagePath,
+                $request->resto_icon,
+                [
+                    ['name' => 'large', 'w' => 100, 'h' => 50],
+                    ['name' => 'medium', 'w' => 100, 'h' => 50],
+                    ['name' => 'thumbnail', 'w' => 100, 'h' => 50],
                 ]
             );
         }
-
         if ($request->hasFile('resto_wide_logo')) {
 
             $uuid = Str::uuid()->toString();

@@ -137,6 +137,64 @@ function saveLocation(lat, lng){
     var plusCode = $('#plusCode').val();
     const dialCodeElement = document.querySelector('.iti__selected-dial-code');
     const dialCode = dialCodeElement.textContent.trim();
+
+    let hasError = false;
+    $('#name-error, #email-error, #phone-error, #street-error, #zip-error, #city-error, #plusCode-error').text('');
+    
+    // Validate Name
+    if ($('#name').val().trim() === "") {
+        $('#name-error').text('Name is required.');
+        hasError = true;
+    }
+
+    // Validate Email
+    if ($('#email').val().trim() === "") {
+        $('#email-error').text('Email is required.');
+        hasError = true;
+    }
+
+    // Validate Phone
+    if ($('#phone').val().trim() === "") {
+        $('#phone-error').text('Phone is required.');
+        hasError = true;
+    }
+
+    // Validate Street
+    if ($('#street').val().trim() === "") {
+        $('#street-error').text('Street is required.');
+        hasError = true;
+    }
+
+    // Validate Zip
+    if ($('#zip').val().trim() === "") {
+        $('#zip-error').text('Zip Code is required.');
+        hasError = true;
+    }
+
+    // Validate Location
+    if ($('#city').val().trim() === "") {
+        $('#city-error').text('City is required.');
+        hasError = true;
+    }
+
+    // Validate Plus Code
+    if ($('#plusCode').val().trim() === "") {
+        $('#plusCode-error').text('Plus code is required.');
+        hasError = true;
+    }
+
+    // If no errors, proceed with form submission or AJAX call
+    if (hasError) {
+        // You can either submit the form or perform an AJAX request here.
+        // For example, using jQuery:
+        // $('form').submit();
+        return;
+    }
+
+    // if (!street.trim() || !zip.trim() || !location.trim() || !name.trim() || !email.trim() || !phone.trim()) {
+    //     alert("Please fill in all required fields.");
+    //     return;
+    // }
     
     let url = "/addresses";
     let type = 'POST';
@@ -161,11 +219,11 @@ function saveLocation(lat, lng){
             lng: lng,
             zip: zip, 
             street: street,
+	    city: city,
+            country: country,
             location: location,
             plusCode: plusCode,
             name: name ,
-            city: city,
-            country: country,
             email: email,
             companyname: companyname,
             departmentname: departmentname,
@@ -192,9 +250,9 @@ function openAddressModal(data = {}) {
     const phone = document.getElementById("phone");
     const email = document.getElementById("email");
     const departmentname = document.getElementById("departmentname");
-    const name = document.getElementById("name");
     const city = document.getElementById("city");
     const country = document.getElementById("country");
+    const name = document.getElementById("name");
     const companyname = document.getElementById("companyname");
     const plusCode = document.getElementById("plusCode");
     const el = { mobileFormat: data.mobileFormat || "" };
@@ -205,10 +263,10 @@ function openAddressModal(data = {}) {
     zipInput.value = data.zip || "";
     locationInput.value = data.location || "";
     phone.value = data.phone || "";
-    city.value = data.city || "";
-    country.value = data.country || "";
     email.value = data.email || "";
     departmentname.value = data.departmentname || "";
+    city.value = data.city || "";
+    country.value = data.country || "";
     plusCode.value = data.plusCode || "";
     name.value = data.name || "";
     companyname.value = data.companyname || "";

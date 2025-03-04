@@ -268,6 +268,58 @@
             const dialCodeElement = document.querySelector('.iti__selected-dial-code');
             const dialCode = dialCodeElement.textContent.trim();
             
+            let hasError = false;
+            $('#name-error, #email-error, #phone-error, #street-error, #zip-error, #city-error, #plusCode-error').text('');
+            
+            // Validate Name
+            if ($('#name').val().trim() === "") {
+                $('#name-error').text('Name is required.');
+                hasError = true;
+            }
+
+            // Validate Email
+            if ($('#email').val().trim() === "") {
+                $('#email-error').text('Email is required.');
+                hasError = true;
+            }
+
+            // Validate Phone
+            if ($('#phone').val().trim() === "") {
+                $('#phone-error').text('Phone is required.');
+                hasError = true;
+            }
+
+            // Validate Street
+            if ($('#street').val().trim() === "") {
+                $('#street-error').text('Street is required.');
+                hasError = true;
+            }
+
+            // Validate Zip
+            if ($('#zip').val().trim() === "") {
+                $('#zip-error').text('Zip Code is required.');
+                hasError = true;
+            }
+
+            // Validate Location
+            if ($('#city').val().trim() === "") {
+                $('#city-error').text('City is required.');
+                hasError = true;
+            }
+
+            // Validate Plus Code
+            if ($('#plusCode').val().trim() === "") {
+                $('#plusCode-error').text('Plus code is required.');
+                hasError = true;
+            }
+
+            // If no errors, proceed with form submission or AJAX call
+            if (hasError) {
+                // You can either submit the form or perform an AJAX request here.
+                // For example, using jQuery:
+                // $('form').submit();
+                return;
+            }
             let url = "/addresses";
             let type = 'POST';
             if (addressId.length > 0){
