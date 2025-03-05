@@ -244,7 +244,7 @@ class BaseOrderRepository extends Controller
 
         //Set coupons
         if ($this->request->has('coupon_code') && strlen($this->request->coupon_code) > 0) {
-            $coupon = Coupons::where(['code' => $this->request->coupon_code])->where('restaurant_id', $this->vendor->id)->get()->first();
+            $coupon = Coupons::where(['code' => $this->request->coupon_code])->where('company_id', $this->vendor->id)->get()->first();
             if ($coupon) {
                 $deduct = $coupon->calculateDeduct($this->order->order_price);
                 if ($deduct) {

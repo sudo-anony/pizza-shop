@@ -643,10 +643,10 @@ class OrderController extends Controller
             "phone" => $user->phone
         ];
         
-        $total_prepaid_amount = $this->format_price($latestOrder->order_price) + ($this->format_price($latestOrder->tip) ?: 0);
-
-        Log::info('Submitting order for user: '.$user->id.' with total amount: '.$total_prepaid_amount);
-        Log::info('Order items: '.json_encode($orderItems));
+        $total_prepaid_amount = round( $this->format_price($latestOrder->order_price)  + ($this->format_price($latestOrder->tip) ?: 0)  + ($this->format_price($latestOrder->discount) ?: 0),2);
+        
+        // dd('Submitting order for user: '.$user->id.' with total amount: '.$total_prepaid_amount ,$this->format_price($latestOrder->order_price) ,  ($this->format_price($latestOrder->tip)),($this->format_price($latestOrder->discount) ?: 0));
+        // Log::info('Order items: '.json_encode($orderItems));
 
         $itemsArray = [];
         foreach ($orderItems as $item) {
@@ -688,7 +688,7 @@ class OrderController extends Controller
             "id" => $unique_id,
             "ordertime" => $orderTime,
             "deliverytime" => $deliveryTime,
-            "orderprice" => $total_prepaid_amount, 
+            "orderprice" => $this->format_price($total_prepaid_amount), 
             "orderdiscount" => $this->format_price($latestOrder->discount),
             "deliverycost" => $this->format_price($latestOrder->delivery_price),
             "tip" => $this->format_price($latestOrder->tip), 
@@ -724,11 +724,8 @@ class OrderController extends Controller
             'API_KEY: ' . $broker->api_key
         ]);
         $response = curl_exec($ch);
-       
-        
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($http_code == 200) {
-  
                 $status = Status::where('id', 14)->first();
                 $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
             
