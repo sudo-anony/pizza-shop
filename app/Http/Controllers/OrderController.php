@@ -643,7 +643,7 @@ class OrderController extends Controller
             "phone" => $user->phone
         ];
         
-        $total_prepaid_amount = round( $this->format_price($latestOrder->order_price)  + ($this->format_price($latestOrder->tip) ?: 0)  + ($this->format_price($latestOrder->discount) ?: 0),2);
+        $total_prepaid_amount = round( $this->format_price($latestOrder->order_price)  + ($this->format_price($latestOrder->tip) ?: 0)  - ($this->format_price($latestOrder->discount) ?: 0),2);
         
         // dd('Submitting order for user: '.$user->id.' with total amount: '.$total_prepaid_amount ,$this->format_price($latestOrder->order_price) ,  ($this->format_price($latestOrder->tip)),($this->format_price($latestOrder->discount) ?: 0));
         // Log::info('Order items: '.json_encode($orderItems));
@@ -689,7 +689,7 @@ class OrderController extends Controller
             "ordertime" => $orderTime,
             "deliverytime" => $deliveryTime,
             "orderprice" => $this->format_price($total_prepaid_amount), 
-            "orderdiscount" => $this->format_price($latestOrder->discount),
+            "orderdiscount" => $this->format_price(-$latestOrder->discount),
             "deliverycost" => $this->format_price($latestOrder->delivery_price),
             "tip" => $this->format_price($latestOrder->tip), 
             "customer" => [
