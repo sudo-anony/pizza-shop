@@ -238,8 +238,7 @@ class OrderNotification extends Notification
                 e($address->departmentname ?? __('N/A')) . '<br>' .
                 e($this->order->client->name) .'<br>' . 
                 e($address->street ?? __('N/A')) .'<br>' . 
-                e($address->zip ?? __('N/A')) .' '. e($address->city ?? __('N/A')) . '<br>'.
-                e($address->country ?? __('N/A')) .'<br><br>'
+                e($address->zip ?? __('N/A')) .' '. e($address->city ?? __('N/A')) . '<br><br>'
             );
         
             $message->line($customerDetails);
