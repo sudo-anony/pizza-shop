@@ -85,6 +85,9 @@
                             @if(!empty($order->address->zip))
                                 <h4>{{ $order->address->zip }}</h4>
                             @endif
+                            @if(!empty($order->address->city))
+                                <h4>{{ $order->address->city }}</h4>
+                            @endif
                         </div>
                         
                     @else
