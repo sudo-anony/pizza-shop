@@ -5,12 +5,12 @@ namespace App\Providers;
 use Akaunting\Module\Facade as Module;
 use App\Settings;
 use App\User;
+use App\Restorant;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
-
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $restorant = Restorant::find(17); 
         if (method_exists(Cashier::class, 'useCustomerModel')) {
             Cashier::useCustomerModel(User::class);
         }
@@ -41,12 +42,14 @@ class AppServiceProvider extends ServiceProvider
 
             //Site logo
             if ((isset($settings['site_logo']) && ! (strpos($settings['site_logo'], '/') !== false))) {
-                $settings['site_logo'] = '/uploads/settings/'.$settings['site_logo'].'_logo.jpg';
+                // $settings['site_logo'] = '/uploads/settings/'.$settings['site_logo'].'_logo.jpg';
+                $settings['site_logo'] = $restorant->logowide;
             }
 
             //Site logo dark
             if ((isset($settings['site_logo_dark']) && ! (strpos($settings['site_logo_dark'], '/') !== false))) {
-                $settings['site_logo_dark'] = '/uploads/settings/'.$settings['site_logo_dark'].'_site_logo_dark.jpg';
+                // $settings['site_logo_dark'] = '/uploads/settings/'.$settings['site_logo_dark'].'_site_logo_dark.jpg';
+                $settings['site_logo_dark'] = $restorant->logowidedark;
             }
 
             //Search
@@ -56,12 +59,13 @@ class AppServiceProvider extends ServiceProvider
 
             //Details default cover image
             if ((isset($settings['restorant_details_cover_image']) && ! (strpos($settings['restorant_details_cover_image'], '/') !== false))) {
-                $settings['restorant_details_cover_image'] = '/uploads/settings/'.$settings['restorant_details_cover_image'].'_cover.jpg';
+                // $settings['restorant_details_cover_image'] = '/uploads/settings/'.$settings['restorant_details_cover_image'].'_cover.jpg';
+                $settings['restorant_details_cover_image'] = $restorant->coverm;
             }
 
             //Restaurant default image
             if ((isset($settings['restorant_details_image']) && ! (strpos($settings['restorant_details_image'], '/') !== false))) {
-                $settings['restorant_details_image'] = '/uploads/settings/'.$settings['restorant_details_image'].'_large.jpg';
+                $settings['restorant_details_image'] = $restorant->logom;
             }
 
             //Set the list of added modules

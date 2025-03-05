@@ -1,3 +1,7 @@
+@php
+    $restorant = \App\Restorant::find(17);
+@endphp
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -13,9 +17,19 @@
         <title>{{ config('app.name', 'FoodTiger') }}</title>
 
         <!-- Favicon -->
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        @if($restorant)
+            <link rel="icon" type="image/png" sizes="32x32" href="{{ $restorant->favIcon }}">
+            <link rel="apple-touch-icon" sizes="180x180" href="{{ $restorant->favIcon }}">
+        @endif
+
+        @if(!$restorant)
+   
+            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+            <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+            <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        @endif
+
+
 
         <!-- Fonts -->
         <link href="{{ asset('css') }}/gfonts.css" rel="stylesheet">
