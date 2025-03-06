@@ -205,6 +205,7 @@ var initStripePayment=function(){
             console.log(RESTORANT);
             console.log('Form saved to localStorage:', formObject);
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            let discount = cartTotal.deduct;
             const response = await fetch('/create-checkout-session', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -216,6 +217,7 @@ var initStripePayment=function(){
                     deliveryMethod: $('input[name="deliveryType"]:checked').val(),
                     restaurant_id: RESTORANT.id,
                     tip: $('#tip').val(),
+                    discount: discount
                 }),
                 headers: {
                     'Content-Type': 'application/json',

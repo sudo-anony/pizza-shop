@@ -251,34 +251,52 @@
                                     });
                                 @endphp
 
-                                @foreach ($sortedItems as $item)
-                                    <div class="col-lg-3">
-                                        <a href="{{ route('items.edit', $item) }}">
-                                            <div class="card">
-                                                <img class="card-img-top" src="{{ $item->logom }}" alt="...">
-                                                <div class="card-body">
-                                                    <h3 class="card-title text-primary text-uppercase">{{ $item->name }}</h3>
-                                                    <p class="card-text description mt-3">{{ $item->description }}</p>
+                               
+                                <div class="table-responsive">
+                                    <table class="table align-items-center">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th style="width: 15%;" class="table-web" scope="col">{{ __('Image') }}</th>
+                                            <th style="width: 35%;" class="table-web" scope="col">{{ __('Name') }}</th>
+                                            <th style="width: 25%;" class="table-web" scope="col">{{ __('Price') }}</th>
+                                            <th style="width: 25%;" class="table-web" scope="col">{{ __('Stock') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach ($sortedItems as $item)
+                                    <tr>
+                                        <td style="width: 15%;">
+                                            <a href="{{ route('items.edit', $item) }}">
+                                                <img class="rounded" style="width: 70px; height: 50px;" src="{{ $item->logom }}" alt="...">
+                                            </a>
+                                        </td>
+                                        <td style="width: 35%;">
+                                            <a href="{{ route('items.edit', $item) }}">
+                                                <h3 class="card-title text-primary text-uppercase">{{ $item->name }}</h3>
+                                            </a>
+                                        </td>
+                                        <td style="width: 25%;">
+                                            <a href="{{ route('items.edit', $item) }}">
+                                                @money($item->price, config('settings.cashier_currency'), config('settings.do_convertion'))
+                                            </a>
+                                        </td>
+                                        <td style="width: 25%;">
+                                            <a href="{{ route('items.edit', $item) }}">
+                                                @if ($item->available == 1)
+                                                    <span class="text-success mr-2">{{ __("AVAILABLE") }}</span>
+                                                @else
+                                                    <span class="text-danger mr-2">{{ __("UNAVAILABLE") }}</span>
+                                                @endif
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                    </tbody>
+                                    </table>
+                                </div>
+                               
 
-                                                    <span class="badge badge-primary badge-pill">
-                                                        @money($item->price, config('settings.cashier_currency'), config('settings.do_convertion'))
-                                                    </span>
-
-                                                    <p class="mt-3 mb-0 text-sm">
-                                                        @if ($item->available == 1)
-                                                            <span class="text-success mr-2">{{ __("AVAILABLE") }}</span>
-                                                        @else
-                                                            <span class="text-danger mr-2">{{ __("UNAVAILABLE") }}</span>
-                                                        @endif
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <br/>
-                                        </a>
-                                    </div>
-                                @endforeach
-
-                                    @if($canAdd)
+                                    <!-- @if($canAdd)
                                     <div class="col-lg-3" >
                                         <a   data-toggle="modal" data-target="#modal-new-item" data-toggle="tooltip" data-placement="top" href="javascript:void(0);" onclick=(setSelectedCategoryId({{ $category->id }}))>
                                             <div class="card">
@@ -290,7 +308,7 @@
                                         </a>
                                         <br />
                                     </div>
-                                    @endif
+                                    @endif -->
                                 </div>
                             </div>
                         </div>
@@ -303,31 +321,49 @@
                                         return is_numeric($item->name) ? [(int)$item->name, ''] : [INF, $item->name];
                                     });
                                 @endphp
-                                    @foreach ( $sortedItems as $item)
-                                        <div class="col-lg-3">
-                                            <a href="{{ route('items.edit', $item) }}">
-                                                <div class="card">
-                                                    <img class="card-img-top" src="{{ $item->logom }}" alt="...">
-                                                    <div class="card-body">
-                                                        <h3 class="card-title text-primary text-uppercase">{{ $item->name }}</h3>
-                                                        <p class="card-text description mt-3">{{ $item->description }}</p>
-
-                                                        <span class="badge badge-primary badge-pill">@money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))</span>
-
-                                                        <p class="mt-3 mb-0 text-sm">
-                                                            @if($item->available == 1)
-                                                            <span class="text-success mr-2">{{ __("AVAILABLE") }}</span>
-                                                            @else
-                                                            <span class="text-danger mr-2">{{ __("UNAVAILABLE") }}</span>
-                                                            @endif
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <br/>
-                                            </a>
-                                        </div>
+                                     <div class="table-responsive">
+                                    <table class="table align-items-center">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th style="width: 15%;" class="table-web" scope="col">{{ __('Image') }}</th>
+                                            <th style="width: 35%;" class="table-web" scope="col">{{ __('Name') }}</th>
+                                            <th style="width: 25%;" class="table-web" scope="col">{{ __('Price') }}</th>
+                                            <th style="width: 25%;" class="table-web" scope="col">{{ __('Stock') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach ($sortedItems as $item)
+                                    <tr>
+                                    <td style="width: 15%;">
+                                        <a href="{{ route('items.edit', $item) }}">
+                                            <img class="rounded" style="width: 70px; height: 50px;" src="{{ $item->logom }}" alt="...">
+                                        </a>
+                                    </td>
+                                    <td style="width: 35%;">
+                                        <a href="{{ route('items.edit', $item) }}">
+                                            <h3 class="card-title text-primary text-uppercase">{{ $item->name }}</h3>
+                                        </a>
+                                    </td>
+                                    <td style="width: 25%;">
+                                        <a href="{{ route('items.edit', $item) }}">
+                                            @money($item->price, config('settings.cashier_currency'), config('settings.do_convertion'))
+                                        </a>
+                                    </td>
+                                    <td style="width: 25%;">
+                                        <a href="{{ route('items.edit', $item) }}">
+                                            @if ($item->available == 1)
+                                                <span class="text-success mr-2">{{ __("AVAILABLE") }}</span>
+                                            @else
+                                                <span class="text-danger mr-2">{{ __("UNAVAILABLE") }}</span>
+                                            @endif
+                                        </a>
+                                    </td>
+                                </tr>
                                     @endforeach
-                                    @if($canAdd)
+                                    </tbody>
+                                    </table>
+                                </div>
+                                    <!-- @if($canAdd)
                                     <div class="col-lg-3" >
                                         <a   data-toggle="modal" data-target="#modal-new-item" data-toggle="tooltip" data-placement="top" href="javascript:void(0);" onclick=(setSelectedCategoryId({{ $category->id }}))>
                                             <div class="card">
@@ -339,7 +375,7 @@
                                         </a>
                                         <br />
                                     </div>
-                                    @endif
+                                    @endif -->
                                 </div>
                             </div>
                         </div>

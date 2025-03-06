@@ -35,8 +35,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use willvincent\Rateable\Rating;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
-use Stripe\PaymentIntent;
-use Illuminate\Support\Facades\Mail;
+use Stripe\Coupon;
 use Illuminate\Support\Facades\Log;
 
 use App\Mail\OrderPaymentConfirmation;
@@ -84,12 +83,8 @@ class OrderController extends Controller
         }
     }
     
-    
-
     public function checkout(Request $request){
-        dd($request);
-        if($request->deliveryMethod !== 'pickup')
-        {
+        if($request->deliveryMethod !== 'pickup'){
             if(array_key_exists('addressID', $request->formDetails)){
                 $address = Address::findOrFail($request->formDetails['addressID']);
             }else{
@@ -98,34 +93,31 @@ class OrderController extends Controller
         }else{
             $address = null;
         }
+    
         $restaurant_id = $request->restaurant_id;
-        $totalOrders = Order::count()+1;
+        $totalOrders = Order::count() + 1;
         $randomID = str_pad($restaurant_id, 3, '0', STR_PAD_LEFT) . '000' . $totalOrders; 
         
-        if($address && $address->email){
-            $email = $address->email;
-        }else{
-            $email = auth()->user()->email;
-        }
-
+        $email = $address && $address->email ? $address->email : auth()->user()->email;
+    
+        // Create line items
         $items = [];
-
+    
         foreach($request->cartItems as $item){
             $items[] = [
                 'price_data' => [
                     'currency' => 'eur',
                     'product_data' => [
                         'name' => $item['name'],
-                        // 'description' => $item['id'],
                     ],
                     'unit_amount' => $item['price'] * 100,
                 ],
                 'quantity' => $item['quantity'],
             ];
         }
-
+    
         if($request->tip){
-            $tip = $this->moneyToFloat($request->tip);
+            $tip = $this->moneyToFloat($request->tip) * 100;
             $items[] = [
                 'price_data' => [
                     'currency' => 'eur',
@@ -133,51 +125,59 @@ class OrderController extends Controller
                         'name' => 'Tip',
                         'description' => 'Tip',
                     ],
-                    'unit_amount' => $tip * 100,
+                    'unit_amount' => $tip,
                 ],
                 'quantity' => 1,
             ];
         }
+    
         Stripe::setApiKey(env('STRIPE_SECRET')); 
+    
+        $couponId = null;
+        if ($request->discount) {
+            try {
+                $discountAmount = $this->moneyToFloat($request->discount) ;
+                $coupon =  Coupon::create([
+                    'amount_off' => $discountAmount,
+                    'currency' => 'eur',
+                    'duration' => 'once'
+                ]);
+                $couponId = $coupon->id;
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Failed to create discount: ' . $e->getMessage()], 500);
+            }
+        }
+    
         try {
-            $checkoutSession = Session::create([
-                'payment_method_types' => [
-                    'card',  
-                    'klarna', 
-                    'sepa_debit', 
-          //          'sofort',
-                      'paypal', 
-                   
-                   'revolut_pay',
-                 
-                ],
+            $checkoutSessionData = [
+                'payment_method_types' => ['card', 'klarna', 'sepa_debit', 'paypal', 'revolut_pay'],
                 'mode' => 'payment',
-                // 'line_items' => [[
-                //     'price_data' => [
-                //         'currency' => 'eur',
-                //         'product_data' => [
-                //             'name' => $request->name,
-                //             'description' => "Order #{$randomID}",
-                //         ],
-                //         'unit_amount' => $request->totalPrice * 100,
-                //     ],
-                //     'quantity' => 1,
-                // ]],
                 'line_items' => $items,
-                'customer_email' => $email, // Use authenticated user's email if address is not set
+                'customer_email' => $email,
                 'success_url' => url('/completeOrder') . '?session_id={CHECKOUT_SESSION_ID}&id=' . $randomID,
                 'cancel_url' => route('cart.checkout'),
                 'metadata' => [
                     'order_id' => $randomID,
                     'customer_email' => $email,
                 ],
-            ]);
+            ];
+    
+            // Apply Coupon to Checkout Session if Exists
+            if ($couponId) {
+                $checkoutSessionData['discounts'] = [
+                    ['coupon' => $couponId]
+                ];
+            }
+    
+            $checkoutSession = Session::create($checkoutSessionData);
     
             return response()->json(['url' => $checkoutSession->url]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
+    
     
     
 
