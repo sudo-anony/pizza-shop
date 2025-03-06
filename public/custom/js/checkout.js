@@ -202,7 +202,7 @@ var initStripePayment=function(){
                 formObject[key] = value;
             });
             localStorage.setItem('orderForm', JSON.stringify(formObject));
-        
+            console.log(RESTORANT);
             console.log('Form saved to localStorage:', formObject);
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             const response = await fetch('/create-checkout-session', {
@@ -210,7 +210,12 @@ var initStripePayment=function(){
                 body: JSON.stringify({
                     totalPrice: totalPrice,
                     name: name,
-                    totalQuantity: totalQuantity
+                    totalQuantity: totalQuantity,
+                    formDetails: formObject,
+                    cartItems: formattedItems,
+                    deliveryMethod: $('input[name="deliveryType"]:checked').val(),
+                    restaurant_id: RESTORANT.id,
+                    tip: $('#tip').val(),
                 }),
                 headers: {
                     'Content-Type': 'application/json',

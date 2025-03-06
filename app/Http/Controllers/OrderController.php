@@ -87,6 +87,7 @@ class OrderController extends Controller
     
 
     public function checkout(Request $request){
+        dd($request);
         if($request->deliveryMethod !== 'pickup')
         {
             if(array_key_exists('addressID', $request->formDetails)){
@@ -124,10 +125,7 @@ class OrderController extends Controller
         }
 
         if($request->tip){
-            $tipString = str_replace(['€', ' '], '', $request->tip);
-            $tipString = str_replace('.', '', $tipString);
-            $tipString = str_replace(',', '.', $tipString);
-            $tip = floatval($tipString);
+            $tip = $this->moneyToFloat($request->tip);
             $items[] = [
                 'price_data' => [
                     'currency' => 'eur',
