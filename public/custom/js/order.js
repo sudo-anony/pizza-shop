@@ -432,13 +432,18 @@ window.onload = function () {
 
 
 $(".nav-item-category").on('click', function() {
+    $(".nav-item-category .nav-link").removeClass("active");
+    $(this).find(".nav-link").addClass("active");
     $.each(categories, function( index, value ) {
         $("."+value).show();
     });
-
     var id = $(this).attr("id");
     var category_id = id.substr(id.indexOf("_")+1, id.length);
-
+    if (category_id == "angeboteoffercategoryid"){
+        $("#offer_category_div").removeClass("d-none");
+    }else{
+        $("#offer_category_div").addClass("d-none");
+    }
     $.each(categories, function( index, value ) {
         if(value != category_id){
             $("."+value).hide();

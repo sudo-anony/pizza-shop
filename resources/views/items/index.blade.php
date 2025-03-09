@@ -129,14 +129,15 @@
                                             <button class="btn btn-icon btn-1 btn-sm btn-warning" type="button" id="edit" data-toggle="modal" data-target="#modal-edit-category" data-toggle="tooltip" data-placement="top" title="{{ __('Edit category') }} {{ $category->name }}" data-id="{{ $category->id }}" data-name="{{ $category->name }}" data-subtitle="{{ $category->subtitle }}" >
                                                 <span class="btn-inner--icon"><i class="fa fa-edit"></i></span>
                                             </button>
-
-                                            <form action="{{ route('categories.destroy', $category) }}" method="post">
-                                                @csrf
-                                                @method('delete')
-                                                <button class="btn btn-icon btn-1 btn-sm btn-danger" type="button" onclick="confirm('{{ __("Are you sure you want to delete this category?") }}') ? this.parentElement.submit() : ''" data-toggle="tooltip" data-placement="top" title="{{ __('Delete') }} {{$category->name}}">
-                                                    <span class="btn-inner--icon"><i class="fa fa-trash"></i></span>
-                                                </button>
-                                            </form>
+                                            @if ($category->id != 159)
+                                                <form action="{{ route('categories.destroy', $category) }}" method="post">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button class="btn btn-icon btn-1 btn-sm btn-danger" type="button" onclick="confirm('{{ __("Are you sure you want to delete this category?") }}') ? this.parentElement.submit() : ''" data-toggle="tooltip" data-placement="top" title="{{ __('Delete') }} {{$category->name}}">
+                                                        <span class="btn-inner--icon"><i class="fa fa-trash"></i></span>
+                                                    </button>
+                                                </form>
+                                            @endif
 
                                             @if(count($categories)>1)
                                                 <div style="margin-left: 10px; margin-right: 10px">|</div>

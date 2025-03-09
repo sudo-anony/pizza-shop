@@ -124,94 +124,143 @@
         <input type="hidden" id="rid" value="{{ $restorant->id }}"/>
         <div class="container container-restorant">
 
-            
-            
             @if(!$restorant->categories->isEmpty())
-        <nav class="tabbable sticky" style="top: {{ config('app.isqrsaas') ? 64:88 }}px;">
-                <ul class="nav nav-pills bg-white mb-2">
-                    <li class="nav-item nav-item-category ">
-                        <a class="nav-link  mb-sm-3 mb-md-0 active" data-toggle="tab" role="tab" href="">{{ __('All categories') }}</a>
-                    </li>
-                    @foreach ( $restorant->categories as $key => $category)
-                        @if(!$category->aitems->isEmpty())
-                            <li class="nav-item nav-item-category" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
-                                <a class="nav-link mb-sm-3 mb-md-0" data-toggle="tab" role="tab" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" href="#{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">{{ $category->name }}</a>
-                            </li>
-                        @endif
-                    @endforeach
-                </ul>
-
-                
-            </nav>
-
-            
+                @php
+                    $offer_category = $restorant->categories->where("id",159)->first();
+                @endphp
+                @if (!empty($offer_category))
+                    <nav class="tabbable sticky" style="top: {{ config('app.isqrsaas') ? 64:88 }}px;">
+                        <ul class="nav nav-pills bg-white mb-2">
+                            @if(!$offer_category->aitems->isEmpty())
+                                <li class="nav-item nav-item-category" style="width: 20%;text-align: center;" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($offer_category->name)).strval('offer_category_id')) }}">
+                                    <a class="nav-link mb-sm-3 mb-md-0" data-toggle="tab" role="tab" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($offer_category->name)).strval('offer_category_id')) }}" href="#{{ clean(str_replace(' ', '', strtolower($offer_category->name)).strval('offer_category_id')) }}">{{ $offer_category->name }}</a>
+                                </li>
+                            @endif
+                        </ul>                
+                    </nav>
+                @endif  
+                <nav class="tabbable sticky" style="top: {{ config('app.isqrsaas') ? 64:88 }}px;">
+                    <ul class="nav nav-pills bg-white mb-2">
+                        <li class="nav-item nav-item-category">
+                            <a class="nav-link  mb-sm-3 mb-md-0 active" id="all_categories" data-toggle="tab" role="tab" href="">{{ __('All categories') }}</a>
+                        </li>
+                        @foreach ( $restorant->categories as $key => $category)
+                            @if(!$category->aitems->isEmpty()&& $category->id != 159)
+                                <li class="nav-item nav-item-category" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
+                                    <a class="nav-link mb-sm-3 mb-md-0" data-toggle="tab" role="tab" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" href="#{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">{{ $category->name }}</a>
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>                
+                </nav>            
             @endif
 
             
 
 
             @if(!$restorant->categories->isEmpty())
-            @foreach ( $restorant->categories as $key => $category)
-                @if(!$category->aitems->isEmpty())
-                <div id="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" class="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
-                    <h1 style="line-height: 1;">{{ $category->name }}</h1>
-                    @if (!empty($category->subtitle))
-                        <h4 class="category-subtitle">{{ $category->subtitle }}</h4>
-                    @endif
-                </div>
-                @endif
-                <div class="row {{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
-                @php
-                    $sortedItems = $category->items->sortBy(function ($item) {
-                        return is_numeric($item->name) ? [(int)$item->name, ''] : [INF, $item->name];
-                    });
-                @endphp
-                    @foreach ($sortedItems as $item)
-                        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-                            <div class="strip">
-                                @if(!empty($item->image))
-                                <figure>
-                                    <a @if (!($item->qty_management==1 && $item->qty<1)) onClick="setCurrentItem({{ $item->id }}, '{{ $item->allergens }}')" @endif href="javascript:void(0)">
-                                        <img src="{{ $item->logom }}" loading="lazy" data-src="{{ config('global.restorant_details_image') }}" class="img-fluid lazy" alt="">
-                                    </a>
-                                </figure>
-                                @endif
-                                
-                                @if ($item->qty_management==1&&$item->qty<1)
-                                    [{{ __('Out of stock')}}] - {{ $item->name }}
-                                @else
-                                    <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }}, '{{ $item->allergens }}')" href="javascript:void(0)">{{ $item->name }}</a></b></div>
-                                @endif
-
-                                <div class="res_description">{{ $item->short_description}}</div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="res_mimimum">
-                                            @if ($item->discounted_price>0)
-                                                <span class="text-muted" style="text-decoration: line-through;">@money($item->discounted_price, config('settings.cashier_currency'),config('settings.do_convertion'))</span>
+                @foreach ( $restorant->categories as $key => $category)
+                    @if ($category->id == 159)
+                        <span id="offer_category_div">
+                            @if(!$category->aitems->isEmpty())
+                                <div id="{{ clean(str_replace(' ', '', strtolower($category->name)).strval('offer_category_id')) }}" class="{{ clean(str_replace(' ', '', strtolower($category->name)).strval('offer_category_id')) }}">
+                                    <h1 style="line-height: 1;">{{ $category->name }}</h1>
+                                    @if (!empty($category->subtitle))
+                                        <h4 class="category-subtitle">{{ $category->subtitle }}</h4>
+                                    @endif
+                                </div>
+                            @endif
+                        
+                            <div class="row {{ clean(str_replace(' ', '', strtolower($category->name)).strval('offer_category_id')) }}">
+                                @php
+                                    $sortedItems = $category->items->sortBy(function ($item) {
+                                        return is_numeric($item->name) ? [(int)$item->name, ''] : [INF, $item->name];
+                                    });
+                                @endphp
+                                @foreach ($sortedItems as $item)
+                                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                                        <div class="strip">
+                                            @if(!empty($item->image))
+                                            <figure>
+                                                <a @if (!($item->qty_management==1 && $item->qty<1)) onClick="setCurrentItem({{ $item->id }}, '{{ $item->allergens }}')" @endif href="javascript:void(0)">
+                                                    <img src="{{ $item->logom }}" loading="lazy" data-src="{{ config('global.restorant_details_image') }}" class="img-fluid lazy" alt="">
+                                                </a>
+                                            </figure>
                                             @endif
-                                            @money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))
+                                            
+                                            @if ($item->qty_management==1&&$item->qty<1)
+                                                [{{ __('Out of stock')}}] - {{ $item->name }}
+                                            @else
+                                                <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }}, '{{ $item->allergens }}')" href="javascript:void(0)">{{ $item->name }}</a></b></div>
+                                            @endif
+
+                                            <!-- <div class="res_description">{{ $item->short_description}}</div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="res_mimimum">
+                                                        @if ($item->discounted_price>0)
+                                                            <span class="text-muted" style="text-decoration: line-through;">@money($item->discounted_price, config('settings.cashier_currency'),config('settings.do_convertion'))</span>
+                                                        @endif
+                                                        @money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                    
                                         </div>
                                     </div>
-                                    <!-- <div class="col-6">
-                                        <div class="allergens" style="text-align: right;">
-                                            @foreach ($item->allergens as $allergen)
-                                             <div class='allergen' data-toggle="tooltip" data-placement="bottom" title="{{$allergen->title}}" >
-                                                 <img  src="{{$allergen->image_link}}" />
-                                             </div>
-                                            @endforeach
-                                             
-                                        </div>
-                                    </div> -->
-                                </div>
-                                
-                                
-                           
+                                @endforeach
+                            </div>     
+                        </span>
+                    @else
+                        @if(!$category->aitems->isEmpty())
+                            <div id="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" class="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
+                                <h1 style="line-height: 1;">{{ $category->name }}</h1>
+                                @if (!empty($category->subtitle))
+                                    <h4 class="category-subtitle">{{ $category->subtitle }}</h4>
+                                @endif
                             </div>
+                        @endif
+                        <div class="row {{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
+                            @php
+                                $sortedItems = $category->items->sortBy(function ($item) {
+                                    return is_numeric($item->name) ? [(int)$item->name, ''] : [INF, $item->name];
+                                });
+                            @endphp
+                            @foreach ($sortedItems as $item)
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                                    <div class="strip">
+                                        @if(!empty($item->image))
+                                        <figure>
+                                            <a @if (!($item->qty_management==1 && $item->qty<1)) onClick="setCurrentItem({{ $item->id }}, '{{ $item->allergens }}')" @endif href="javascript:void(0)">
+                                                <img src="{{ $item->logom }}" loading="lazy" data-src="{{ config('global.restorant_details_image') }}" class="img-fluid lazy" alt="">
+                                            </a>
+                                        </figure>
+                                        @endif
+                                        
+                                        @if ($item->qty_management==1&&$item->qty<1)
+                                            [{{ __('Out of stock')}}] - {{ $item->name }}
+                                        @else
+                                            <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }}, '{{ $item->allergens }}')" href="javascript:void(0)">{{ $item->name }}</a></b></div>
+                                        @endif
+
+                                        <div class="res_description">{{ $item->short_description}}</div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="res_mimimum">
+                                                    @if ($item->discounted_price>0)
+                                                        <span class="text-muted" style="text-decoration: line-through;">@money($item->discounted_price, config('settings.cashier_currency'),config('settings.do_convertion'))</span>
+                                                    @endif
+                                                    @money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))
+                                                </div>
+                                            </div>
+                                        </div>
+                                
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                    @endforeach
-                </div>
-            @endforeach
+                    @endif
+                @endforeach
             @else
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
