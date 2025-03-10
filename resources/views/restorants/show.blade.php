@@ -126,7 +126,7 @@
 
             @if(!$restorant->categories->isEmpty())
                 @php
-                    $offer_category = $restorant->categories->where("id",159)->first();
+                    $offer_category = $restorant->categories->where("id",160)->first();
                 @endphp
                 @if (!empty($offer_category))
                     <nav class="tabbable sticky" style="top: {{ config('app.isqrsaas') ? 64:88 }}px;">
@@ -145,7 +145,7 @@
                             <a class="nav-link  mb-sm-3 mb-md-0 active" id="all_categories" data-toggle="tab" role="tab" href="">{{ __('All categories') }}</a>
                         </li>
                         @foreach ( $restorant->categories as $key => $category)
-                            @if(!$category->aitems->isEmpty()&& $category->id != 159)
+                            @if(!$category->aitems->isEmpty()&& $category->id != 160)
                                 <li class="nav-item nav-item-category" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
                                     <a class="nav-link mb-sm-3 mb-md-0" data-toggle="tab" role="tab" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" href="#{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">{{ $category->name }}</a>
                                 </li>
@@ -160,7 +160,7 @@
 
             @if(!$restorant->categories->isEmpty())
                 @foreach ( $restorant->categories as $key => $category)
-                    @if ($category->id == 159)
+                    @if ($category->id == 160)
                         <span id="offer_category_div">
                             @if(!$category->aitems->isEmpty())
                                 <div id="{{ clean(str_replace(' ', '', strtolower($category->name)).strval('offer_category_id')) }}" class="{{ clean(str_replace(' ', '', strtolower($category->name)).strval('offer_category_id')) }}">
