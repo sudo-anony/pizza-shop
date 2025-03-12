@@ -21,7 +21,7 @@
             @else
                 <div class="custom-control custom-radio mb-3">
                     <input name="deliveryType" class="custom-control-input" id="deliveryTypePickup" type="radio" value="pickup">
-                    <label class="custom-control-label" for="deliveryTypePickup" onclick="pick_discount_applied(0)">
+                    <label class="custom-control-label" for="deliveryTypePickup" onclick="pick_discount_removed()">
                         {{ __('Pickup') }}
                     </label>
                 </div>
@@ -42,8 +42,7 @@
   function pick_discount_applied(value) {
     let totalPrice = cartTotal.totalPrice; 
     let discountAmount = (totalPrice * value) / 100;
-    let newTotal = totalPrice - discountAmount;
-    setPickUpDeduction(newTotal);
+    setPickUpDeduction(discountAmount);
   }
   
   function pick_discount_removed(){
