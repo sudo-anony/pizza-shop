@@ -71,6 +71,18 @@
                     @endif
                 </div>
             </div>
+            <div class="row" id="pickup_discount_div">
+                <div class=" col-12 form-group{{ $errors->has('pick_up_discount') ? ' has-danger' : '' }}">
+                    <label class="form-control-label" for="input-description">{{ __('Pickup Discount') }}  %</label>
+                    <input type="number" name="pick_up_discount" id="pick_up_discount" step="any" min="0" max="100" class="form-control form-control-alternative{{ $errors->has('pick_up_discount') ? ' is-invalid' : '' }}" value="{{ old('pick_up_discount', $restorant->pick_up_discount) }}">
+                    @if ($errors->has('pick_up_discount'))
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $errors->first('pick_up_discount') }}</strong>
+                        </span>
+                    @endif
+                </div>
+            </div>
+            
             <br/>
             <div class="form-group">
                 <label class="form-control-label" for="item_price">{{ __('Is Featured') }}</label>
@@ -163,6 +175,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
     function toggleFields() {
         let selectedValue = $("#select_counter").val();
         if (selectedValue === "none") {
@@ -172,8 +185,26 @@
         }
     }
 
+    function togglePickupDiscount() {
+        debugger;
+        var canPickup = document.getElementById("can_pickup");
+        var discountDiv = document.getElementById("pickup_discount_div");
+
+        if (canPickup.checked) {
+            discountDiv.style.display = "block";
+        } else {
+            discountDiv.style.display = "none";
+        }
+    }
+
     $(document).ready(function() {
-        toggleFields(); // Run on page load to check initial state
+        toggleFields();
+        var canPickup = document.getElementById("can_pickup");
+    
+        if (canPickup) {
+            canPickup.addEventListener("click", togglePickupDiscount);
+            togglePickupDiscount();
+        }
 
         $("#select_counter").change(function() {
             toggleFields();

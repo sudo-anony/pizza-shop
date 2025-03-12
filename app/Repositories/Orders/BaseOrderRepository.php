@@ -253,16 +253,22 @@ class BaseOrderRepository extends Controller
                     $this->order->coupon = $this->request->coupon_code;
                     if ($deduct > $this->order->order_price) {
                         $this->order->discount = $order_price;
-
-                    //In this case, order should be considered as paid one
-                    //$this->order->payment_status = 'paid';
                     } else {
-                        $this->order->discount = $deduct;
+                            $this->order->discount = $deduct;                       
                     }
 
                 }
             }
         }
+        if ($this->order->delivery_method == 2 && $this->order->restorant->pick_up_discount) {
+            $percentageToDeduct = $this->order->restorant->pick_up_discount;
+            $discountAmount = $order_price * ($percentageToDeduct / 100);
+        
+            $already_discounted = $this->order->discount ?? 0;
+            $totalDiscount = $already_discounted + $discountAmount; 
+            $this->order->discount = $totalDiscount;
+        }
+        
 
         //Set tip
         if ($this->request->has('tip')) {

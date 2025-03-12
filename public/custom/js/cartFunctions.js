@@ -30,7 +30,7 @@ function updatePrices(net,delivery,enableDelivery){
 
   var tip=cartTotal.tip;
   console.log("Tip is "+tip);
-  
+  var pickupdeduct = cartTotal.pickupdeduct;
   var formatter = new Intl.NumberFormat(LOCALE, {
     style: 'currency',
     currency:  CASHIER_CURRENCY,
@@ -50,7 +50,7 @@ function updatePrices(net,delivery,enableDelivery){
     cartTotal.deliveryPriceFormated=formatter.format(delivery);
 
     //Total
-    var ndd=net+delivery-deduct+tip;
+    var ndd=net+delivery-deduct-pickupdeduct+tip;
     cartTotal.withDelivery=ndd;
     cartTotal.withDeliveryFormat=formatter.format(ndd);//+"==>"+new Date().getTime();
     total.totalPrice=ndd;
@@ -63,7 +63,7 @@ function updatePrices(net,delivery,enableDelivery){
     cartTotal.delivery=false;
 
     //Total
-    var nd=net-deduct+tip;
+    var nd=net-deduct-pickupdeduct+tip;
     cartTotal.withDelivery=nd;
     cartTotal.withDeliveryFormat=formatter.format(nd);
     total.totalPrice=nd;
@@ -76,6 +76,19 @@ console.log(cartTotal)
   console.log("Total is "+cartTotal.withDelivery);
   
 
+}
+
+function setPickUpDeduction(deduct){
+  var formatter = new Intl.NumberFormat(LOCALE, {
+    style: 'currency',
+    currency:  CASHIER_CURRENCY,
+  })
+  cartTotal.pickupdeduct = deduct;
+  cartTotal.pickdeductFormat = formatter.format(deduct);
+  
+  total.lastChange=null;
+  cartTotal.lastChange=null; 
+  getCartContentAndTotalPrice();
 }
 
 function setDeduct(deduction){

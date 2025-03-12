@@ -130,21 +130,40 @@ class OrderController extends Controller
                 'quantity' => 1,
             ];
         }
+
+        
     
         Stripe::setApiKey(env('STRIPE_SECRET')); 
     
         $couponId = null;
-        if ($request->discount) {
+        $totalAmount = 0;
+
+        if (!empty($request->pickup_dicsount)) {
+            $totalAmount += (float) $request->pickup_dicsount;
+            $couponName = 'Pickup Discount';
+        }
+        
+        if (!empty($request->discount)) {
+            $totalAmount += (float) $request->discount;
+            $couponName = empty($couponName) ? 'Coupon Discount' : 'Pickup + Coupon Discount';
+        }
+        
+        $totalAmount = (int) round($totalAmount * 100);
+        
+        if ($totalAmount > 0) {
             try {
-                $discountAmount = $this->moneyToFloat($request->discount) ;
-                $coupon =  Coupon::create([
-                    'amount_off' => $discountAmount,
+                $coupon = Coupon::create([
+                    'amount_off' => $totalAmount,
                     'currency' => 'eur',
-                    'duration' => 'once'
+                    'duration' => 'once',
+                    'name' => $couponName
                 ]);
                 $couponId = $coupon->id;
             } catch (\Exception $e) {
-                return response()->json(['error' => 'Failed to create discount: ' . $e->getMessage()], 500);
+                return response()->json([
+                    'error' => $e->getMessage(),
+                    'code' => $e->getCode()
+                ], 500);
             }
         }
     
@@ -162,7 +181,6 @@ class OrderController extends Controller
                 ],
             ];
     
-            // Apply Coupon to Checkout Session if Exists
             if ($couponId) {
                 $checkoutSessionData['discounts'] = [
                     ['coupon' => $couponId]
