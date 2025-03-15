@@ -49,7 +49,7 @@
                         @else
                             <span class="badge badge-success">{{ __('Paid') }}</span>
                         @endif
-                        <small class="text-muted">{{ $order->created_at->format('d M Y h:i') }}</small><br />
+                        <small class="text-muted">{{ $order->created_at->format('d.m.Y H:i') }}</small><br />
                         <small class="text-muted">{{ __("Payment method") }}: {{ __(strtoupper($order->payment_method)) }}</small>
                         <hr />
                     </div>
@@ -65,23 +65,23 @@
                         
                         <div class="">
                             <h3>{{ $order->client->name }}</h3>
-                            <h4>{{ $order->client->email }}</h4>
-                            @if(!empty($order->client->phone))
+                            <!-- <h4>{{ $order->client->email }}</h4> -->
+                            <!-- @if(!empty($order->client->phone))
                             <h4>{{ __('Contact')}}: {{ $order->client->phone }}</h4>
-                            @endif
+                            @endif -->
                             @if(!empty($order->address->companyname))
                             <h4>{{ $order->address->companyname }}</h4>
                             @endif
                             @if(!empty($order->address->departmentname))
-                            <h4>{{ __('Department') }}: {{ $order->address->departmentname }}</h4>
+                            <h4> {{ $order->address->departmentname }}</h4>
                             @endif
                             @if(!empty($order->address->street))
                             <h4>{{ $order->address->street }}</h4>
                             @endif
-                            
+<!--                             
                             @if(!empty($order->address->address))
                                 <h4>{{ $order->address?$order->address->address:"" }}</h4>
-                            @endif
+                            @endif -->
                             @if(!empty($order->address->zip))
                                 <h4>{{ $order->address->zip }}</h4>
                             @endif
@@ -169,7 +169,10 @@
                 </div>
 
                 <div class="mt-4">
-                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <div><h3>{{ __('Invoice')  }}: #{{$order->randomID}}</h3></div>
+                        <div><h3>{{ __('Date')  }}: {{ $order->created_at->format('d.m.Y') }}</h3></div>
+                    </div>
                     <div class="row text-600 text-white bgc-default-tp1 py-25">
                         <div class="d-none d-sm-block col-1">#</div>
                         <div class="col-9 col-sm-5">{{__('Name')}}</div>
