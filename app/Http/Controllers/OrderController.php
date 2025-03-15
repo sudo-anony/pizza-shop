@@ -734,8 +734,8 @@ class OrderController extends Controller
                 "zip" => strval($addressObj['zip']),
                 "location" => $addressObj['location'],
                 "addressinfo" => $addressObj['addressInfo'],
-                "departmentname" => $address['departmentname'],
-                "companyname" => $address['companyname']
+                "departmentname" => $addressObj['departmentname'],
+                "companyname" => $addressObj['companyname']
             ],
             "payment" => [
                 "type" =>  $setStatus,
