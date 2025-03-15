@@ -16,8 +16,6 @@ use NotificationChannels\Twilio\TwilioSmsMessage;
 use App\Address;
 use Illuminate\Support\HtmlString;
 
-use App\Models\EmailLog;
-
 class OrderNotification extends Notification
 {
     use Queueable;
@@ -131,7 +129,22 @@ class OrderNotification extends Notification
             //Rejected
             $greeting = __('Order rejected');
             $line = __('Unfortunately your order is rejected. There where issues with the order and we need to reject it. Pls contact us for more info.');
+        } elseif ($this->status.'' == '200') {
+            $address = Address::find($this->order->address_id);
+            if ($address) {
+                $this->user->email_override = $address->email ?? $this->order->client->email;
+            } else {
+                $this->user->email_override = $this->order->client->email;
+            }
+            $greeting = __('Order Payment Confirmation');
+            if ($this->order->payment_method == 'cod') {
+                
+                $line = __('Your Cash on Delivery (COD) order has been received.');
+            } else {
+                $line = __('Your payment has been successfully processed. Thank you for choosing ') . config('app.name') . '!';
+            }
         }
+        
 
         return [$greeting.' #'.$this->order->id, $line];
     }
@@ -289,16 +302,6 @@ class OrderNotification extends Notification
         }
     
         $message->line(__('Total: ') . money($this->order->order_price_with_discount + $this->order->delivery_price, config('settings.cashier_currency'), config('settings.do_convertion')));
-        
-        
-
-        EmailLog::create([
-            'receiver' => $notifiable->email_override ?? $notifiable->email,
-            'subject' => __('Order notification').' #'.$this->order->randomID,
-            'content' => $message->render(),
-            'restaurant_id' => $this->order->restorant->id,
-        ]);
-
         return $message;
     }
     
@@ -339,9 +342,6 @@ class OrderNotification extends Notification
         } elseif ($this->status.'' == '200') {
             $greeting = __('Order Payment Confirmation');
             $line = __('We are pleased to confirm that your recent order has been successfully processed, and payment has been received. Thank you for choosing ') . ' ' . config('app.name'). ''.'!' ;
-        } else {
-            $greeting = __('Unknown status');
-            $line = __('The status of your order is unknown. Please contact support for more information.');
         }
 
         return [
