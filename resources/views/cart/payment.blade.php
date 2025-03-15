@@ -72,9 +72,22 @@
                         @if(!config('settings.is_whatsapp_ordering_mode'))
                         <!-- COD -->
                         @if (!config('settings.hide_cod'))
-                            <div class="custom-control custom-radio mb-3">
-                                <input name="paymentType" class="custom-control-input" id="cashOnDelivery" type="radio" value="cod" {{ config('settings.default_payment')=="cod"?"checked":""}}>
-                                <label class="custom-control-label" for="cashOnDelivery"><span class="delTime">{{ config('app.isqrsaas')?__('Cash / Card Terminal'): __('Cash on delivery') }}</span> <span class="picTime">{{ __('Cash on pickup') }}</span></label>
+                            <div class="custom-control custom-radio mb-3" id="simple_cod">
+                                <input name="paymentType" class="custom-control-input" id="cashOnDelivery1" type="radio" value="cod" 
+                                    {{ config('settings.default_payment')=="cod"?"checked":""}}>
+                                <label class="custom-control-label" for="cashOnDelivery1">
+                                    <span class="delTime">{{ config('app.isqrsaas')?__('Cash / Card Terminal'): __('Cash on delivery') }}</span>
+                                    <span class="picTime">{{ __('Cash on pickup') }}</span>
+                                </label>
+                            </div>
+
+                            <div class="custom-control custom-radio mb-3" id="special_cod">
+                                <input name="paymentType" class="custom-control-input" id="cashOnDelivery2" type="radio" value="cod">
+                                <input name="specialCod" class="custom-control-input specialCodInput" id="specialCod" type="hidden" value="1">
+                                <label class="custom-control-label" for="cashOnDelivery2">
+                                    <span class="delTime">{{ config('app.isqrsaas')?__('Cash / Card Terminal'): __('Pay by card by delivery or pickup') }}</span>
+                                    <span class="picTime">{{ __('Cash on pickup') }}</span>
+                                </label>
                             </div>
                         @endif
 
@@ -161,6 +174,28 @@ $(document).ready(function() {
     updatePrice();
     setInterval(updatePrice, 1000);
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+        const simpleCod = document.getElementById("cashOnDelivery1");
+        const specialCod = document.getElementById("cashOnDelivery2");
+        const specialCodInput = document.getElementById("specialCod");
+
+        simpleCod.addEventListener("change", function () {
+            if (specialCodInput) {
+                specialCodInput.remove();
+            }
+        });
+
+        specialCod.addEventListener("change", function () {
+            let hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "specialCod";
+            hiddenInput.id = "specialCod";
+            hiddenInput.value = "1";
+            specialCod.parentElement.appendChild(hiddenInput);
+        });
+    });
+
 
 function updatePrice() {
     let total = cartTotal.withDeliveryFormat; 

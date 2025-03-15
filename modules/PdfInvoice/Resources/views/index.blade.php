@@ -50,7 +50,7 @@
                             <span class="badge badge-success">{{ __('Paid') }}</span>
                         @endif
                         <small class="text-muted">{{ $order->created_at->format('d.m.Y H:i') }}</small><br />
-                        <small class="text-muted">{{ __("Payment method") }}: {{ __(strtoupper($order->payment_method)) }}</small>
+                        <small class="text-muted">{{ __("Payment method") }}: {{ $order->codOnPickUp == 1 ? __('Pay by card by delivery or pickup') : strtoupper(__($order->payment_method)) }}</small>
                         <hr />
                     </div>
                     @if(!empty($order->restorant->logo))

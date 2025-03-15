@@ -122,6 +122,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
+
             <div class="modal-body p-0">
                 <div class="card bg-secondary shadow border-0">
                     <div class="card-body ">
@@ -153,7 +154,8 @@
                                 
                                 <!-- <input class="form-control my-2" name="location" id="location" placeholder="{{ __( 'Enter location here' ) }} ..." type="text" required>
                                 <span class="text-danger" id="location-error"></span> -->
-                                
+                                <input class="form-control my-2" name="addressinfo" id="addressinfo" placeholder="{{ __( 'Enter address info here' ) }} ..." type="text">
+                                <span class="text-danger" id="addressinfo-error"></span>
                                 <input class="form-control my-2" name="plusCode" id="plusCode" placeholder="{{ __( 'Enter plus code here' ) }} ..." type="text" required>
                                 <span class="text-danger" id="plusCode-error"></span>
                                 

@@ -270,6 +270,7 @@
             var companyname = $('#companyname').val();
             var departmentname = $('#departmentname').val();
             var plusCode = $('#plusCode').val();
+            var addressInfo = $('#addressinfo').val();
             const dialCodeElement = document.querySelector('.iti__selected-dial-code');
             const dialCode = dialCodeElement.textContent.trim();
             
@@ -357,7 +358,8 @@
                     companyname: companyname,
                     departmentname: departmentname,
                     phone: phone,
-                    mobileFormat: dialCode
+                    mobileFormat: dialCode,
+                    addressInfo: addressInfo
                 },
                 success:function(response){
                     if(response.status){

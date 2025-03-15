@@ -134,11 +134,13 @@ function saveLocation(lat, lng){
     var country = $('#country').val();
     var companyname = $('#companyname').val();
     var departmentname = $('#departmentname').val();
+    var addressInfo = $('#addressinfo').val();
     var plusCode = $('#plusCode').val();
     const dialCodeElement = document.querySelector('.iti__selected-dial-code');
     const dialCode = dialCodeElement.textContent.trim();
 
     let hasError = false;
+    // Clear previous errors
     $('#name-error, #email-error, #phone-error, #street-error, #zip-error, #city-error, #plusCode-error').text('');
     
     // Validate Name
@@ -228,7 +230,8 @@ function saveLocation(lat, lng){
             companyname: companyname,
             departmentname: departmentname,
             phone: phone,
-            mobileFormat: dialCode
+            mobileFormat: dialCode,
+            addressInfo: addressInfo
         },
         success:function(response){
             if(response.status){
@@ -255,13 +258,14 @@ function openAddressModal(data = {}) {
     const name = document.getElementById("name");
     const companyname = document.getElementById("companyname");
     const plusCode = document.getElementById("plusCode");
+    const addressinfo = document.getElementById("addressinfo");
     const el = { mobileFormat: data.mobileFormat || "" };
     selectCountryByMobileFormat(el);
     modalTitle.textContent = "Edit Address";
     addressId.value = data.id;
     streetInput.value = data.street || "";
     zipInput.value = data.zip || "";
-    locationInput.value = data.location || "";
+    // locationInput.value = data.location || "";
     phone.value = data.phone || "";
     email.value = data.email || "";
     departmentname.value = data.departmentname || "";
@@ -270,7 +274,8 @@ function openAddressModal(data = {}) {
     plusCode.value = data.plusCode || "";
     name.value = data.name || "";
     companyname.value = data.companyname || "";
-    locationInput.value = data.location || "";
+    // locationInput.value = data.location || "";
+    addressinfo.value = data.addressinfo || "";
     lat = data.lat; lng = data.lng;
     setTimeout(() => {
         initMapA();

@@ -552,6 +552,7 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
+        
         if ($request->has('tip')) {
             $tip = $request->input('tip');  
             $numericTip = $this->moneyToFloat($tip); 
@@ -621,10 +622,13 @@ class OrderController extends Controller
         }
         $user = auth()->user();
         $latestOrder = $user->orders()->latest()->first();
-	if ($latestOrder instanceof Order && $request->has('randomID')) {
+	    if ($latestOrder instanceof Order && $request->has('randomID')) {
             $randomID = $request->randomID;
             $latestOrder->randomID = $randomID;
             $latestOrder->save();
+        }
+        if ($request->has('specialCod')){
+            $latestOrder->codOnPickUp = 1;
         }
         $broker = $latestOrder->restorant; 
         $setting = Settings::where('id',1)->first();
@@ -652,22 +656,26 @@ class OrderController extends Controller
         $address = Address::find($latestOrder->address_id);
         
         $addressObj = $address ? [
-    "addressInfo" => $address->addressinfo,
-    "location" => $address->city ?? "NA",
-    "street" => $address->street,
-    "zip" => $address->zip,
-    "name" => $address->name,
-    "email" => $address->email,
-    "phone" => $address->phone
-] : [
-    "addressInfo" => 'NA 1',
-    "location" => 'NA 1',
-    "street" => 'NA 1',
-    "zip" => '00000',
-    "name" => $user->name,
-    "email" => $user->email,
-    "phone" => $user->phone
-];
+            "addressInfo" => $address->addressinfo,
+            "location" => $address->city ?? "NA",
+            "street" => $address->street,
+            "zip" => $address->zip,
+            "name" => $address->name,
+            "email" => $address->email,
+            "phone" => $address->phone,
+            "departmentname" => $address->departmentname,
+            "companyname" => $address->companyname
+        ] : [
+            "addressInfo" => 'NA 1',
+            "location" => 'NA 1',
+            "street" => 'NA 1',
+            "zip" => '00000',
+            "name" => $user->name,
+            "email" => $user->email,
+            "phone" => $user->phone,
+            "departmentname" => 'NA',
+            "companyname" => 'NA'
+        ];
 
         $total_prepaid_amount = round( $this->format_price($latestOrder->order_price)  + ($this->format_price($latestOrder->tip) ?: 0)  - ($this->format_price($latestOrder->discount) ?: 0),2);
 
@@ -704,8 +712,8 @@ class OrderController extends Controller
         }
     
         $unique_id = "ORDER_" . time();
-
-      
+        $orderOnCode = $latestOrder->codOnPickUp;
+        $setStatus = ($orderOnCode == 1) ? 1 : (($latestOrder->payment_method == 'cod') ? 0 : 3);
         $order_data = [
             "version" => 1,
             "broker" => $broker->broker ? $broker->broker : $broker->name,
@@ -725,10 +733,12 @@ class OrderController extends Controller
                 "street" => $addressObj['street'],
                 "zip" => strval($addressObj['zip']),
                 "location" => $addressObj['location'],
-                "addressinfo" => $addressObj['addressInfo']
+                "addressinfo" => $addressObj['addressInfo'],
+                "departmentname" => $address['departmentname'],
+                "companyname" => $address['companyname']
             ],
             "payment" => [
-                "type" => ($latestOrder->payment_method == 'cod') ? 0 : 3,
+                "type" =>  $setStatus,
                 "provider" => $latestOrder->payment_method,
                 "transactionid" => "TX" . time(),
                 "prepaid" => $total_prepaid_amount
@@ -740,7 +750,6 @@ class OrderController extends Controller
             "info" => $latestOrder->comment
         ];
         $json_data = json_encode($order_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE); 
-       
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
