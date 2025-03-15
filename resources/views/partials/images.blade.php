@@ -1,5 +1,5 @@
-<div class="form-group text-center">   
-<label class="form-control-label" for="input-name">{{ $image['label'] }}</label>
+<div class="form-group text-center">
+    <label class="form-control-label" for="input-name">{{ $image['label'] }}</label>
     @isset($image['help'])
        <br /> <span class="small">{{ $image['help'] }}</span>
     @endisset

@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Image;
+use App\Models\EmailLog;
 
 class SettingsController extends Controller
 {
@@ -105,6 +106,41 @@ class SettingsController extends Controller
         return view('settings.status', [
             'progress' => ceil($taskDone * $percent),
             'testResutls' => $testResutls, ]);
+    }
+
+    public function emailLogs(Request $request): View
+    {
+        $this->validateAccess();
+
+        // Add search functionality
+        if ($request->has('search')) {
+            $logs = EmailLog::where('receiver', 'like', '%'.$request->search.'%')
+                ->orWhere('subject', 'like', '%'.$request->search.'%')
+                ->orWhere('content', 'like', '%'.$request->search.'%')
+                ->orderBy('id', 'desc')
+                ->limit(1000)
+                ->get();
+        } else {
+            $logs = EmailLog::orderBy('id', 'desc')->limit(1000)->get();
+        }
+
+        return view('settings.emaillogs', [
+            'logs' => $logs,
+        ]);
+    }
+
+    public function emailLogsSearch(Request $request)
+    {
+        $this->validateAccess();
+
+        $logs = EmailLog::where('receiver', 'like', '%'.$request->search.'%')
+            ->orWhere('subject', 'like', '%'.$request->search.'%')
+            ->orWhere('content', 'like', '%'.$request->search.'%')
+            ->orderBy('id', 'desc')
+            ->limit(1000)
+            ->get();
+
+        return response()->json(['logs' => $logs]);
     }
 
     private function translateModel($tableName, $provider, $fields, $locale)

@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col">
                 <div class="card shadow">
-                    <div class="card-header border-0">
+                    <div class="card-header border-0 d-none d-md-block">
                         <div class="row align-items-center">
                             <div class="col-10">
                                 <h3 class="mb-0">{{ __('My Addresses') }}</h3>
@@ -19,12 +19,24 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card-header border-0 overflow-auto d-block d-md-none">
+                        <div class="row align-items-center flex-nowrap">
+                            <div class="col-auto">
+                                <h3 class="mb-0">{{ __('My Addresses') }}</h3>
+                            </div>
+                            <div class="col-auto ms-auto">
+                                <button data-toggle="modal" onclick="openAddressModal()" data-target="#modal-new-address" class="btn btn-success mt-4 btn-sm" style="white-space: nowrap;">
+                                    {{ __('New Address') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="col-12">
                         @include('partials.flash')
                     </div>
                     @if(count($addresses))
-                    <div class="table-responsive">
+                    <div class="table-responsive d-none d-md-block">
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                                 <tr>
@@ -36,7 +48,6 @@
                                     <th scope="col">{{ __('Street') }}</th>
                                     <th scope="col">{{ __('Zip Code') }}</th>
                                     <th scope="col">{{ __('City') }}</th>
-                                    <!-- <th scope="col">{{ __('Country') }}</th> -->
                                     <th scope="col">{{ __('Google Plus Code') }}</th>
                                     <th scope="col">{{ __('Phone') }}</th>
                                     <th scope="col"></th>
@@ -54,7 +65,6 @@
                                         <td>{{$address->street}}</td>
                                         <td>{{$address->zip}}</td>
                                         <td>{{$address->city}}</td>
-                                        <!-- <td>{{$address->country}}</td> -->
                                         <td>{{$address->plusCode}}</td>
                                         <td>{{$address->mobileFormat}} {{$address->phone}}</td>
                                         <td class="text-right">
@@ -81,6 +91,46 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+                    <div class="d-block d-md-none">
+                        @foreach ($addresses as $address)
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="card-title">{{ $address->name }}</h5>
+                                        <div class="text-right">
+                                            <div class="dropdown">
+                                                <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                                    <form action="{{ route('addresses.destroy', $address) }}" method="post">
+                                                        @csrf
+                                                        @method('delete')
+                                                        <button type="submit" class="dropdown-item">
+                                                            {{ __('Delete') }}
+                                                        </button>
+                                                    </form>
+                                                    <button class="dropdown-item" style="cursor:pointer" onclick="openAddressModal({{ json_encode($address) }})">
+                                                        {{ __('Edit') }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="card-text">
+                                        <strong>{{ __('Company') }}:</strong> {{ $address->companyname }}<br>
+                                        <strong>{{ __('Department') }}:</strong> {{ $address->departmentname }}<br>
+                                        <strong>{{ __('Email') }}:</strong> {{ $address->email }}<br>
+                                        <strong>{{ __('Street') }}:</strong> {{ $address->street }}<br>
+                                        <strong>{{ __('Zip Code') }}:</strong> {{ $address->zip }}<br>
+                                        <strong>{{ __('Google Plus Code') }}:</strong> {{ $address->plusCode }}<br>
+                                        <strong>{{ __('Phone') }}:</strong> {{ $address->mobileFormat }} {{ $address->phone }}
+                                    </p>
+                                    
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                     @endif
              

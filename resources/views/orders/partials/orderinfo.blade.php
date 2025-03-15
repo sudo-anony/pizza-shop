@@ -33,6 +33,7 @@
             <h3>{{ __('Street')}}: {{  $address->street }}</h3>
             <h3>{{ __('Zip Code')}}: {{  $address->zip }}</h3>
             <h3>{{ __('City')}}: {{  $address->city }}</h3>
+
             
             @else
              <h3>{{ $order->client?$order->client->name:"" }}</h3>

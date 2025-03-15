@@ -40,7 +40,7 @@ const tipInput = document.querySelector('#tip');
 
 // Format on blur (when user finishes typing)
 tipInput.addEventListener('blur', function () {
-  const price = parseFloat(cleanInput(tipInput.value));
+  const price = parseFloat(cleanInput(tipInput.value).replace(',', '.'));
   if (!isNaN(price)) {
     tipInput.value = formatPrice(price);
   }
@@ -53,7 +53,7 @@ tipInput.addEventListener('input', function () {
 
 // Ensure initial value is formatted correctly if it's pre-filled
 if (tipInput.value) {
-  const price = parseFloat(cleanInput(tipInput.value));
+  const price = parseFloat(cleanInput(tipInput.value).replace(',', '.'));
   if (!isNaN(price)) {
     tipInput.value = formatPrice(price);
   }

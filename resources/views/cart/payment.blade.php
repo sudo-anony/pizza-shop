@@ -18,12 +18,12 @@
                                 <span v-if="itemsCount&&deliveryPrice>0"><br /><strong>{{ __('Delivery') }}:</strong></span>
                                 <span v-if="itemsCount&&deliveryPrice>0" class="ammount"><strong>@{{ deliveryPriceFormated }}</strong></span><br />
                             @endif
-                            <br />  
-                            <div v-if="pickupdeduct"> 
+                            <br />
+			    <div v-if="pickupdeduct"> 
                                 <span v-if="pickupdeduct">{{ __('Pickup discount by') }} {{ $restorant->pick_up_discount }} % = </span>
                                 <span v-if="pickupdeduct" class="">@{{ pickdeductFormat }}</span>
                                 <br />  
-                            </div>
+                            </div>  
                             <div v-if="deduct"> 
                                 <span v-if="deduct">{{ __('Applied coupon discount') }}:</span>
                                 <span v-if="deduct" class="ammount">@{{ deductFormat }}</span>
@@ -45,9 +45,7 @@
             </div>
         </div>
         <!-- End price overview -->
-        <div id="pick_discount_applied">
-            
-        </div>
+
         @if(in_array("coupons", config('global.modules',[])))
             <!-- Coupons -->
             @include('cart.coupons')

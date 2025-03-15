@@ -1,7 +1,7 @@
 <nav id="navbar-main" class="navbar navbar-light navbar-expand-lg fixed-top">
   <div class="container-fluid">
-      <a class="navbar-brand mr-lg-5" href="/">
-        <img  class="theProjectLogo" src="{{ config('global.site_logo') }}" style="height: 100px;">
+      <a class="top-nav navbar-brand mr-lg-5" href="/">
+        <img  class="theProjectLogo" src="{{ config('global.site_logo') }}" style="height: 80px;">
       </a>
       @if( request()->get('location') )
         <span style="z-index: 10" class="">{{ __('DELIVERING TO')}} :  <b>{{request()->get('location')}}</b></span> <a   data-toggle="modal"  href="#locationset"><span class="ml-sm-2 search description">({{ __('change')}})</span></a>

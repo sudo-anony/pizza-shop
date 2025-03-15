@@ -125,7 +125,7 @@
         @include('partials.flash')
     </div>
     @if(count($orders))
-    <div class="table-responsive">
+    <div class="table-responsive d-none d-md-block">
         <table class="table align-items-center">
             @if (isset($financialReport))
                 @include('finances.financialdisplay')

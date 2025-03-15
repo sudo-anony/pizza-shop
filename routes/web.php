@@ -212,6 +212,8 @@ Route::middleware('auth', 'impersonate')->group(function () {
     Route::get('/updatestatus/{alias}/{order}', [OrderController::class, 'updateStatus'])->name('update.status');
 
     Route::resource('settings', SettingsController::class);
+    Route::get('email/logs', [SettingsController::class, 'emailLogs'])->name('email.logs');
+    Route::get('email/logs/search', [SettingsController::class, 'emailLogsSearch'])->name('email.logs.search');
     Route::get('apps', [AppsController::class, 'index'])->name('apps.index');
     Route::get('appremove/{alias}', [AppsController::class, 'remove'])->name('apps.remove');
     Route::post('apps', [AppsController::class, 'store'])->name('apps.store');

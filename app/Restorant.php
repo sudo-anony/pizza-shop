@@ -21,7 +21,7 @@ class Restorant extends MyModel
 
     protected $fillable = ['name', 'subdomain', 'user_id', 'lat', 'lng', 'address', 'phone', 'logo', 'description', 'city_id','borker','api_key', 'zip','taxID','city','counter'];
 
-    protected $appends = ['alias', 'logom', 'icon', 'coverm','favIcon'];
+    protected $appends = ['alias', 'logom', 'icon', 'coverm'];
 
     protected $imagePath = '/uploads/restorants/';
 
@@ -179,6 +179,12 @@ class Restorant extends MyModel
         return $this->getImge($this->logo, config('global.restorant_details_image'));
     }
 
+    public function getFavIconAttribute()
+    {  
+        $favIcon = $this->attributes['favIcon'] ?? null;
+        return $this->getImge($favIcon, str_replace('_large.jpg', '_thumbnail.jpg', config('global.restorant_details_image')), '_thumbnail.jpg');
+    }
+
     public function getLogowideAttribute()
     {
         return $this->getImge($this->getConfig('resto_wide_logo', null), '/default/restaurant_wide.png', '_original.png');
@@ -188,13 +194,6 @@ class Restorant extends MyModel
     {
         return $this->getImge($this->getConfig('resto_wide_logo_dark', null), '/default/restaurant_wide_dark.png', '_original.png');
     }
-
-    public function getFavIconAttribute()
-    {  
-        $favIcon = $this->attributes['favIcon'] ?? null;
-        return $this->getImge($favIcon, str_replace('_large.jpg', '_thumbnail.jpg', config('global.restorant_details_image')), '_thumbnail.jpg');
-    }
-    
 
     public function getIconAttribute()
     {

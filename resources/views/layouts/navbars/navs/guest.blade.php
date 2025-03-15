@@ -5,7 +5,7 @@
   <!-- Big Screen with buttton-->
  <div class="container-fluid px-7 d-none d-lg-flex d-lx-flex">
       <a class="navbar-brand" href="/">
-        <img src="{{ config('global.site_logo') }}" />
+        <img src="{{ config('global.site_logo') }}" style="height: 80px;"/>
       </a>
       <!--<div class="navbar-collapse navbar-custom-collapse collapse" id="navbar-collapse">-->
       @if(config('app.isqrsaas') && config('settings.disable_landing')  )
@@ -25,7 +25,7 @@
     <!-- Small Screen with button-->
     <div class="container-fluid d-flex d-md-flex d-lg-none d-lx-none px-2">
       <a class="navbar-brand" href="/">
-        <img src="{{ config('global.site_logo') }}" />
+        <img src="{{ config('global.site_logo') }}" style="height: 80px;"/>
       </a>
       <!--<div class="navbar-collapse navbar-custom-collapse collapse" id="navbar-collapse">-->
       @if(config('app.isqrsaas') && config('settings.disable_landing') && !(config('settings.hide_register_when_disabled_landing',false)))
@@ -48,14 +48,14 @@
     <!-- Big Screen just logo -->
     <div class="container-fluid px-7 d-none d-md-none d-lg-block d-lx-block">
       <a class="navbar-brand" href="/">
-        <img src="{{ config('global.site_logo') }}" />
+        <img src="{{ config('global.site_logo') }}" style="height: 80px;"/>
       </a>
     </div>
 
     <!-- Small Screen just logo -->
     <div class="text-center w-100 d-block d-md-block d-lg-none d-lx-none">
         <a class="navbar-brand" href="/">
-          <img src="{{ config('global.site_logo') }}" />
+          <img src="{{ config('global.site_logo') }}" style="height: 80px;"/>
         </a>
     </div>
  @endif

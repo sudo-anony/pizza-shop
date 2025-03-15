@@ -35,8 +35,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use willvincent\Rateable\Rating;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
-use Stripe\Coupon;
+use Stripe\PaymentIntent;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Stripe\Coupon;
 
 use App\Mail\OrderPaymentConfirmation;
 
@@ -82,8 +84,9 @@ class OrderController extends Controller
             return redirect('/')->with('error', 'Failed to retrieve payment details.');
         }
     }
-    
-    public function checkout(Request $request){
+
+
+       public function checkout(Request $request){
         if($request->deliveryMethod !== 'pickup'){
             if(array_key_exists('addressID', $request->formDetails)){
                 $address = Address::findOrFail($request->formDetails['addressID']);
@@ -100,7 +103,6 @@ class OrderController extends Controller
         
         $email = $address && $address->email ? $address->email : auth()->user()->email;
     
-        // Create line items
         $items = [];
     
         foreach($request->cartItems as $item){
@@ -194,7 +196,6 @@ class OrderController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    
     
     
     
@@ -534,10 +535,19 @@ class OrderController extends Controller
 
     protected function moneyToFloat($money)
     {
-        $money = str_replace(['€', ' '], '', $money);
-        $money = str_replace('.', '', $money);
-        $money = str_replace(',', '.', $money);
-        return (float) $money;
+        $userLang = Cookie::get('lang') ? Cookie::get('lang') : config('app.locale');
+        if($userLang == 'en'){
+            $value = str_replace(['€', ' '], '', $money); // Corrected $request->tip to $ammountString
+            $value = str_replace(',', '', $value);
+            $value = floatval($value);
+        }else{
+            $value = str_replace(['€', ' '], '', $money);
+            $value = str_replace('.', '', $value);
+            $value = str_replace(',', '.', $value);
+            $value = floatval($value);
+        }
+        
+        return $value;
     }
 
     public function store(Request $request)
@@ -611,7 +621,7 @@ class OrderController extends Controller
         }
         $user = auth()->user();
         $latestOrder = $user->orders()->latest()->first();
-	    if ($latestOrder instanceof Order && $request->has('randomID')) {
+	if ($latestOrder instanceof Order && $request->has('randomID')) {
             $randomID = $request->randomID;
             $latestOrder->randomID = $randomID;
             $latestOrder->save();
@@ -642,27 +652,27 @@ class OrderController extends Controller
         $address = Address::find($latestOrder->address_id);
         
         $addressObj = $address ? [
-            "addressInfo" => $address->addressinfo,
-            "location" => $address->city ?? "NA",
-            "street" => $address->street,
-            "zip" => $address->zip,
-            "name" => $address->name,
-            "email" => $address->email,
-            "phone" => $address->phone
-        ] : [
-            "addressInfo" => 'NA 1',
-            "location" => 'NA 1',
-            "street" => 'NA 1',
-            "zip" => '00000',
-            "name" => $user->name,
-            "email" => $user->email,
-            "phone" => $user->phone
-        ];
-        
+    "addressInfo" => $address->addressinfo,
+    "location" => $address->city ?? "NA",
+    "street" => $address->street,
+    "zip" => $address->zip,
+    "name" => $address->name,
+    "email" => $address->email,
+    "phone" => $address->phone
+] : [
+    "addressInfo" => 'NA 1',
+    "location" => 'NA 1',
+    "street" => 'NA 1',
+    "zip" => '00000',
+    "name" => $user->name,
+    "email" => $user->email,
+    "phone" => $user->phone
+];
+
         $total_prepaid_amount = round( $this->format_price($latestOrder->order_price)  + ($this->format_price($latestOrder->tip) ?: 0)  - ($this->format_price($latestOrder->discount) ?: 0),2);
-        
-        // dd('Submitting order for user: '.$user->id.' with total amount: '.$total_prepaid_amount ,$this->format_price($latestOrder->order_price) ,  ($this->format_price($latestOrder->tip)),($this->format_price($latestOrder->discount) ?: 0));
-        // Log::info('Order items: '.json_encode($orderItems));
+
+        Log::info('Submitting order for user: '.$user->id.' with total amount: '.$total_prepaid_amount);
+        Log::info('Order items: '.json_encode($orderItems));
 
         $itemsArray = [];
         foreach ($orderItems as $item) {
@@ -704,7 +714,7 @@ class OrderController extends Controller
             "id" => $unique_id,
             "ordertime" => $orderTime,
             "deliverytime" => $deliveryTime,
-            "orderprice" => $this->format_price($total_prepaid_amount), 
+            "orderprice" => $this->format_price($total_prepaid_amount),
             "orderdiscount" => $this->format_price(-$latestOrder->discount),
             "deliverycost" => $this->format_price($latestOrder->delivery_price),
             "tip" => $this->format_price($latestOrder->tip), 
@@ -718,14 +728,14 @@ class OrderController extends Controller
                 "addressinfo" => $addressObj['addressInfo']
             ],
             "payment" => [
-                "type" => $latestOrder->delivery_method == 2 ? 3 : $latestOrder->delivery_method,
+                "type" => ($latestOrder->payment_method == 'cod') ? 0 : 3,
                 "provider" => $latestOrder->payment_method,
                 "transactionid" => "TX" . time(),
                 "prepaid" => $total_prepaid_amount
             ],
             "items" => $itemsArray,
-            "bonuscard" => "BONUS123",
-            "notification" => true,  
+            "bonuscard" => $latestOrder->coupon ?? '',
+            "notification" => ($latestOrder->delivery_method == 2) ? true : false,
             "customerinfo" =>$latestOrder->comment,
             "info" => $latestOrder->comment
         ];
@@ -740,8 +750,11 @@ class OrderController extends Controller
             'API_KEY: ' . $broker->api_key
         ]);
         $response = curl_exec($ch);
+       
+        
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($http_code == 200) {
+  
                 $status = Status::where('id', 14)->first();
                 $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
             
@@ -1469,11 +1482,12 @@ class OrderController extends Controller
         // TODO: Check if the order is paid
         // Send Email to the customer about order
         // We should use Webhooks to send payment confirmation email
-   	if($order->payment_status == 'paid' || $order->payment_method == 'cod'){
-        $order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
-        $order->restorant->user->notify((new OrderNotification($order, 1, $order->restorant->user))->locale(strtolower(config('settings.app_locale'))));
+	if($order->payment_status == 'paid' || $order->payment_method == 'cod'){
+        	$order->client->notify((new OrderNotification($order, 200, $order->client))->locale(strtolower(config('settings.app_locale'))));
+        	$order->restorant->user->notify((new OrderNotification($order, 1, $order->restorant->user))->locale(strtolower(config('settings.app_locale'))));
 
-    }     
-    return view('orders.success', ['order' => $order, 'showWhatsApp' => $showWhatsApp]);
+    	}   
+
+        return view('orders.success', ['order' => $order, 'showWhatsApp' => $showWhatsApp]);
     }
 }

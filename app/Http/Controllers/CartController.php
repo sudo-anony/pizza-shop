@@ -146,10 +146,13 @@ class CartController extends Controller
 
     public function cart()
     {
-
+        
         if (isset($_GET['session_id'])) {
             $this->setSessionID($_GET['session_id']);
         }
+
+        $userLang = Cookie::get('lang') ? Cookie::get('lang') : config('app.locale');
+        // dd($userLang);
 
         $fieldsToRender = [];
         if (strlen(config('global.order_fields')) > 10) {

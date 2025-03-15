@@ -17,7 +17,7 @@ class Company extends Restorant
 
     protected $modelName = \App\Restorant::class;
 
-    protected $appends = ['alias', 'logom', 'icon', 'coverm','restIcon'];
+    protected $appends = ['alias', 'logom', 'icon', 'coverm'];
 
     protected $imagePath = '/uploads/restorants/';
 

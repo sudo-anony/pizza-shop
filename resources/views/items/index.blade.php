@@ -129,7 +129,8 @@
                                             <button class="btn btn-icon btn-1 btn-sm btn-warning" type="button" id="edit" data-toggle="modal" data-target="#modal-edit-category" data-toggle="tooltip" data-placement="top" title="{{ __('Edit category') }} {{ $category->name }}" data-id="{{ $category->id }}" data-name="{{ $category->name }}" data-subtitle="{{ $category->subtitle }}" >
                                                 <span class="btn-inner--icon"><i class="fa fa-edit"></i></span>
                                             </button>
-                                            @if ($category->id != 160)
+
+                                             @if ($category->id != 160)
                                                 <form action="{{ route('categories.destroy', $category) }}" method="post">
                                                     @csrf
                                                     @method('delete')

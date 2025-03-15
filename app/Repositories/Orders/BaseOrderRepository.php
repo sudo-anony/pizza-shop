@@ -253,14 +253,18 @@ class BaseOrderRepository extends Controller
                     $this->order->coupon = $this->request->coupon_code;
                     if ($deduct > $this->order->order_price) {
                         $this->order->discount = $order_price;
+
+                    //In this case, order should be considered as paid one
+                    //$this->order->payment_status = 'paid';
                     } else {
-                            $this->order->discount = $deduct;                       
+                        $this->order->discount = $deduct;
                     }
 
                 }
             }
         }
-        if ($this->order->delivery_method == 2 && $this->order->restorant->pick_up_discount) {
+
+	if ($this->order->delivery_method == 2 && $this->order->restorant->pick_up_discount) {
             $percentageToDeduct = $this->order->restorant->pick_up_discount;
             $discountAmount = $order_price * ($percentageToDeduct / 100);
         
@@ -268,7 +272,6 @@ class BaseOrderRepository extends Controller
             $totalDiscount = $already_discounted + $discountAmount; 
             $this->order->discount = $totalDiscount;
         }
-        
 
         //Set tip
         if ($this->request->has('tip')) {
@@ -312,6 +315,7 @@ class BaseOrderRepository extends Controller
         try {
             //Inform owner - via email, sms or db
             // $this->vendor->user->notify((new OrderNotification($this->order, 1, $this->vendor->user))->locale(strtolower(config('settings.app_locale'))));
+
 
             //Notify owner with pusher
             if (strlen(config('broadcasting.connections.pusher.secret')) > 4) {

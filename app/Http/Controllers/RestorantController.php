@@ -378,14 +378,14 @@ class RestorantController extends Controller
         $restaurant = Restorant::findOrFail($restaurantid);
         $restaurant->name = strip_tags($request->name);
         
-        // $restaurant->name_on_cover = $request->name_on_cover == 'true' ? 1 : 0;
+        $restaurant->name_on_cover = $request->name_on_cover == 'true' ? 1 : 0;
 
         $restaurant->api_key = strip_tags($request->api_key);
         $restaurant->broker = strip_tags($request->broker);
         $restaurant->zip = strip_tags($request->zip);
         $restaurant->taxID = strip_tags($request->taxID);
-	    $restaurant->counter = strip_tags($request->counter);
-        $restaurant->pick_up_discount = strip_tags($request->pick_up_discount);
+	$restaurant->counter = strip_tags($request->counter);
+	$restaurant->pick_up_discount = strip_tags($request->pick_up_discount);
         $restaurant->city = strip_tags($request->city);
         $thereIsRestaurantAddressChange = $restaurant->address.'' != $request->address.'';
 
@@ -449,12 +449,11 @@ class RestorantController extends Controller
                     ['name' => 'large', 'w' => 590, 'h' => 400],
                     ['name' => 'medium', 'w' => 295, 'h' => 200],
                     ['name' => 'thumbnail', 'w' => 200, 'h' => 200],
-                ],true
+                ]
             );
         }
-        
 
-        if ($request->hasFile('resto_icon')) {
+	 if ($request->hasFile('resto_icon')) {
             $restaurant->favIcon = $this->saveImageVersions(
                 $this->imagePath,
                 $request->resto_icon,
@@ -465,6 +464,7 @@ class RestorantController extends Controller
                 ]
             );
         }
+
         if ($request->hasFile('resto_wide_logo')) {
 
             $uuid = Str::uuid()->toString();

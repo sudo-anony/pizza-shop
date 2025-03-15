@@ -5,12 +5,13 @@ namespace App\Providers;
 use Akaunting\Module\Facade as Module;
 use App\Settings;
 use App\User;
-use App\Restorant;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
+use App\Restorant;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -27,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $restorant = Restorant::find(17); 
+	$restorant = Restorant::find(17); 
         if (method_exists(Cashier::class, 'useCustomerModel')) {
             Cashier::useCustomerModel(User::class);
         }
@@ -40,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
             \DB::connection()->getPdo();
             $settings = Schema::hasTable('settings') && Settings::find(1) ? Settings::find(1)->toArray() : [];
 
-            //Site logo
+             //Site logo
             if ((isset($settings['site_logo']) && ! (strpos($settings['site_logo'], '/') !== false))) {
                 // $settings['site_logo'] = '/uploads/settings/'.$settings['site_logo'].'_logo.jpg';
                 $settings['site_logo'] = $restorant->logowide;

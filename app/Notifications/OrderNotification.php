@@ -16,6 +16,8 @@ use NotificationChannels\Twilio\TwilioSmsMessage;
 use App\Address;
 use Illuminate\Support\HtmlString;
 
+use App\Models\EmailLog;
+
 class OrderNotification extends Notification
 {
     use Queueable;
@@ -287,6 +289,16 @@ class OrderNotification extends Notification
         }
     
         $message->line(__('Total: ') . money($this->order->order_price_with_discount + $this->order->delivery_price, config('settings.cashier_currency'), config('settings.do_convertion')));
+        
+        
+
+        EmailLog::create([
+            'receiver' => $notifiable->email_override ?? $notifiable->email,
+            'subject' => __('Order notification').' #'.$this->order->randomID,
+            'content' => $message->render(),
+            'restaurant_id' => $this->order->restorant->id,
+        ]);
+
         return $message;
     }
     
@@ -327,6 +339,9 @@ class OrderNotification extends Notification
         } elseif ($this->status.'' == '200') {
             $greeting = __('Order Payment Confirmation');
             $line = __('We are pleased to confirm that your recent order has been successfully processed, and payment has been received. Thank you for choosing ') . ' ' . config('app.name'). ''.'!' ;
+        } else {
+            $greeting = __('Unknown status');
+            $line = __('The status of your order is unknown. Please contact support for more information.');
         }
 
         return [

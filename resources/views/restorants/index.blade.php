@@ -77,7 +77,7 @@
                                             <td><a href="{{ route('admin.restaurants.edit', $restorant) }}">{{ $restorant->name }}</a></td>
                                         @endif
                                        
-                                        <td><img class="rounded" src={{ $restorant->logowide }} width="70px" height="50px"></img></td>
+                                        <td><img class="rounded" src={{ $restorant->logowide }} width="80px" height="auto"></img></td>
                                         <td>{{  $restorant->user?$restorant->user->name:__('Deleted') }}</td>
                                         <td>
                                             <a href="mailto: {{ $restorant->user?$restorant->user->email:""  }}">{{  $restorant->user?$restorant->user->email:__('Deleted')  }}</a>

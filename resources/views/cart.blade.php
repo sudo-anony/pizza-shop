@@ -21,7 +21,9 @@
             <div class="col-md-7">
 
               <!-- List of items -->
-              @include('cart.items')
+                <div class="d-none d-md-block">
+                    @include('cart.items')
+                </div>
 
                 <form id="order-form" role="form" method="post" action="{{route('order.store')}}" autocomplete="off" enctype="multipart/form-data">
                 @csrf
@@ -163,7 +165,10 @@
 
           <!-- Right Part -->
           <div class="col-md-5">
-
+            <div class="d-block d-md-none">
+                <!-- Content only visible on mobile screens -->
+                @include('cart.mobile-items')
+            </div>
             @if (count($timeSlots)>0)
                 <!-- Payment -->
                 @include('cart.payment')
@@ -248,7 +253,7 @@
 
         var isSubmitting = false;
       
-        function saveLocation(lat, lng){
+         function saveLocation(lat, lng){
             if (isSubmitting) {
                 return;
             }

@@ -15,7 +15,7 @@
                 <div class="custom-control custom-radio mb-3">
                     <input name="deliveryType" class="custom-control-input" id="deliveryTypePickup" type="radio" value="pickup">
                     <label class="custom-control-label" for="deliveryTypePickup" onclick="pick_discount_applied({{ $restorant->pick_up_discount }})">
-                        {{ __('Save') }} {{ $restorant->pick_up_discount }}% {{ __('by picking up your order') }} .
+                        {{ _('Save') }} {{ $restorant->pick_up_discount }}% {{ _('by picking up your order') }} .
                     </label>
                 </div>
             @else
