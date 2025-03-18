@@ -43,14 +43,14 @@
       if (cartTotal && cartTotal.totalPrice) {
         setPickUpDeduction(cartTotal.totalPrice);
         if (pickupDiscount > 0) {
+          orderTypeSwither('pickup');
           pick_discount_applied(pickupDiscount);
         }
       }
-    }, 500); 
+    }, 1000); 
   });
   
   function pick_discount_applied(value) {
-    debugger;
     let totalPrice = cartTotal.totalPrice; 
     let discountAmount = (totalPrice * value) / 100;
     setPickUpDeduction(discountAmount);
