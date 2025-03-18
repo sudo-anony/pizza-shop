@@ -221,9 +221,9 @@ class OrderNotification extends Notification
                 $greeting = __('Order Payment Confirmation');
                 if ($this->order->payment_method == 'cod') {
                     
-                    $line = __('Your Cash on Delivery (COD) order has been received.');
+                    $line = 'Ihre Nachnahme (COD)-Bestellung wurde erhalten.';
                 } else {
-                    $line = __('Your payment has been successfully processed. Thank you for choosing ') . config('app.name') . '!';
+                    $line = 'Ihre Zahlung wurde erfolgreich verarbeitet. Vielen Dank, dass Sie sich für ' . config('app.name') . '!';
                 }
               
                 
@@ -240,8 +240,7 @@ class OrderNotification extends Notification
             ->greeting(new HtmlString('<img src="' . $imagePath . '" style="width: 100px; height: auto; border-radius: 10px;" alt="Restaurant Logo"><br>' . $greeting))
             ->subject(__('Order Notification') . ' #' . $this->order->randomID)
             ->line($line)
-            ->action(__('View Order'), url('/orders/'.$this->order->randomID));
-    
+            ->action(__('View Order'), url('/orders/'.$this->order->randomID));    
         // **Restaurant Info**
         
         // **Customer Info**
@@ -287,7 +286,7 @@ class OrderNotification extends Notification
     
         // **Order Summary**
         $message->line(__('________________'))
-                ->line(__('Sub Total: ') . money($this->order->order_price, config('settings.cashier_currency'), config('settings.do_convertion')));
+                ->line('Zwischensumme: ' . money($this->order->order_price, config('settings.cashier_currency'), config('settings.do_convertion')));
     
         if ($this->order->tip) {
             $message->line(__('Tip: ') . money($this->order->tip, config('settings.cashier_currency'), config('settings.do_convertion')));
@@ -298,7 +297,7 @@ class OrderNotification extends Notification
         }
     
         if ($this->order->discount > 0) {
-            $message->line(__('Discount: ') . money($this->order->discount, config('settings.cashier_currency'), config('settings.do_convertion')));
+            $message->line('Rabatt: ' . money($this->order->discount, config('settings.cashier_currency'), config('settings.do_convertion')));
         }
     
         $message->line(__('Total: ') . money($this->order->order_price_with_discount + $this->order->delivery_price, config('settings.cashier_currency'), config('settings.do_convertion')));
