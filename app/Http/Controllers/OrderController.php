@@ -35,12 +35,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use willvincent\Rateable\Rating;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
-use Stripe\PaymentIntent;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Stripe\Coupon;
-
-use App\Mail\OrderPaymentConfirmation;
+use App\Models\ApiLog;
 
 class OrderController extends Controller
 {
@@ -642,6 +639,16 @@ class OrderController extends Controller
         if ($broker->counter == 'none'){
             $status = Status::where('id', 2)->first();
             $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
+            ApiLog::create([
+                'status_code' => 200,
+                'order_id' => $latestOrder->id,
+                'api_endpoint' => 'NA',
+                'request_payload' => 'NA',
+                'request_response' => 'OK',
+                'counter' => $broker->counter,
+                'broker' => $broker->broker ? $broker->broker : $broker->name,
+                'orderId' => $latestOrder->randomID
+            ]); 
         } else if ($broker->counter == 'expert-order' && !empty($broker->api_key) && !empty($setting->expertOrder)) {
             $this->submitOrder($user , $latestOrder , $broker,$setting->expertOrder);
         }        
@@ -672,6 +679,7 @@ class OrderController extends Controller
             "name" => $user->name,
             "email" => $user->email,
             "phone" => $user->phone,
+            "mobileFormat" => '',
             "departmentname" => 'NA',
             "companyname" => 'NA'
         ];
@@ -713,7 +721,13 @@ class OrderController extends Controller
     
         $unique_id = "ORDER_" . time();
         $orderOnCode = $latestOrder->codOnPickUp;
-        $setStatus = ($orderOnCode == 1) ? 1 : (($latestOrder->payment_method == 'cod') ? 0 : 3);
+
+        if($latestOrder->payment_method == 'cod'){
+            $setStatus = ($orderOnCode == 1) ? 1 : 0;
+        } else {
+            $setStatus = 3;
+        }
+        // $setStatus = ($orderOnCode == 1) ? 1 : (($latestOrder->payment_method == 'cod') ? 0 : 3);
       
         $order_data = [
             "version" => 1,
@@ -729,7 +743,7 @@ class OrderController extends Controller
             "tip" => $this->format_price($latestOrder->tip), 
             "customer" => [
                 "name" => $addressObj['name'],
-                "phone" => $addressObj['phone'],
+                "phone" => (strpos($addressObj['phone'], '+') !== false) ? $addressObj['phone'] : $addressObj['mobileFormat'] . $addressObj['phone'],
                 "email" => $addressObj['email'],
                 "street" => $addressObj['street'],
                 "zip" => strval($addressObj['zip']),
@@ -764,6 +778,8 @@ class OrderController extends Controller
        
         
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+       
+   
         if ($http_code == 200) {
   
                 $status = Status::where('id', 14)->first();
@@ -782,12 +798,22 @@ class OrderController extends Controller
         }
         curl_close($ch);
         $api_response = json_decode($response, true);
+        $api_log = ApiLog::create([
+            'status_code' => $http_code,
+            'order_id' => $latestOrder->id,
+            'api_endpoint' => $url,
+            'request_payload' => $json_data,
+            'request_response' => empty($response) ? 'OK' : $response,
+            'counter' => $broker->counter,
+            'broker' => $broker->broker ? $broker->broker : $broker->name,
+            'orderId' => $latestOrder->randomID
+        ]); 
     }
 
     protected function generateDeliveryTime($time)
     {
         $interval = explode($time, '_');
-        $startTimeInMinutes = $interval[0];
+        $startTimeInMinutes = (int) $interval[0];
         $hours = intdiv($startTimeInMinutes, 60);
         $minutes = $startTimeInMinutes % 60;
         $startTime = Carbon::createFromTime($hours, $minutes, 0)->format("Y-m-d\TH:i:s\Z");

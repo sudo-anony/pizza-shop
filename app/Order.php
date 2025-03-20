@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Models\ApiLog;
 class Order extends Model
 {
     use HasConfig;
@@ -26,6 +26,11 @@ class Order extends Model
     public function getRandomIDAttribute()
     {
         return $this->attributes['randomID'] ?? null; // Use null to avoid undefined key error
+    }
+
+    public function apiLog()
+    {
+        return $this->hasOne(ApiLog::class, 'order_id', 'id');
     }
 
     protected $modelName = \App\Order::class;

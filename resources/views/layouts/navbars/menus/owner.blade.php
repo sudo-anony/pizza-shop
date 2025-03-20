@@ -6,6 +6,11 @@
             </a>
         </li>
     @endif
+    <li class="nav-item">
+            <a class="nav-link" href="{{ route('api.logs') }}">
+                <i class="ni ni-tv-2 text-danger"></i> {{ __('API Logs') }}
+            </a>
+        </li>
     @if(config('app.ordering')&&!config('settings.makePureSaaS',false))
         <li class="nav-item">
             <a class="nav-link" href="{{ route('home') }}">
