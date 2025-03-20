@@ -558,6 +558,26 @@ window.onload = function () {
     }
   })
 
+  cartContentMobile = new Vue({
+    el: '#cartListMobile',
+    data: {
+      items: [],
+      config:{}
+    },
+    methods: {
+      remove: function (product_id) {
+        removeProductIfFromCart(product_id);
+      },
+      incQuantity: function (product_id){
+        incCart(product_id)
+      },
+      decQuantity: function (product_id){
+        decCart(product_id)
+      },
+    }
+  })
+
+
 
   orderContent = new Vue({
     el: '#orderList',

@@ -82,7 +82,7 @@
             </div>
             <br/>
         @endif
-        <div class="row" id="pickup_discount_div">
+		<div class="row" id="pickup_discount_div">
                 <div class=" col-12 form-group{{ $errors->has('pick_up_discount') ? ' has-danger' : '' }}">
                     <label class="form-control-label" for="input-description">{{ __('Pickup Discount') }}  %</label>
                     <input type="number" name="pick_up_discount" id="pick_up_discount" step="any" min="0" max="100" class="form-control form-control-alternative{{ $errors->has('pick_up_discount') ? ' is-invalid' : '' }}" value="{{ old('pick_up_discount', $restorant->pick_up_discount) }}">

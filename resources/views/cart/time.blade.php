@@ -6,7 +6,6 @@
       <div class="card-content border-top">
         <br />
 
-
         @if (($doWeHaveOrderAfterHours&&count($timeSlots)==1&&$timeSlots[0]==null)|| $restorant->getConfig('always_order_date_time_enable',false)=="true")
           <input type="datetime-local" id="timeslot" name="timeslot" class="form-control{{ $errors->has('timeslot') ? ' is-invalid' : '' }}">
         @else

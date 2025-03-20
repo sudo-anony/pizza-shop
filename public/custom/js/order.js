@@ -251,10 +251,35 @@ function setVariants(){
 }
 
 
-function setCurrentItem(id){
+function setCurrentItem(id, alergies){
 
+    // find closest .allergens element
+    // copy the elemnt and add it to the modal
+    // with #allergensContainer as the parent
 
-    var item=items[id];
+    console.log("---- ALLERGENS ----", alergies);
+    const alerg = JSON.parse(alergies);
+    $('#allergensContainer').empty();
+
+    let content = '<div class="allergens" style="text-align: left; pading-top: 20px;">';
+
+    content += '<h5>Allergies</h5>';
+
+    content += '<ul style="list-style-type: none; padding: 0;">';
+
+    for (let allergen of alerg) {
+        content += `
+            <li style="display: flex; align-items: center; margin-bottom: 2px;">
+                <img src="/uploads/restorants/${allergen.image}_large.jpg" style="width: 20px; height: 20px; margin-right: 10px;" />
+                <span class="text-sm" data-toggle="tooltip" data-placement="bottom" title="${allergen.title}">${allergen.title}</span>
+            </li>`;
+    }
+
+    content += '</ul></div>';
+
+    $('#allergensContainer').append(content);
+
+    var item = items[id];
     console.log("---- ITEM ----");  
     console.log(item); 
     

@@ -258,8 +258,7 @@
                             {{$order->comment}}
                         </div> -->
 
-                        <div class="col-12 col-sm-5 text-grey text-90 order-first order-sm-last">
-                            
+                        <div class="col-12 col-sm-5 offset-sm-7 text-grey text-90 order-first order-sm-last">
                             <!-- NET -->
                             <div class="row my-2">
                                 <div class="col-7 text-right">

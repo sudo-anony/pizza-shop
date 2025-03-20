@@ -16,7 +16,7 @@ Route::prefix('pdf-invoice')->group(function() {
 });
 
 Route::group([
-    // 'middleware' =>[ 'web','impersonate'],
+    'middleware' =>[ 'web','impersonate'],
     'namespace' => 'Modules\PdfInvoice\Http\Controllers'
 ], function () {
     Route::prefix('pdfinvoice')->group(function() {

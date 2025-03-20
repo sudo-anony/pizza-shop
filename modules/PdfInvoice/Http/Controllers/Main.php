@@ -21,6 +21,7 @@ class Main extends Controller
         if(isset($_GET['site_token'])&&$_GET['site_token']=="89324nkjdcs8c9234234"){
             return view('pdf-invoice::index',$dataToSend);
         }
+        
         if(auth()->user()->hasRole('admin')){
             return view('pdf-invoice::index',$dataToSend);
         }else if(auth()->user()->hasRole('owner')&&$order->restorant->user_id==auth()->user()->id){

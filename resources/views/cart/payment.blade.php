@@ -85,7 +85,7 @@
                                 <input name="paymentType" class="custom-control-input" id="cashOnDelivery2" type="radio" value="cod">
                                 <input name="specialCod" class="custom-control-input specialCodInput" id="specialCod" type="hidden" value="1">
                                 <label class="custom-control-label" for="cashOnDelivery2">
-                                    <span class="delTime">{{ config('app.isqrsaas')?__('Cash / Card Terminal'): __('Pay by card by delivery.') }}</span>
+                                    <span class="delTime">{{ config('app.isqrsaas')?__('Cash / Card Terminal'): __('Pay by card by delivery') }}</span>
                                     <span class="picTime">{{ __('Pay by card by pickup') }}</span>
                                 </label>
                             </div>

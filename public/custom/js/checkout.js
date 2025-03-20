@@ -82,6 +82,13 @@ var checkPrivacyPolicy = function(){
 
 $("#privacypolicy").change(function() {
     if(this.checked) {
+        if ($('#deliveryTypeDeliver').is(':checked')){
+            let addressVal = $('#addressID').val()
+            if (addressVal == null){
+                $('.paymentbutton').attr("disabled", true);
+                return
+            }
+        }
         $('.paymentbutton').attr("disabled", false);
     }else{
         $('.paymentbutton').attr("disabled", true);
@@ -205,8 +212,8 @@ var initStripePayment=function(){
             console.log(RESTORANT);
             console.log('Form saved to localStorage:', formObject);
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            let discount = cartTotal.deduct;
-            let pickup_dicsount = cartTotal.pickupdeduct;
+	    let discount = cartTotal.deduct;
+	    let pickup_dicsount = cartTotal.pickupdeduct;
             const response = await fetch('/create-checkout-session', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -218,8 +225,8 @@ var initStripePayment=function(){
                     deliveryMethod: $('input[name="deliveryType"]:checked').val(),
                     restaurant_id: RESTORANT.id,
                     tip: $('#tip').val(),
-                    discount: discount,
-                    pickup_dicsount: pickup_dicsount
+		    discount: discount,
+		    pickup_dicsount: pickup_dicsount
                 }),
                 headers: {
                     'Content-Type': 'application/json',

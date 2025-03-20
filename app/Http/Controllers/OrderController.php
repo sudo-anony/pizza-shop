@@ -552,7 +552,6 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
-        
         if ($request->has('tip')) {
             $tip = $request->input('tip');  
             $numericTip = $this->moneyToFloat($tip); 
@@ -622,7 +621,7 @@ class OrderController extends Controller
         }
         $user = auth()->user();
         $latestOrder = $user->orders()->latest()->first();
-	    if ($latestOrder instanceof Order && $request->has('randomID')) {
+	if ($latestOrder instanceof Order && $request->has('randomID')) {
             $randomID = $request->randomID;
             $latestOrder->randomID = $randomID;
             $latestOrder->save();
@@ -651,10 +650,10 @@ class OrderController extends Controller
 
     public function submitOrder($user , $latestOrder , $broker, $url) {
         $orderTime = $latestOrder->created_at->format("Y-m-d\TH:i:s\Z");
-        $deliveryTime = $latestOrder->created_at->addHour()->format("Y-m-d\TH:i:s\Z");
+        $deliveryTime = $this->generateDeliveryTime($latestOrder->delivery_pickup_interval);
+        // $deliveryTime = $latestOrder->created_at->addHour()->format("Y-m-d\TH:i:s\Z");
         $orderItems = Orderitems::where('order_id', $latestOrder->id)->get();
         $address = Address::find($latestOrder->address_id);
-        
         $addressObj = $address ? [
             "addressInfo" => $address->addressinfo,
             "location" => $address->city ?? "NA",
@@ -704,7 +703,8 @@ class OrderController extends Controller
                     "uid" => $uid,
                     "count" => $item->qty, 
                     "name" => $name, 
-                    "price" => $formattedPrice, 
+                    "price" => $formattedPrice,
+                    "info" => implode(', ', json_decode($item->extras ?? '[]', true)),
                     "group" => $group, 
                     "type" => $type 
                 ];
@@ -714,6 +714,7 @@ class OrderController extends Controller
         $unique_id = "ORDER_" . time();
         $orderOnCode = $latestOrder->codOnPickUp;
         $setStatus = ($orderOnCode == 1) ? 1 : (($latestOrder->payment_method == 'cod') ? 0 : 3);
+      
         $order_data = [
             "version" => 1,
             "broker" => $broker->broker ? $broker->broker : $broker->name,
@@ -734,7 +735,7 @@ class OrderController extends Controller
                 "zip" => strval($addressObj['zip']),
                 "location" => $addressObj['location'],
                 "addressinfo" => $addressObj['addressInfo'],
-                "departmentname" => $addressObj['departmentname'],
+                "departmentname" => ($latestOrder->delivery_method == 1) ? $addressObj['departmentname'] : '',
                 "companyname" => $addressObj['companyname']
             ],
             "payment" => [
@@ -750,6 +751,7 @@ class OrderController extends Controller
             "info" => $latestOrder->comment
         ];
         $json_data = json_encode($order_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE); 
+       
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
@@ -782,9 +784,15 @@ class OrderController extends Controller
         $api_response = json_decode($response, true);
     }
 
-
-
-    
+    protected function generateDeliveryTime($time)
+    {
+        $interval = explode($time, '_');
+        $startTimeInMinutes = $interval[0];
+        $hours = intdiv($startTimeInMinutes, 60);
+        $minutes = $startTimeInMinutes % 60;
+        $startTime = Carbon::createFromTime($hours, $minutes, 0)->format("Y-m-d\TH:i:s\Z");
+        return $startTime;
+    }
 
     public function orderLocationAPI(Order $order): JsonResponse
     {

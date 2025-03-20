@@ -2701,3 +2701,11 @@ lottie-player {
     top: auto !important;
     left: auto !important;
   }
+
+#navbar-main {
+ padding: 2px;
+}
+
+.top-nav img {
+   height: 80px;
+}

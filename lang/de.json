@@ -221,7 +221,7 @@
     "Demo Stripe Credentials": "Demo-Stripe-Anmeldeinformationen",
     "Payment method": "Zahlungsmethode",
     "Cash on delivery": "Barzahlung bei Lieferung",
-    "Pay with card": "Mit Karte bezahlen",
+    "Pay with card": "Mit Karte online bezahlen",
     "Pay via iDeal": "Mit iDeal bezahlen",
     "Place order": "Bestellung aufgeben",
     "Name on card": "Name auf der Karte",
@@ -508,7 +508,7 @@
     "Cancel Order": "Bestellung abbrechen",
     "TOTAL": "GESAMT",
     "Cash \/ Card Terminal": "Bargeld \/ Kartenterminal",
-    "Cash on pickup": "Bar bei Abholung",
+    "Cash on pickup": "Barzahlung bei Abholung",
     "Pay with PayPal": "Mit PayPal bezahlen",
     "Pay with Paystack": "Mit Paystack bezahlen",
     "Pay with Mollie": "Mit Mollie bezahlen",
@@ -766,7 +766,7 @@
     "Earnings": "Einnahmen",
     "Are you sure you want to deactivate this driver?": "Sind Sie sicher, dass Sie diesen Fahrer deaktivieren möchten?",
     "just_created": "Gerade erstellt",
-    "accepted_by_admin": "Von Admin akzeptiert",
+    "accepted_by_admin": "Vom Admin akzeptiert",
     "accepted_by_restaurant": "Akzeptieren",
     "assigned_to_driver": "Zu Fahrer zugewiesen",
     "prepared": "Vorbereitet",
@@ -1949,5 +1949,14 @@
     "Order Notification": "Bestellbenachrichtigung",
     "Your Cash on Delivery (COD) order has been received": "Ihre Nachnahme-Bestellung wurde erhalten.",
     "Your payment has been successfully processed. Thank you for choosing": "Ihre Zahlung wurde erfolgreich verarbeitet. Vielen Dank, dass Sie sich für uns entschieden haben.",
-    "Order Payment Confirmation": "Bestellzahlungsbestätigung"
+    "Order Payment Confirmation": "Bestellzahlungsbestätigung",
+    "Pay by card by delivery or pickup": "Mit Karte bei Lieferung oder Abholung bezahlen",
+    "Edit Address": "Adresse bearbeiten",
+    "Enter City here ...": "Ort eingeben ...",
+	"Pay by card by delivery": "Bezahlung mit Karte bei Lieferung",
+	"Pay by card by pickup": "Bezahlung mit Karte bei Abholung",
+	"Edit Address": "Adresse bearbeiten",
+	"New Address": "Neue Adresse"
+
+
 }

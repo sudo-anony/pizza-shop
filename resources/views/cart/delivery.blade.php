@@ -51,12 +51,16 @@
   });
   
   function pick_discount_applied(value) {
+    $("#privacypolicy").prop("checked", false);
+    $('.paymentbutton').attr("disabled", true);
     let totalPrice = cartTotal.totalPrice; 
     let discountAmount = (totalPrice * value) / 100;
     setPickUpDeduction(discountAmount);
   }
   
   function pick_discount_removed(){
+    $("#privacypolicy").prop("checked", false);
+    $('.paymentbutton').attr("disabled", true);
     cartTotal.pickupdeduct = null;
     setPickUpDeduction(newTotal);
   }

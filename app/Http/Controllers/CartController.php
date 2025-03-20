@@ -227,6 +227,18 @@ class CartController extends Controller
             //Create all the time slots
             $timeSlots = $this->getTimieSlots($restaurant);
 
+            $currentDateTime = new \DateTime();
+            $currentMinutes = $currentDateTime->format('H') * 60 + $currentDateTime->format('i');
+            
+            // Filter the timeslot array
+            $filteredTimeSlots = array_filter($timeSlots, function($key) use ($currentMinutes) {
+                $interval = explode('_', $key);
+                $startTimeInMinutes = (int)$interval[0];
+                return $startTimeInMinutes > $currentMinutes;
+            }, ARRAY_FILTER_USE_KEY);
+
+            // Output the filtered timeslots
+            $timeSlots = $filteredTimeSlots;
             //user addresses
             $addresses = [];
             if (config('app.isft')) {

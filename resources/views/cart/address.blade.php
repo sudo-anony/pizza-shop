@@ -20,7 +20,7 @@
         <div class="form-group{{ $errors->has('addressID') ? ' has-danger' : '' }}">
             @if(count($addresses))
             
-                <select name="addressID" id="addressID" class="form-control{{ $errors->has('addressID') ? ' is-invalid' : '' }}  noselecttwo" required>
+                <select name="addressID" id="addressID" class="form-control{{ $errors->has('addressID') ? ' is-invalid' : '' }}  noselecttwo" required onchange="handleAddressChange(this)">
                     <option disabled selected value> {{__('-- select an option -- ')}}</option>
                     @foreach ($addresses as $key => $address)
                         @if(config('settings.enable_cost_per_distance'))
@@ -49,3 +49,20 @@
     </div>
   </div>
   <br />
+
+  <script>
+function handleAddressChange(select) {
+    console.log("Selected Value:", select.value);
+    let paymentButton = document.querySelector('.paymentbutton');
+    if (select.value) {
+        if ($('#deliveryTypeDeliver').is(':checked')){
+            $('.paymentbutton').attr("disabled", false);
+            return 
+        }
+       $('.paymentbutton').attr("disabled", true);
+    } else {
+       $('.paymentbutton').attr("disabled", true);
+    }
+}
+
+</script>

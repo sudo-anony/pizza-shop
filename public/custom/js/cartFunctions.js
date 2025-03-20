@@ -29,8 +29,9 @@ function updatePrices(net,delivery,enableDelivery){
   console.log("Deduct is "+deduct);
 
   var tip=cartTotal.tip;
-  console.log("Tip is "+tip);
   var pickupdeduct = cartTotal.pickupdeduct;
+  console.log("Tip is "+tip);
+  
   var formatter = new Intl.NumberFormat(LOCALE, {
     style: 'currency',
     currency:  CASHIER_CURRENCY,
@@ -139,9 +140,11 @@ function getCartContentAndTotalPrice(){
  };
 
 $("#tip_btn").on('click',function() {
-  let integerValue = parseInt($('#tip').val().replace('€', '').trim());
+  let tipInputValue = $('#tip').val();
+  let integerValue = parseFloat(tipInputValue.replace('€', '').replace(',', '.').replace(' ', ''));
   var tip = parseFloat(integerValue);
-  if(tip>0){
+  debugger;
+  if (tip > 0) {
     $('#tipapplied').val(1);
   }else{
     $('#tipapplied').val(0);
