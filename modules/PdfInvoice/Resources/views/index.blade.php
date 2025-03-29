@@ -307,7 +307,25 @@
                                         {{ __('Discount') }}
                                     </div>
                                     <div class="col-5">
-                                        <span class="text-110">@money( $order->discount, $currency,$convert)</span>
+                                        @if ($order->pickup_discount)
+                                            @php
+                                                $finalDiscount = $order->discount - ($order->pickup_discount ?? 0);
+                                            @endphp
+                                            <span class="text-110">@money( $finalDiscount, $currency,$convert)</span>
+                                        @else
+                                            <span class="text-110">@money( $order->discount, $currency,$convert)</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if($order->pickup_discount)
+                                <div class="row my-2">
+                                    <div class="col-7 text-right">
+                                        {{ __('Pickup Discount') }}
+                                    </div>
+                                    <div class="col-5">
+                                    <span class="text-110">@money( $order->pickup_discount, $currency,$convert)</span>
                                     </div>
                                 </div>
                             @endif

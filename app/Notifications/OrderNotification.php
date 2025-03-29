@@ -297,8 +297,19 @@ class OrderNotification extends Notification
         }
     
         if ($this->order->discount > 0) {
-            $message->line('Rabatt: ' . money($this->order->discount, config('settings.cashier_currency'), config('settings.do_convertion')));
+            if ($this->order->pickup_discount){
+                $final_discount = $this->order->discount - $this->order->pickup_discount;
+                $message->line('Rabatt: ' . money($final_discount, config('settings.cashier_currency'), config('settings.do_convertion')));
+            }else {
+                $message->line('Rabatt: ' . money($this->order->discount, config('settings.cashier_currency'), config('settings.do_convertion')));
+            }
+            
         }
+
+        if ($this->order->pickup_discount){
+            $message->line('Abholrabatt: ' . money($this->order->pickup_discount, config('settings.cashier_currency'), config('settings.do_convertion')));
+        }
+
     
         $message->line(__('Total: ') . money($this->order->order_price_with_discount + $this->order->delivery_price, config('settings.cashier_currency'), config('settings.do_convertion')));
         return $message;

@@ -56,12 +56,33 @@
     let totalPrice = cartTotal.totalPrice; 
     let discountAmount = (totalPrice * value) / 100;
     setPickUpDeduction(discountAmount);
+    setTimeout(() => {
+      let form = document.querySelector("#order-form"); 
+      if (!form) {
+        console.error("Form element not found");
+        return;
+      }
+
+      let hiddenField = document.getElementById("pickup_discount");
+      if (!hiddenField) {
+        hiddenField = document.createElement("input");
+        hiddenField.type = "hidden";
+        hiddenField.id = "pickup_discount";
+        hiddenField.name = "pickup_discount"; 
+        form.appendChild(hiddenField);
+      }
+      hiddenField.value = discountAmount;
+    }, 500);
   }
   
   function pick_discount_removed(){
     $("#privacypolicy").prop("checked", false);
     $('.paymentbutton').attr("disabled", true);
     cartTotal.pickupdeduct = null;
-    setPickUpDeduction(newTotal);
+    setPickUpDeduction(null);
+    let hiddenField = document.getElementById("pickup_discount");
+    if (hiddenField) {
+      hiddenField.remove();
+    }
   }
 </script>

@@ -147,7 +147,7 @@ var initCOD=function(){
          
          //IF delivery - we need to have selected address
          if(validateOrderFormSubmit()){
-            
+            debugger
             form.submit();
          }
     });

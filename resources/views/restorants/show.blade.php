@@ -243,7 +243,7 @@
                                             <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }}, '{{ $item->allergens }}')" href="javascript:void(0)">{{ $item->name }}</a></b></div>
                                         @endif
 
-                                        <div class="res_description">{{ $item->short_description}}</div>
+                                        <div class="res_description">{{ $item->subtitle}}</div>
                                         <div class="row">
                                             <div class="col-6">
                                                 <div class="res_mimimum">

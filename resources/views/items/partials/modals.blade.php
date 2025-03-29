@@ -163,7 +163,8 @@
                                     <span class="btn btn-outline-secondary btn-file">
                                     <span class="fileinput-new">{{ __('Select image') }}</span>
                                     <span class="fileinput-exists">{{ __('Change') }}</span>
-                                        <input type="file" name="item_image" accept="image/x-png,image/png,image/gif,image/jpeg">
+                                        <input type="file" name="item_image" accept="image/x-png,image/png,image/gif,image/jpeg,image/webp"
+                                        >
                                     </span>
                                     <a href="#" class="btn btn-outline-secondary fileinput-exists" data-dismiss="fileinput">{{ __('Remove') }}</a>
                                 </div>

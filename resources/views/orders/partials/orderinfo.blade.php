@@ -202,6 +202,8 @@
      <hr />
      <h3>{{ __("TOTAL") }}: @money( $order->delivery_price+$order->order_price_with_discount, $currency,true)</h3>
      <hr />
+     @php
+     @endphp
      <h4>{{ __("Payment method") }}: {{ $order->codOnPickUp == 1 ? __('Pay by card by delivery or pickup') : strtoupper(__($order->payment_method)) }}</h4>
      <h4>{{ __("Payment status") }}: {{ __(ucfirst($order->payment_status)) }}</h4>
      @if ($order->payment_status=="unpaid"&&strlen($order->payment_link)>5)

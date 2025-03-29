@@ -629,6 +629,7 @@ class OrderController extends Controller
         }
         if ($request->has('specialCod')){
             $latestOrder->codOnPickUp = 1;
+            $latestOrder->pickup_discount = (float) $request->pickup_discount;
         }
         $broker = $latestOrder->restorant; 
         $setting = Settings::where('id',1)->first();
