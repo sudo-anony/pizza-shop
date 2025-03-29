@@ -5,11 +5,11 @@
                 <i class="ni ni-tv-2 text-primary"></i> {{ __('Dashboard') }}
             </a>
         </li>
-        <li class="nav-item">
+ {{-- 	<li class="nav-item">
             <a class="nav-link" href="{{ route('api.logs') }}">
                 <i class="ni ni-tv-2 text-danger"></i> {{ __('API Logs') }}
             </a>
-        </li>
+        </li>  --}}
         @if(config('app.isft'))
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('orders.index') }}">

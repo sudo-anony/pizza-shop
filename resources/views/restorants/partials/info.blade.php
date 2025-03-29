@@ -21,7 +21,7 @@
         ]])
 
         <div class="form-group">
-            <label class="form-control-label">Select Counter</label>
+            <label class="form-control-label">{{ __('Select Counter') }}</label>
             <select name="counter" id="select_counter" required class="form-control">
                 <option value="" disabled>Select Counter</option>
                 <option value="none" {{ empty($restorant->counter) || $restorant->counter == 'none' ? 'selected' : '' }}>None</option>

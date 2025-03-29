@@ -109,6 +109,21 @@ class VariantsController extends Controller
      */
     public function store(Items $item, Request $request): RedirectResponse
     {
+
+        // Validate options
+        $options = $request->option;
+        $item_options = $item->options->pluck('id')->toArray();
+        // Check if the first option is empty
+        if (empty($options[$item_options[0]])) {
+            return redirect()->back()->withError(__('The first option cannot be empty.'));
+        }
+
+        // Check if the last option is not empty while the first option is empty
+        if (!empty($options[$item_options[count($item_options) - 1]]) && empty($options[$item_options[0]])) {
+            return redirect()->back()->withError(__('The first option must be filled if the last option is not empty.'));
+        }
+
+
         $variant = Variants::create([
             'price' => $request->price,
             'item_id' => $item->id,
@@ -188,25 +203,54 @@ class VariantsController extends Controller
      *
      * @param  int  $id
      */
-    public function update(Request $request, Variants $variant): RedirectResponse
-    {
-        $variant->price = $request->price;
-        $variant->options = json_encode($request->option);
-        if ($request->has('qty')) {
-            $variant->qty = $request->qty;
-            $variant->enable_qty = 1;
-        } else {
-            $variant->enable_qty = 0;
-        }
-        $variant->update();
-        if ($request->has('qty')) {
-            Items::findOrFail($variant->item->id)->calculateQTYBasedOnVariants();
-        }
+   public function update(Request $request, Variants $variant): RedirectResponse
+{
+    // Fetch the associated item from the variant
+    $item = $variant->item;
 
-        $this->doUpdateOfSystemVariants($variant->item);
-
-        return redirect()->route('items.variants.index', ['item' => $variant->item->id])->withStatus(__('Variant has been updated'));
+    if (!$item) {
+        return redirect()->back()->withError(__('Item not found.'));
     }
+
+    // Validate options
+    $options = $request->option ?? [];
+    $item_options = $item->options->pluck('id')->toArray();
+
+    if (!empty($item_options)) {
+        // Check if the first option is empty
+        if (empty($options[$item_options[0]])) {
+            return redirect()->back()->withError(__('The first option cannot be empty.'));
+        }
+
+        // Check if the last option is not empty while the first option is empty
+        if (!empty($options[end($item_options)]) && empty($options[$item_options[0]])) {
+            return redirect()->back()->withError(__('The first option must be filled if the last option is not empty.'));
+        }
+    }
+
+    // Update variant details
+    $variant->price = $request->price;
+    $variant->options = json_encode($options);
+    $variant->enable_qty = $request->has('qty') ? 1 : 0;
+    
+    if ($variant->enable_qty) {
+        $variant->qty = $request->qty;
+    }
+
+    $variant->save();
+
+    // Recalculate item quantity if needed
+    if ($variant->enable_qty) {
+        $item->calculateQTYBasedOnVariants();
+    }
+
+    // Perform system variant updates
+    $this->doUpdateOfSystemVariants($item);
+
+    return redirect()->route('items.variants.index', ['item' => $item->id])
+        ->withStatus(__('Variant has been updated.'));
+}
+
 
     /**
      * Remove the specified resource from storage.

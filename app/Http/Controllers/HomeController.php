@@ -6,7 +6,7 @@ use Akaunting\Module\Facade as Module;
 use App\Items;
 use App\Order;
 use App\Restorant;
-use Illuminate\Http\Request;
+use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\App;
@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\View\View;
 use Modules\Expenses\Models\Expenses;
 use App\Models\ApiLog;
+use Illuminate\Http\Request;
+
 class HomeController extends Controller
 {
     /**
@@ -315,7 +317,6 @@ class HomeController extends Controller
     }
 
 
-
     public function apiLogs(Request $request): View
     {
         if ($request->has('search')) {
@@ -361,18 +362,7 @@ class HomeController extends Controller
         ]);
     }
 
-    // public function ApiLogsSearch(Request $request)
-    // {
+	
 
-    //     $logs = ApiLog::where('broker', 'like', '%'.$request->search.'%')
-    //         ->orWhere('counter', 'like', '%'.$request->search.'%')
-    //         ->orWhere('orderId', 'like', '%'.$request->search.'%')
-    //         ->orWhere('status_code', 'like', '%'.$request->search.'%')
-    //         ->orWhere('api_endpoint', 'like', '%'.$request->search.'%')
-    //         ->orderBy('id', 'desc')
-    //         ->limit(1000)
-    //         ->get();
 
-    //     return response()->json(['logs' => $logs]);
-    // }
 }

@@ -169,7 +169,7 @@ class ItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Items $item)
+  public function edit(Items $item)
     {
         //if item belongs to owner restorant menu return view
         if (auth()->user()->hasRole(['owner', 'staff']) && $item->category->restorant->id == $this->getCompany()->id || auth()->user()->hasRole('admin')) {
@@ -195,12 +195,13 @@ class ItemsController extends Controller
                     'item' => $item,
                     'setup' => ['items' => $item->uservariants()->paginate(1000)],
                     'restorant' => $item->category->restorant,
-                    'categories' => $item->category->restorant->categories->pluck('name', 'id'),
+                    'categories' => $item->category->restorant->all_categories->pluck('name', 'id'),
                     'restorant_id' => $item->category->restorant->id, ]);
         } else {
             return redirect()->route('items.index')->withStatus(__('No Access'));
         }
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -211,6 +212,7 @@ class ItemsController extends Controller
     {
         $makeVariantsRecreate = false;
         $item->name = strip_tags($request->item_name);
+        $item->subtitle = strip_tags($request->item_subtitle);
         $item->description = strip_tags($request->item_description);
         $item->category_id = $request->category_id;
         $item->uid = $request->item_uid;

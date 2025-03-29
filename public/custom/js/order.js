@@ -48,24 +48,42 @@ function loadExtras(variant_id){
         });
 
         $.ajax({
-            type:'GET',
-            url: '/items/variants/'+variant_id+'/extras',
-            success:function(response){
-                if(response.status){
-                    response.data.forEach(element => {
-                        $('#exrtas-area-inside').append('<div class="custom-control custom-checkbox mb-3"><input onclick="recalculatePrice('+element.item_id+');" class="custom-control-input" id="'+element.id+'" name="extra"  value="'+element.price+'" type="checkbox"><label class="custom-control-label" for="'+element.id+'">'+element.name+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+'+formatPrice(element.price)+'</label></div>');
+            type: 'GET',
+            url: '/items/variants/' + variant_id + '/extras',
+            success: function (response) {
+                if (response.status) {
+                    response.data.sort((a, b) => {
+                        const regex = /^[^a-zA-Z]/; 
+                        const aIsSpecial = regex.test(a.name);
+                        const bIsSpecial = regex.test(b.name);
+        
+                        if (aIsSpecial && !bIsSpecial) return -1;
+                        if (!aIsSpecial && bIsSpecial) return 1;
+        
+                        return a.name.localeCompare(b.name);
                     });
+        
+                    $('#exrtas-area-inside').empty();
+                    response.data.forEach(element => {
+                        $('#exrtas-area-inside').append(
+                            '<div class="custom-control custom-checkbox mb-3">' +
+                            '<input onclick="recalculatePrice(' + element.item_id + ');" class="custom-control-input" id="' + element.id + '" name="extra" value="' + element.price + '" type="checkbox">' +
+                            '<label class="custom-control-label" for="' + element.id + '">' + element.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+' + formatPrice(element.price) + '</label>' +
+                            '</div>'
+                        );
+                    });
+        
                     $('#exrtas-area').show();
-                    if(response.data.length>0){
+                    if (response.data.length > 0) {
                         $('#theExtrasLabel').show();
-                    }else{
+                    } else {
                         $('#theExtrasLabel').hide();
                     }
-
                 }
-            }, error: function (response) {
-            }
-        })
+            },
+            error: function (response) {}
+        });
+        
 }
 
 
@@ -285,7 +303,9 @@ function setCurrentItem(id, alergies){
     
     currentItem=item;
     previouslySelected=[];
+    debugger;
     $('#modalTitle').text(item.name);
+    $('#modalsubTitle').text(getSubtitleText(item));
     $('#modalName').text(item.name);
     $('#modalPrice').html(item.price);
     $('#modalID').text(item.id);
@@ -352,6 +372,23 @@ function setCurrentItem(id, alergies){
         $('#exrtas-area').show();
     }
 }
+
+
+function getSubtitleText(item) {
+    let subtitleText = null; 
+
+    try {
+        if (item && item.subtitle) {
+            let subtitleData = JSON.parse(item.subtitle); 
+            subtitleText = subtitleData.de || null; 
+        }
+    } catch (error) {
+        console.error("Error parsing subtitle JSON:", error);
+    }
+    debugger
+    return subtitleText;
+}
+
 
 function recalculatePrice(id,value){
     var mainPrice=parseFloat(currentItemSelectedPrice);

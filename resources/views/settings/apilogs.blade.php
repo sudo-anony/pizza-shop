@@ -1,5 +1,4 @@
 <style>
-
 .json {
     font-family: 'Source Code Pro', monospace !important;
     font-size: 16px !important;
@@ -102,10 +101,13 @@
                         </div>
                         <div class="col-md-4 col-12 text-md-right">
                             <!-- Add search input field here -->
-                            <form method="GET" class="d-flex justify-content-end" action="{{ route('api.logs') }}" id="searchForm">
+                            <!-- <form method="GET" class="d-flex justify-content-end" action="{{ route('api.logs') }}" id="searchForm"> -->
+                                <div class="d-flex justify-content-between">
                                 <input type="text" name="search" id="searchInput" class="form-control mr-2" placeholder="{{ __('search') }}">
-                                <button type="submit" class="btn btn-primary">{{ __('search') }}</button>
-                            </form>
+                                <button type="button" class="btn btn-primary">{{ __('Reset') }}</button>
+                                </div>
+                                
+                            <!-- </form> -->
                         </div>
                     </div>
                 </div>
@@ -126,11 +128,10 @@
                                     </tr>
                                 </thead>
                                 <tbody id="logsTableBody">
-
                                     @foreach($logs as $log)
                                         <tr>
                                             
-                                            <td>#{{ $log->orderId }}</td>
+                                            <td>#{{$log-> orderid }}</td>
                                             <td>{{ $log->status_code }}</td>
                                             <td>{{ $log->api_endpoint }}</td>
                                             <td>{{ $log->counter }}</td>
@@ -198,6 +199,47 @@
     }
 
     $(document).ready(function() {
+
+        $('#searchInput').on('keyup', debounce(function() {
+            let query = $(this).val().trim();
+
+            $.ajax({
+                url: "{{ route('apilogsearch') }}",
+                method: "GET",
+                data: { search: query },
+                success: function(response) {
+                    if (Array.isArray(response.logs)) {
+                        let tableBody = $('#logsTableBody');
+                        tableBody.empty();
+                        console.log(tableBody);
+                        response.logs.forEach(log => {
+                            let row = `
+                                <tr>
+                                    <td>#${log.order_id}</td>
+                                    <td>${log.status_code || '-'}</td>
+                                    <td>${log.api_endpoint}</td>
+                                    <td>${log.counter || '-'}</td>
+                                    <td>${log.broker || '-'}</td>
+                                    <td>${new Date(log.created_at).toLocaleString()}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary show-content-btn"
+                                            data-toggle="modal"
+                                            data-target="#logModal"
+                                            data-id="${log.order_id}"
+                                            data-content='${JSON.stringify(log.request_payload, null, 2)}'>
+                                            {{ __('show_content') }}
+                                        </button>
+                                    </td>
+                                </tr>`;
+                            tableBody.append(row);
+                        });
+                        console.log(tableBody);
+                    }
+                }
+            });
+        }, 300));
+
+
     // $(document).on('click', '.json__item--collapsible', function() {
     //     let checkbox = $(this).find('.json__toggle');
     //     checkbox.prop('checked', !checkbox.prop('checked'));

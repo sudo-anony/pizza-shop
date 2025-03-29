@@ -11,7 +11,8 @@
 @section('tbody')
 @foreach ($setup['items'] as $variant)
 <tr>
-    <td>{{ $variant->price }}</td>
+    {{-- <td>{{ $variant->price }}</td> --}}
+    <td>@money( $variant->price, config('settings.cashier_currency'),config('settings.do_convertion'))</td>
     <td>
         {{ $variant->optionsList }}
     </td>

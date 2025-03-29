@@ -163,14 +163,20 @@ class FinanceController extends Controller
 
         //Check if Owner has completed
         $stripe_details_submitted = __('No');
-        if (auth()->user()->stripe_account) {
-            //Set our key
-            Stripe::setApiKey(config('settings.stripe_secret'));
+if (auth()->user()->stripe_account) {
+    try {
+        Stripe::setApiKey(config('settings.stripe_secret'));
+        
+        // Retrieve account details
+        $account = Account::retrieve(auth()->user()->stripe_account, []);
+        
+        $stripe_details_submitted = $account->details_submitted ? __('Yes') : __('No');
+    } catch (\Exception $e) {
+        // Handle error if account ID is invalid
+        $stripe_details_submitted = __('Error retrieving account');
+    }
+}
 
-            $stripe_details_submitted = Account::retrieve(
-                auth()->user()->stripe_account, []
-            )->details_submitted ? __('Yes') : __('No');
-        }
 
         $resources = $this->getResources();
 

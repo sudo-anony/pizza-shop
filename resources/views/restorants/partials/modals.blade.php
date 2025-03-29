@@ -1,12 +1,16 @@
 <div class="modal fade" id="productModal" z-index="9999" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-" role="document" id="modalDialogItem">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 id="modalTitle" class="modal-title" id="modal-title-new-item"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+        <div class="modal-header">
+            <div>
+                <h5 id="modalTitle" class="modal-title"></h5>
+                <small id="modalsubTitle" class="text-muted"></small> <!-- Subtitle as smaller text -->
             </div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+
             <div class="modal-body p-0">
                 <div class="card shadow border-0">
                     <div class="card-body px-lg-5 py-lg-5">

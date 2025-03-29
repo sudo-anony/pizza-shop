@@ -6,11 +6,7 @@
             </a>
         </li>
     @endif
-    <li class="nav-item">
-            <a class="nav-link" href="{{ route('api.logs') }}">
-                <i class="ni ni-tv-2 text-danger"></i> {{ __('API Logs') }}
-            </a>
-        </li>
+	
     @if(config('app.ordering')&&!config('settings.makePureSaaS',false))
         <li class="nav-item">
             <a class="nav-link" href="{{ route('home') }}">
@@ -39,11 +35,7 @@
             <i class="ni ni-shop text-info"></i> {{ __('Restaurant') }}
         </a>
     </li>
-    <li class="nav-item">
-       <a class="nav-link" href="{{ route('admin.owner.apps') }}">
-           <i class="ni ni-app text-red"></i> {{ __('Apps') }}
-       </a>
-   </li>
+   
     @if(!config('app.issd')&&!config('settings.makePureSaaS',false))
         <li class="nav-item">
             <a class="nav-link" href="{{ route('items.index') }}">
@@ -162,6 +154,16 @@
         </li>
     @endif
     
+
+
+
+<li class="nav-item">
+            <a class="nav-link" href="{{ route('api.logs') }}">
+                <i class="ni ni-tv-2 text-danger"></i> {{ __('API Logs') }}
+            </a>
+        </li>
+
+
 
 </ul>
 @if (config('vendorlinks.enable',false))

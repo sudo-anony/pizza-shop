@@ -14,7 +14,7 @@ class Items extends TranslateAwareModel
 {
     use SoftDeletes;
 
-    public $translatable = ['name', 'description'];
+    public $translatable = ['name', 'subtitle', 'description'];
 
     protected $table = 'items';
 

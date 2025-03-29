@@ -86,9 +86,7 @@
                                     <span class="h1 font-weight-bold mb-0 text-white">{{ $category->name }}</span>
                                     @if($category->subtitle)
                                         <span class="h4 font-weight-light text-white-50 ml-3">{{ $category->subtitle }}</span>
-                                        @if($category->subtitle)
-                                            <span class="h4 font-weight-light text-white-50 ml-3">{{ $category->subtitle }}</span>
-                                        @endif
+                                       
                                     @endif
                                 </div>
                                 <div class="d-flex">
@@ -273,10 +271,20 @@
                                             </a>
                                         </td>
                                         <td style="width: 35%;">
+                                            <div class="d-flex flex-column">
+                                                <a href="{{ route('items.edit', $item) }}">
+                                                    <h3 class="text-primary text-uppercase">{{ $item->name }}</h3>
+                                                </a>
+                                                <li class="list-inline-item text-sm text-muted">
+                                                    <span class="text-nowrap">{{ $item->subtitle }}</span>
+                                                </li>
+                                            </div>
+                                        </td>
+                                        {{-- <td style="width: 35%;">
                                             <a href="{{ route('items.edit', $item) }}">
                                                 <h3 class="card-title text-primary text-uppercase">{{ $item->name }}</h3>
                                             </a>
-                                        </td>
+                                        </td> --}}
                                         <td style="width: 25%;">
                                             <a href="{{ route('items.edit', $item) }}">
                                                 @money($item->price, config('settings.cashier_currency'), config('settings.do_convertion'))

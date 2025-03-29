@@ -35,9 +35,13 @@ use Maatwebsite\Excel\Facades\Excel;
 use willvincent\Rateable\Rating;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
+use Stripe\PaymentIntent;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Stripe\Coupon;
 use App\Models\ApiLog;
+
+use App\Mail\OrderPaymentConfirmation;
 
 class OrderController extends Controller
 {
@@ -639,7 +643,7 @@ class OrderController extends Controller
         if ($broker->counter == 'none'){
             $status = Status::where('id', 2)->first();
             $latestOrder->status()->attach($status->id, ['user_id' => $user->id]); 
-            ApiLog::create([
+		ApiLog::create([
                 'status_code' => 200,
                 'order_id' => $latestOrder->id,
                 'api_endpoint' => 'NA',
@@ -669,6 +673,7 @@ class OrderController extends Controller
             "name" => $address->name,
             "email" => $address->email,
             "phone" => $address->phone,
+            "mobileFormat" => $address->mobileFormat,
             "departmentname" => $address->departmentname,
             "companyname" => $address->companyname
         ] : [
@@ -778,8 +783,6 @@ class OrderController extends Controller
        
         
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-       
-   
         if ($http_code == 200) {
   
                 $status = Status::where('id', 14)->first();
@@ -812,8 +815,8 @@ class OrderController extends Controller
 
     protected function generateDeliveryTime($time)
     {
-        $interval = explode($time, '_');
-        $startTimeInMinutes = (int) $interval[0];
+        $interval = explode('_', $time);
+        $startTimeInMinutes = (int)$interval[0];
         $hours = intdiv($startTimeInMinutes, 60);
         $minutes = $startTimeInMinutes % 60;
         $startTime = Carbon::createFromTime($hours, $minutes, 0)->format("Y-m-d\TH:i:s\Z");

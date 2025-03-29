@@ -80,6 +80,7 @@ const $targetEl = document.getElementById('productModal');
             currentItem=item;
             previouslySelected=[];
             $('#modalTitle').text(item.name);
+            
             $('#productDescription').text(item.description);
             $('#modalPrice').html(item.price);
             $('#modalID').text(item.id);

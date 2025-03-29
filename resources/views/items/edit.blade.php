@@ -115,6 +115,16 @@
                                                 </span>
                                             @endif
                                         </div>
+                                        {{-- Add Form group for subtitle --}}
+                                        <div class="form-group {{ $errors->has('item_subtitle') ? ' has-danger' : '' }}">
+                                            <label class="form-control-label" for="item_subtitle">{{ __('Item Subtitle') }}</label>
+                                            <input type="text" name="item_subtitle" id="item_subtitle" class="form-control form-control-alternative{{ $errors->has('item_subtitle') ? ' is-invalid' : '' }}" placeholder="{{ __('Subtitle') }}" value="{{ old('item_subtitle', $item->subtitle) }}"  >
+                                            @if ($errors->has('item_subtitle'))
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('item_subtitle') }}</strong>
+                                                </span>
+                                            @endif
+                                        </div>
                                         <div class="form-group">
                                         <label class="form-control-label">Type</label>
                                         <select name="type" id="type" required class="form-control">
@@ -126,7 +136,7 @@
                                         @include('partials.select', ['name'=>"Category",'id'=>"category_id",'placeholder'=>"Select category",'data'=>$categories,'required'=>true, 'value'=>$item->category_id])
                                         <div class="form-group{{ $errors->has('item_description') ? ' has-danger' : '' }}">
                                             <label class="form-control-label" for="item_description">{{ __('Item Description') }}</label>
-                                            <textarea id="item_description" name="item_description" class="form-control form-control-alternative{{ $errors->has('item_description') ? ' is-invalid' : '' }}" placeholder="{{ __('Item Description here ... ') }}" value="{{ old('item_description', $item->description) }}" required autofocus rows="3">{{ old('item_description', $item->description) }}</textarea>
+                                            <textarea id="item_description" name="item_description" class="form-control form-control-alternative{{ $errors->has('item_description') ? ' is-invalid' : '' }}" placeholder="{{ __('Item Description here ... ') }}" value="{{ old('item_description', $item->description) }}"  autofocus rows="3">{{ old('item_description', $item->description) }}</textarea>
                                             @if ($errors->has('item_description'))
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $errors->first('item_description') }}</strong>
@@ -252,11 +262,23 @@
                                         </tr>
                                     </thead>
                                     <tbody class="list">
+					@php
+                                            $sortedExtras = $item->extras->sort(function ($a, $b) {
+                                                $regex = '/^[^a-zA-Z]/'; 
+                                                $aIsSpecial = preg_match($regex, $a->name);
+                                                $bIsSpecial = preg_match($regex, $b->name);
+
+                                                if ($aIsSpecial && !$bIsSpecial) return -1;
+                                                if (!$aIsSpecial && $bIsSpecial) return 1;
+
+                                                return strcasecmp($a->name, $b->name);
+                                            });
+                                        @endphp
                                         <script>
                                             var extras=<?php echo $item->extras->load('variants') ?>;
                                             
                                         </script>
-                                        @foreach($item->extras as $extra)
+                                        @foreach($sortedExtras as $extra)
                                             <tr>
                                                 <th scope="row">{{ $extra->name }}</th>
                                                 <td class="budget">@money( $extra->price, config('settings.cashier_currency'),config('settings.do_convertion'))</td>

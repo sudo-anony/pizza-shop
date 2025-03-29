@@ -14,7 +14,6 @@
                 <a href="{{ route('systemstatus') }}" class="btn btn-sm btn-danger">{{ __('settings_system_status') }}</a>
                 <a href="{{ route('admin.regenerate.sitemap') }}" class="btn btn-sm btn-warning">{{ __('Regenerate sitemap') }}</a>
                 <a href="{{ route('email.logs') }}" class="btn btn-sm btn-warning">{{ __('Email Logs') }}</a>
-                <a href="{{ route('api.logs') }}" class="btn btn-sm btn-warning">{{ __('Api Logs') }}</a>
             </div>
           </div>
         </div>

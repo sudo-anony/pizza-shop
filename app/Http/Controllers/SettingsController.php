@@ -21,7 +21,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Image;
+use App\Models\ApiLog;
 use App\Models\EmailLog;
+use App\Order;
+use Illuminate\Http\JsonResponse;
 
 class SettingsController extends Controller
 {
@@ -634,4 +637,100 @@ class SettingsController extends Controller
             'currentLanguage' => $currentEnvLanguage,
         ]);
     }
+
+
+
+
+public function apiLogs(Request $request): View
+    {
+        if ($request->has('search')) {
+            if (auth()->user()->hasRole('owner')){
+                $search = $request->search ?? '';
+                $logs = ApiLog::where(function ($query) use ($search) {
+                    $query->where('broker', 'like', "%{$search}%")
+                          ->orWhere('counter', 'like', "%{$search}%")
+                          ->orWhere('orderId', 'like', "%{$search}%")
+                          ->orWhere('status_code', 'like', "%{$search}%")
+                          ->orWhere('api_endpoint', 'like', "%{$search}%");
+                })
+                ->orWhereHas('order', function ($query) use ($search) {
+                    $query->where('id', 'like', "%{$search}%") 
+                          ->orWhere('restorant_id', 'like', "%{$search}%");
+                })
+                ->orderByDesc('id')
+                ->limit(1000)
+                ->get();
+            } else {
+                $logs = ApiLog::where('broker', 'like', '%'.$request->search.'%')
+                ->orWhere('counter', 'like', '%'.$request->search.'%')
+                ->orWhere('orderId', 'like', '%'.$request->search.'%')
+                ->orWhere('status_code', 'like', '%'.$request->search.'%')
+                ->orWhere('api_endpoint', 'like', '%'.$request->search.'%')
+                ->orderBy('id', 'desc')
+                ->limit(1000)
+                ->get();
+            }
+        } else {
+            if (auth()->user()->hasRole('owner')){
+                $logs = ApiLog::whereIn('order_id', Order::whereIn('restorant_id', auth()->user()->restaurants->pluck('id'))->pluck('id'))
+                            ->orderBy('id', 'desc')
+                            ->limit(1000)
+                            ->get();
+            } else {
+                $logs = ApiLog::orderBy('id', 'desc')->limit(1000)->get();
+            }
+        }
+
+        return view('settings.apilogs', [
+            'logs' => $logs,
+        ]);
+    }
+
+
+    public function apiLogsSearch(Request $request): JsonResponse
+    {
+        if ($request->has('search')) {
+            if (auth()->user()->hasRole('owner')){
+                $search = $request->search ?? '';
+                $logs = ApiLog::where(function ($query) use ($search) {
+                    $query->where('broker', 'like', "%{$search}%")
+                          ->orWhere('counter', 'like', "%{$search}%")
+                          ->orWhere('orderId', 'like', "%{$search}%")
+                          ->orWhere('status_code', 'like', "%{$search}%")
+                          ->orWhere('api_endpoint', 'like', "%{$search}%");
+                })
+                ->orWhereHas('order', function ($query) use ($search) {
+                    $query->where('id', 'like', "%{$search}%") 
+                          ->orWhere('restorant_id', 'like', "%{$search}%");
+                })
+                ->orderByDesc('id')
+                ->limit(1000)
+                ->get();
+            } else {
+                $logs = ApiLog::where('broker', 'like', '%'.$request->search.'%')
+                ->orWhere('counter', 'like', '%'.$request->search.'%')
+                ->orWhere('orderId', 'like', '%'.$request->search.'%')
+                ->orWhere('status_code', 'like', '%'.$request->search.'%')
+                ->orWhere('api_endpoint', 'like', '%'.$request->search.'%')
+                ->orderBy('id', 'desc')
+                ->limit(1000)
+                ->get();
+            }
+        } else {
+            if (auth()->user()->hasRole('owner')){
+                $logs = ApiLog::whereIn('order_id', Order::whereIn('restorant_id', auth()->user()->restaurants->pluck('id'))->pluck('id'))
+                            ->orderBy('id', 'desc')
+                            ->limit(1000)
+                            ->get();
+            } else {
+                $logs = ApiLog::orderBy('id', 'desc')->limit(1000)->get();
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'logs' => $logs
+        ]);
+    }
+
+
 }
