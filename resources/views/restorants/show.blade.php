@@ -194,6 +194,17 @@
                                                 <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }}, '{{ $item->allergens }}')" href="javascript:void(0)">{{ $item->name }}</a></b></div>
                                             @endif
 
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="res_mimimum">
+                                                        @if ($item->discounted_price>0)
+                                                            <span class="text-muted" style="text-decoration: line-through;">@money($item->discounted_price, config('settings.cashier_currency'),config('settings.do_convertion'))</span>
+                                                        @endif
+                                                        @money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <!-- <div class="res_description">{{ $item->short_description}}</div>
                                             <div class="row">
                                                 <div class="col-6">
