@@ -1,3 +1,23 @@
+<style>
+ .footer-alignment {
+    width: 100%;
+    text-align: center;
+    margin-left: 4rem !important;
+}
+
+@media (max-width: 767px) {
+    .footer-alignment {
+        margin-left: 0 !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .footer-alignment {
+        margin-left: 3rem !important;
+    }
+}
+
+</style>
 <footer class="footer notranslate">
     <div class="container">
       <div class="row align-items-center justify-content-md-between">
@@ -8,9 +28,9 @@
         </div>
         <div class="col-md-6">
           <div class="d-flex flex-column justify-content-md-end align-items-md-center">
-            <div style="width: 100%;text-align: center;">
-                <div class="mb-0 ml-5" style="font-size: 0.8rem;">{{ __('All prices in euros and incl. VAT/illustrations may vary') }}</div>
-                <div class="mb-0  ml-5" style="font-size: 0.8rem;">{{ __('Information on the ingredients can be found on the product') }}</div>
+            <div class="footer-alignment">
+                <div class="mb-0 ml-5 text-muted" style="font-size: 0.8rem;">{{ __('All prices in euros and incl. VAT/illustrations may vary') }}</div>
+                <div class="mb-0  ml-5 text-muted" style="font-size: 0.8rem;">{{ __('Information on the ingredients can be found on the product') }}</div>
             </div>
             <ul id="footer-pages" class="nav nav-footer justify-content-end">
               <li v-for="page in pages" class="nav-item" v-cloak>
