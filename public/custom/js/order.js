@@ -365,12 +365,21 @@ function setCurrentItem(id, alergies){
     }else{
         
         $('#exrtas-area-inside').empty();
-        item.extras.forEach(element => {
+        const sortedExtras = sortExtras(item.extras);
+        sortedExtras.forEach(element => {
             
             $('#exrtas-area-inside').append('<div class="custom-control custom-checkbox mb-3"><input onclick="recalculatePrice('+id+');" class="custom-control-input" id="'+element.id+'" name="extra"  value="'+element.price+'" type="checkbox"><label class="custom-control-label" for="'+element.id+'">'+element.name+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+'+element.priceFormated+'</label></div>');
         });
         $('#exrtas-area').show();
     }
+}
+
+function sortExtras(extras) {
+    return extras.sort((a, b) => {
+        if (a.special && !b.special) return -1;
+        if (!a.special && b.special) return 1;
+        return a.name.localeCompare(b.name);
+    });
 }
 
 

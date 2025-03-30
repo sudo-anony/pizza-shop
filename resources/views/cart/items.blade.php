@@ -16,13 +16,13 @@
                     <h6 class="product-item_title">@{{ item.name }}</h6>
                     <p class="product-item_quantity">@{{ item.quantity }} x @{{ item.attributes.friendly_price }}</p>
                     <div class="row">
-                        <button type="button" v-on:click="decQuantity(item.id)" :value="item.id" class="btn btn-outline-primary btn-icon btn-sm page-link btn-cart-radius">
+                        <button type="button" onclick="resetAmount()" v-on:click="decQuantity(item.id)" :value="item.id" class="btn btn-outline-primary btn-icon btn-sm page-link btn-cart-radius">
                             <span class="btn-inner--icon btn-cart-icon"><i class="fa fa-minus"></i></span>
                         </button>
-                        <button type="button" v-on:click="incQuantity(item.id)" :value="item.id" class="btn btn-outline-primary btn-icon btn-sm page-link btn-cart-radius">
+                        <button type="button" onclick="resetAmount()" v-on:click="incQuantity(item.id)" :value="item.id" class="btn btn-outline-primary btn-icon btn-sm page-link btn-cart-radius">
                             <span class="btn-inner--icon btn-cart-icon"><i class="fa fa-plus"></i></span>
                         </button>
-                        <button type="button" v-on:click="remove(item.id)"  :value="item.id" class="btn btn-outline-primary btn-icon btn-sm page-link btn-cart-radius">
+                        <button type="button" onclick="resetAmount()" v-on:click="remove(item.id)"  :value="item.id" class="btn btn-outline-primary btn-icon btn-sm page-link btn-cart-radius">
                             <span class="btn-inner--icon btn-cart-icon"><i class="fa fa-trash"></i></span>
                         </button>
                     </div>
@@ -33,3 +33,20 @@
     </div>
 </div>
 <br />
+
+
+<script>
+
+    function resetAmount(){
+        let pickupDiscount = {{ $restorant->pick_up_discount ?? 0 }};
+        setTimeout(() => {
+        if (cartTotal && cartTotal.totalPrice) {
+            setPickUpDeduction(cartTotal.totalPrice);
+            if (pickupDiscount > 0) {
+            orderTypeSwither('pickup');
+            pick_discount_applied(pickupDiscount);
+            }
+        }
+        }, 1000); 
+    }
+</script>

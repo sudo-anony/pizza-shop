@@ -7,23 +7,29 @@
           </div>
         </div>
         <div class="col-md-6">
-          <ul id="footer-pages" class="nav nav-footer justify-content-end">
-            <li v-for="page in pages" class="nav-item" v-cloak>
-                <a :href="'/pages/' + page.id" class="nav-link">@{{ page.title }}</a>
-            </li>
+          <div class="d-flex flex-column justify-content-md-end align-items-md-center">
+            <div style="width: 100%;text-align: center;">
+                <div class="mb-0 ml-5" style="font-size: 0.8rem;">{{ __('All prices in euros and incl. VAT/illustrations may vary') }}</div>
+                <div class="mb-0  ml-5" style="font-size: 0.8rem;">{{ __('Information on the ingredients can be found on the product') }}</div>
+            </div>
+            <ul id="footer-pages" class="nav nav-footer justify-content-end">
+              <li v-for="page in pages" class="nav-item" v-cloak>
+                  <a :href="'/pages/' + page.id" class="nav-link">@{{ page.title }}</a>
+              </li>
 
-            @if (!config('settings.single_mode')&&config('settings.restaurant_link_register_position')=="footer")
-            <li class="nav-item">
-              <a  target="_blank" class="button nav-link nav-link-icon" href="{{ route('newrestaurant.register') }}">{{ __(config('settings.restaurant_link_register_title')) }}</a>
-            </li>
-          @endif
-          @if (config('app.isft')&&config('settings.driver_link_register_position')=="footer")
-          <li class="nav-item">
-              <a target="_blank" class="button nav-link nav-link-icon" href="{{ route('driver.register') }}">{{ __(config('settings.driver_link_register_title')) }}</a>
-            </li>
-            @endif
+              @if (!config('settings.single_mode')&&config('settings.restaurant_link_register_position')=="footer")
+              <li class="nav-item">
+                <a  target="_blank" class="button nav-link nav-link-icon" href="{{ route('newrestaurant.register') }}">{{ __(config('settings.restaurant_link_register_title')) }}</a>
+              </li>
+              @endif
+              @if (config('app.isft')&&config('settings.driver_link_register_position')=="footer")
+              <li class="nav-item">
+                <a target="_blank" class="button nav-link nav-link-icon" href="{{ route('driver.register') }}">{{ __(config('settings.driver_link_register_title')) }}</a>
+              </li>
+              @endif
 
-          </ul>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

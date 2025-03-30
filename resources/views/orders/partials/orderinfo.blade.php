@@ -192,10 +192,24 @@
      @if($order->delivery_method==1)
      <h4>{{ __("Delivery") }}: @money( $order->delivery_price, $currency,$convert)</h4>
      @endif
-     @if ($order->discount>0)
-        <h4>{{ __("Discount") }}: @money( $order->discount, $currency,$convert)</h4>
-        <h4>{{ __("Coupon code") }}: {{$order->coupon}}</h4>
+     @if ($order->discount)
+        @if ($order->pickup_discount)
+            @php
+                $finalDiscount = $order->discount - ($order->pickup_discount ?? 0);
+            @endphp
+            @if ( $finalDiscount > 0)
+             <h4>{{ __("Discount") }}: @money( $finalDiscount, $currency,$convert)</h4>
+             <h4>{{ __("Coupon code") }}: {{$order->coupon}}</h4>
+            @endif
+        @else
+            <h4>{{ __("Discount") }}: @money( $order->discount, $currency,$convert)</h4>
+            <h4>{{ __("Coupon code") }}: {{$order->coupon}}</h4>
+        @endif
      @endif
+     @if ($order->pickup_discount)
+        <h4>{{ __("Pickup Discount") }}: @money( $order->pickup_discount, $currency,$convert)</h4>
+     @endif
+
      @if ($order->tip>0)
         <h4>{{ __("Tip") }}: @money( $order->tip, $currency,$convert)</h4>
      @endif

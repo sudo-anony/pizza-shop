@@ -301,7 +301,7 @@
                                 </div>
                             @endif
 
-                            @if($order->discount>0)
+                            @if($order->discount)
                                 <div class="row my-2">
                                     <div class="col-7 text-right">
                                         {{ __('Discount') }}
@@ -311,7 +311,9 @@
                                             @php
                                                 $finalDiscount = $order->discount - ($order->pickup_discount ?? 0);
                                             @endphp
-                                            <span class="text-110">@money( $finalDiscount, $currency,$convert)</span>
+                                            @if ($finalDiscount > 0)
+                                                <span class="text-110">@money( $finalDiscount, $currency,$convert)</span>
+                                            @endif
                                         @else
                                             <span class="text-110">@money( $order->discount, $currency,$convert)</span>
                                         @endif

@@ -296,10 +296,12 @@ class OrderNotification extends Notification
             $message->line(__('Delivery Fee: ') . money($this->order->delivery_price, config('settings.cashier_currency'), config('settings.do_convertion')));
         }
     
-        if ($this->order->discount > 0) {
+        if ($this->order->discount) {
             if ($this->order->pickup_discount){
                 $final_discount = $this->order->discount - $this->order->pickup_discount;
-                $message->line('Rabatt: ' . money($final_discount, config('settings.cashier_currency'), config('settings.do_convertion')));
+                if ($final_discount > 0){
+                    $message->line('Rabatt: ' . money($final_discount, config('settings.cashier_currency'), config('settings.do_convertion')));
+                }
             }else {
                 $message->line('Rabatt: ' . money($this->order->discount, config('settings.cashier_currency'), config('settings.do_convertion')));
             }
