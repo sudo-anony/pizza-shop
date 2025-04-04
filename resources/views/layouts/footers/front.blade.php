@@ -1,8 +1,7 @@
 <style>
  .footer-alignment {
-    width: 100%;
-    text-align: center;
-    margin-left: 4rem !important;
+    /* width: 100%; */
+   
 }
 
 @media (max-width: 767px) {
@@ -13,7 +12,7 @@
 
 @media (min-width: 768px) and (max-width: 1024px) {
     .footer-alignment {
-        margin-left: 3rem !important;
+        
     }
 }
 
@@ -25,13 +24,14 @@
           <div class="copyright">
             &copy; {{ date('Y') }} <a href="" target="_blank">{{ config('global.site_name', 'mResto') }}</a>.
           </div>
+          <div class="footer-alignment">
+                <div class="mb-0  text-muted" style="font-size: 0.8rem;">{{ __('All prices in euros and incl. VAT/illustrations may vary') }}</div>
+                <div class="mb-0  text-muted" style="font-size: 0.8rem;">{{ __('Information on the ingredients can be found on the product') }}</div>
+            </div>
         </div>
         <div class="col-md-6">
           <div class="d-flex flex-column justify-content-md-end align-items-md-center">
-            <div class="footer-alignment">
-                <div class="mb-0 ml-5 text-muted" style="font-size: 0.8rem;">{{ __('All prices in euros and incl. VAT/illustrations may vary') }}</div>
-                <div class="mb-0  ml-5 text-muted" style="font-size: 0.8rem;">{{ __('Information on the ingredients can be found on the product') }}</div>
-            </div>
+           
             <ul id="footer-pages" class="nav nav-footer justify-content-end">
               <li v-for="page in pages" class="nav-item" v-cloak>
                   <a :href="'/pages/' + page.id" class="nav-link">@{{ page.title }}</a>
@@ -44,7 +44,7 @@
               @endif
               @if (config('app.isft')&&config('settings.driver_link_register_position')=="footer")
               <li class="nav-item">
-                <a target="_blank" class="button nav-link nav-link-icon" href="{{ route('driver.register') }}">{{ __(config('settings.driver_link_register_title')) }}</a>
+                <a target="_blank" class="button nav-link nav-link-icon" style="margin-right: 10px;" href="{{ route('driver.register') }}">{{ __(config('settings.driver_link_register_title')) }}</a>
               </li>
               @endif
 

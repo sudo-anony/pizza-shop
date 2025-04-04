@@ -552,7 +552,7 @@ class OrderController extends Controller
     }
 
     public function store(Request $request)
-    {
+    {       
         if ($request->has('tip')) {
             $tip = $request->input('tip');  
             $numericTip = $this->moneyToFloat($tip); 
@@ -736,13 +736,15 @@ class OrderController extends Controller
         } else {
             $setStatus = 3;
         }
+        $publicIP = file_get_contents('https://api64.ipify.org?format=json');
+        $publicIP = json_decode($publicIP)->ip;
         // $setStatus = ($orderOnCode == 1) ? 1 : (($latestOrder->payment_method == 'cod') ? 0 : 3);
       
         $order_data = [
             "version" => 1,
             "broker" => $broker->broker ? $broker->broker : $broker->name,
             "fromMobile" => false, 
-            "clientIp" => "192.168.1.2",
+            "clientIp" => $publicIP,
             "id" => $unique_id,
             "ordertime" => $orderTime,
             "deliverytime" => $deliveryTime,
@@ -771,7 +773,7 @@ class OrderController extends Controller
             "bonuscard" => $latestOrder->coupon ?? '',
             "notification" => ($latestOrder->delivery_method == 2) ? true : false,
             "customerinfo" =>$latestOrder->comment,
-            "info" => $latestOrder->comment
+            // "info" => $latestOrder->comment
         ];
         $json_data = json_encode($order_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE); 
        

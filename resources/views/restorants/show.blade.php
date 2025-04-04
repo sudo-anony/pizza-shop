@@ -132,7 +132,7 @@
                     <nav class="tabbable sticky" style="top: {{ config('app.isqrsaas') ? 64:88 }}px;">
                         <ul class="nav nav-pills bg-white mb-2">
                             @if(!$offer_category->aitems->isEmpty())
-                                <li class="nav-item nav-item-category" style="width: 20%;text-align: center;" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($offer_category->name)).strval('offer_category_id')) }}">
+                                <li class="nav-item nav-item-category offer-classs" style="width: 20%;text-align: center; " id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($offer_category->name)).strval('offer_category_id')) }}">
                                     <a class="nav-link mb-sm-3 mb-md-0" data-toggle="tab" role="tab" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($offer_category->name)).strval('offer_category_id')) }}" href="#{{ clean(str_replace(' ', '', strtolower($offer_category->name)).strval('offer_category_id')) }}">{{ $offer_category->name }}</a>
                                 </li>
                             @endif
@@ -141,8 +141,8 @@
                 @endif  
                 <nav class="tabbable sticky" style="top: {{ config('app.isqrsaas') ? 64:88 }}px;">
                     <ul class="nav nav-pills bg-white mb-2">
-                        <li class="nav-item nav-item-category">
-                            <a class="nav-link  mb-sm-3 mb-md-0 active" id="all_categories" data-toggle="tab" role="tab" href="">{{ __('All categories') }}</a>
+                        <li class="nav-item nav-item-category all-category-classs">
+                            <a class="nav-link  mb-sm-3 mb-md-0 active " id="all_categories" data-toggle="tab" role="tab" href="">{{ __('All categories') }}</a>
                         </li>
                         @foreach ( $restorant->categories as $key => $category)
                             @if(!$category->aitems->isEmpty()&& $category->id != 160)
