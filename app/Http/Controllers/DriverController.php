@@ -247,12 +247,11 @@ class DriverController extends Controller
         config([
             'global.restorant_details_cover_image' => '',
         ]);
-
         return view('general.form_front', ['setup' => [
             'inrow' => true,
             'action_link' => null,
             'action_name' => __('crud.back'),
-            'title' => __('crud.new_item', ['item' => __('Driver')]),
+            'title' => __('Driver Application'),
             'iscontent' => true,
             'action' => route('driver.register.store'),
         ],

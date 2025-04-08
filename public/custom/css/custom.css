@@ -1037,6 +1037,9 @@ a:hover {
     }
  }
 
+ .tabbable .nav-pills .nav-link {
+    white-space: nowrap;
+  }
 
 .nav-item-category{
     padding-bottom: 10px;
@@ -1046,11 +1049,15 @@ a:hover {
 .tabbable .nav-pills {
     overflow-x: auto;
     overflow-y: hidden;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
  }
- .tabbable .nav-pills .nav-link {
-   white-space: nowrap;
- }
+
+
+ @media (min-width: 768px) {
+    .tabbable .nav-pills {
+        flex-wrap: nowrap;
+    }
+}
 
  .callOutShoppingButtonBottom {
     position: fixed;

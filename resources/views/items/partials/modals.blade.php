@@ -1,3 +1,21 @@
+<style>
+    .custom-file-input-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.custom-file-input-container button {
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
+#item-image-preview {
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+</style>
 <!-- ADD Category -->
 <div class="modal fade" id="modal-items-category" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
     <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
@@ -115,12 +133,12 @@
 
 
 <div class="modal fade" id="modal-new-item" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-    <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="modal-title-new-item">{{ __('Add new item') }}</h3>
+                <h3 class="modal-title">{{ __('Add new item') }}</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
+                    <span>×</span>
                 </button>
             </div>
             <div class="modal-body p-0">
@@ -152,25 +170,29 @@
                                     </span>
                                 @endif
                             </div>
+
                             <div class="form-group text-center{{ $errors->has('item_image') ? ' has-danger' : '' }}">
                                 <label class="form-control-label" for="item_image">{{ __('Item Image') }}</label>
                                 <div class="text-center">
-                                    <div class="fileinput fileinput-new" data-provides="fileinput">
-                                        <div class="fileinput-preview img-thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
-                                            <img src="{{ asset('images') }}/default/add_new_item_box.jpeg" width="200px" height="150px" alt="..."/>
+                                    <!-- Center the image preview container using flexbox -->
+                                    <div class="d-flex justify-content-center mb-2" style="width: 100%; height: 150px;">
+                                        <div class="img-thumbnail" style="width: 200px; height: 150px; overflow: hidden; display: flex; justify-content: center; align-items: center;">
+                                            <img id="item-image-preview" src="{{ asset('images') }}/default/add_new_item_box.jpeg" alt="Preview" width="200" height="150">
                                         </div>
-                                    <div>
-                                    <span class="btn btn-outline-secondary btn-file">
-                                    <span class="fileinput-new">{{ __('Select image') }}</span>
-                                    <span class="fileinput-exists">{{ __('Change') }}</span>
-                                        <input type="file" name="item_image" accept="image/x-png,image/png,image/gif,image/jpeg,image/webp"
-                                        >
-                                    </span>
-                                    <a href="#" class="btn btn-outline-secondary fileinput-exists" data-dismiss="fileinput">{{ __('Remove') }}</a>
-                                </div>
-                                </div>
+                                    </div>
+
+                                    <!-- Custom File Input Button -->
+                                    <div class="custom-file-input-container text-center">
+                                        <button type="button" class="btn btn-primary" id="select-image">{{ __('Select image') }}</button>
+                                        <button type="button" class="btn btn-warning" id="change-image" style="display:none;">{{ __('Change') }}</button>
+                                        <button type="button" class="btn btn-danger" id="remove-image" style="display:none;">{{ __('Remove') }}</button>
+                                        <input type="file" class="form-control-file" name="item_image" id="item_image" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;">
+                                    </div>
                                 </div>
                             </div>
+
+
+
                             <input name="category_id" id="category_id" type="hidden" required>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary my-4">{{ __('Save') }}</button>
@@ -182,6 +204,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modal-import-items" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
     <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
         <div class="modal-content">
@@ -215,3 +238,50 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('item_image');
+    const preview = document.getElementById('item-image-preview');
+    const selectButton = document.getElementById('select-image');
+    const changeButton = document.getElementById('change-image');
+    const removeButton = document.getElementById('remove-image');
+
+    // Select Image Button - Trigger file input
+    selectButton.addEventListener('click', function () {
+        input.click();
+    });
+
+    // Change Image Button - Trigger file input
+    changeButton.addEventListener('click', function () {
+        input.click();
+    });
+
+    // Remove Image Button - Clear the input and hide the image preview
+    removeButton.addEventListener('click', function () {
+        input.value = '';  // Clear the file input
+        preview.src = '{{ asset('images') }}/default/add_new_item_box.jpeg';  // Reset preview image
+        selectButton.style.display = 'inline-block';  // Show 'Select' button
+        changeButton.style.display = 'none';  // Hide 'Change' button
+        removeButton.style.display = 'none';  // Hide 'Remove' button
+    });
+
+    // On file input change (when user selects a file)
+    input.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;  // Set preview image to selected file
+            };
+            reader.readAsDataURL(file);
+
+            // Toggle visibility of buttons
+            selectButton.style.display = 'none';
+            changeButton.style.display = 'inline-block';
+            removeButton.style.display = 'inline-block';
+        }
+    });
+});
+
+</script>
+
